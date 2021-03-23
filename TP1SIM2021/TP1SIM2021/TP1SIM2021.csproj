@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clases\Generadores.cs" />
     <Compile Include="Forms\FrmNumPseudoaleatorios.cs">
       <SubType>Form</SubType>
     </Compile>
