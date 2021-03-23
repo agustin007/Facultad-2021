@@ -16,5 +16,12 @@ namespace TP1SIM2021.Forms
     {
       InitializeComponent();
     }
+
+    private void FrmNumPseudoaleatorios_Load(object sender, EventArgs e)
+    {
+      this.tabPage1.Text = "Numeros Pseudoaleatorios";
+      this.tabPage2.Text = "Grafico";
+      this.tabPage3.Text = "Integrantes";
+    }
   }
 }
