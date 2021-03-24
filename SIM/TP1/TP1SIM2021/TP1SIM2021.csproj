@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clases\Generadores.cs" />
+    <Compile Include="Class\GeneradorNumerosPseudoaleatorios.cs" />
     <Compile Include="Forms\FrmNumPseudoaleatorios.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
