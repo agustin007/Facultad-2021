@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows.Forms;
 using TP1SIM2021.Clases;
 
@@ -40,22 +41,57 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerar_Click(object sender, EventArgs e)
         {
-            if (CmbMetodos.SelectedIndex == 0 && TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty && TxtC.Text != string.Empty &&
-                TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty) { }
-
-            if (CmbMetodos.SelectedIndex == 1 && TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty &&
-                TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty) { }
-
-            if (CmbMetodos.SelectedIndex == 2 && TxtSemilla.Text != string.Empty && TxtCantidad.Text!=string.Empty)
+            int metodo = CmbMetodos.SelectedIndex;
+            switch (metodo)
             {
-                int semilla = Convert.ToInt32(TxtSemilla.Text);
-                int cantidad = Convert.ToInt32(TxtCantidad.Text);
-                GrdNumeros.AutoGenerateColumns = true;
-                GrdNumeros.DataSource= GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(cantidad);
-            }
-            else
-            {
-                MessageBox.Show("Por favor, ingrese la cantidad de numeros a generar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                case 0:
+                    if (TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty && TxtC.Text != string.Empty &&
+                TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty)
+                    {
+                        int semilla = Convert.ToInt32(TxtSemilla.Text);
+                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
+                        int a = Convert.ToInt32(TxtA.Text);
+                        int c = Convert.ToInt32(TxtC.Text);
+                        int m = Convert.ToInt32(TxtM.Text);
+                        generarTabla(GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(cantidad, semilla, a, c, m));
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Por favor, ingrese valores en los campos de numeros a generar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    break;
+
+                case 1:
+                    if (TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty && TxtC.Text != string.Empty &&
+               TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty)
+                    {
+
+                        int semilla = Convert.ToInt32(TxtSemilla.Text);
+                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
+                        int a = Convert.ToInt32(TxtA.Text);
+                        int c = Convert.ToInt32(TxtC.Text);
+                        int m = Convert.ToInt32(TxtM.Text);
+                        generarTabla(GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(cantidad, semilla, a, c, m));
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Por favor, ingrese valores en los campos de numeros a generar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    break;
+
+                case 2:
+                    if (TxtCantidad.Text != string.Empty)
+                    {
+                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
+                        generarTabla(GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(cantidad));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Por favor, ingrese valores en los campos de numeros a generar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    break;
             }
         }
 
@@ -77,13 +113,27 @@ namespace TP1SIM2021.Forms
                 {
                     if (CmbMetodos.SelectedIndex ==2)
                     {
-                        //TxtSemilla.Enabled = false;
+                        TxtSemilla.Enabled = false;
                         TxtA.Enabled = false;
                         TxtC.Enabled = false;
                         TxtM.Enabled = false;
                     }
                 }
             }
+        }
+        private void generarTabla(List<double> list)
+        {
+            DataTable tabla = new DataTable();
+
+            tabla.Columns.Add("N°");
+            tabla.Columns.Add("Valor");
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                tabla.Rows.Add(i, list[i]);
+            }
+
+            GrdNumeros.DataSource = tabla;
         }
     }
 }
