@@ -31,7 +31,7 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.label6 = new System.Windows.Forms.Label();
-      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.TxtCantidad = new System.Windows.Forms.TextBox();
       this.GrdNumeros = new System.Windows.Forms.DataGridView();
       this.TxtM = new System.Windows.Forms.TextBox();
       this.TxtC = new System.Windows.Forms.TextBox();
@@ -58,16 +58,17 @@
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
       this.tabControl1.Controls.Add(this.tabPage3);
+      this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
       this.tabControl1.Location = new System.Drawing.Point(2, 3);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(794, 444);
+      this.tabControl1.Size = new System.Drawing.Size(811, 459);
       this.tabControl1.TabIndex = 0;
       // 
       // tabPage1
       // 
       this.tabPage1.Controls.Add(this.label6);
-      this.tabPage1.Controls.Add(this.textBox1);
+      this.tabPage1.Controls.Add(this.TxtCantidad);
       this.tabPage1.Controls.Add(this.GrdNumeros);
       this.tabPage1.Controls.Add(this.TxtM);
       this.tabPage1.Controls.Add(this.TxtC);
@@ -80,10 +81,10 @@
       this.tabPage1.Controls.Add(this.TxtSemilla);
       this.tabPage1.Controls.Add(this.CmbMetodos);
       this.tabPage1.Controls.Add(this.label1);
-      this.tabPage1.Location = new System.Drawing.Point(4, 22);
+      this.tabPage1.Location = new System.Drawing.Point(4, 25);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(786, 418);
+      this.tabPage1.Size = new System.Drawing.Size(803, 430);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "tabPage1";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -98,40 +99,40 @@
       this.label6.TabIndex = 10;
       this.label6.Text = "Cantidad";
       // 
-      // textBox1
+      // TxtCantidad
       // 
-      this.textBox1.Location = new System.Drawing.Point(95, 203);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(143, 20);
-      this.textBox1.TabIndex = 9;
+      this.TxtCantidad.Location = new System.Drawing.Point(95, 203);
+      this.TxtCantidad.Name = "TxtCantidad";
+      this.TxtCantidad.Size = new System.Drawing.Size(175, 23);
+      this.TxtCantidad.TabIndex = 6;
       // 
       // GrdNumeros
       // 
       this.GrdNumeros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.GrdNumeros.Location = new System.Drawing.Point(310, 32);
+      this.GrdNumeros.Location = new System.Drawing.Point(310, 6);
       this.GrdNumeros.Name = "GrdNumeros";
-      this.GrdNumeros.Size = new System.Drawing.Size(460, 383);
+      this.GrdNumeros.Size = new System.Drawing.Size(460, 409);
       this.GrdNumeros.TabIndex = 8;
       // 
       // TxtM
       // 
       this.TxtM.Location = new System.Drawing.Point(95, 169);
       this.TxtM.Name = "TxtM";
-      this.TxtM.Size = new System.Drawing.Size(143, 20);
+      this.TxtM.Size = new System.Drawing.Size(175, 23);
       this.TxtM.TabIndex = 5;
       // 
       // TxtC
       // 
       this.TxtC.Location = new System.Drawing.Point(95, 135);
       this.TxtC.Name = "TxtC";
-      this.TxtC.Size = new System.Drawing.Size(143, 20);
+      this.TxtC.Size = new System.Drawing.Size(175, 23);
       this.TxtC.TabIndex = 4;
       // 
       // TxtA
       // 
       this.TxtA.Location = new System.Drawing.Point(95, 101);
       this.TxtA.Name = "TxtA";
-      this.TxtA.Size = new System.Drawing.Size(143, 20);
+      this.TxtA.Size = new System.Drawing.Size(175, 23);
       this.TxtA.TabIndex = 3;
       // 
       // label5
@@ -178,8 +179,8 @@
       // 
       this.BtnGenerar.Location = new System.Drawing.Point(95, 237);
       this.BtnGenerar.Name = "BtnGenerar";
-      this.BtnGenerar.Size = new System.Drawing.Size(143, 23);
-      this.BtnGenerar.TabIndex = 6;
+      this.BtnGenerar.Size = new System.Drawing.Size(175, 23);
+      this.BtnGenerar.TabIndex = 7;
       this.BtnGenerar.Text = "Generar";
       this.BtnGenerar.UseVisualStyleBackColor = true;
       this.BtnGenerar.Click += new System.EventHandler(this.BtnGenerar_Click);
@@ -188,7 +189,7 @@
       // 
       this.TxtSemilla.Location = new System.Drawing.Point(95, 67);
       this.TxtSemilla.Name = "TxtSemilla";
-      this.TxtSemilla.Size = new System.Drawing.Size(143, 20);
+      this.TxtSemilla.Size = new System.Drawing.Size(175, 23);
       this.TxtSemilla.TabIndex = 2;
       // 
       // CmbMetodos
@@ -197,8 +198,9 @@
       this.CmbMetodos.FormattingEnabled = true;
       this.CmbMetodos.Location = new System.Drawing.Point(95, 32);
       this.CmbMetodos.Name = "CmbMetodos";
-      this.CmbMetodos.Size = new System.Drawing.Size(143, 21);
+      this.CmbMetodos.Size = new System.Drawing.Size(175, 24);
       this.CmbMetodos.TabIndex = 1;
+      this.CmbMetodos.SelectedIndexChanged += new System.EventHandler(this.CmbMetodos_SelectedIndexChanged);
       // 
       // label1
       // 
@@ -246,7 +248,7 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(800, 450);
+      this.ClientSize = new System.Drawing.Size(825, 464);
       this.Controls.Add(this.tabControl1);
       this.Name = "FrmNumPseudoaleatorios";
       this.Text = "TP1";
@@ -280,6 +282,6 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.DataGridView GrdNumeros;
     private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.TextBox TxtCantidad;
   }
 }
