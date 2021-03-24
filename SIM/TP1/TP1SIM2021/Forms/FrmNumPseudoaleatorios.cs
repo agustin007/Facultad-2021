@@ -130,11 +130,66 @@ namespace TP1SIM2021.Forms
 
             for (int i = 0; i < list.Count; i++)
             {
-                tabla.Rows.Add(i, list[i]);
+                tabla.Rows.Add(i+1, list[i]);
             }
 
             GrdNumeros.DataSource = tabla;
         }
+
+    private void BtnLimpiar_Click(object sender, EventArgs e)
+    {
+      TxtA.Clear();
+      TxtC.Clear();
+      TxtCantidad.Clear();
+      TxtM.Clear();
+      TxtSemilla.Clear();
+      TxtSemilla.Focus();
     }
+    // Validaciones que no permiten ingresar letras o espacios en los campos
+    private void TxtSemilla_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+      {
+        e.Handled = true;
+      }
+    }
+
+    private void TxtA_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+      {
+        e.Handled = true;
+      }
+    }
+
+    private void TxtC_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+      {
+        e.Handled = true;
+      }
+    }
+
+    private void TxtM_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+      {
+        e.Handled = true;
+      }
+    }
+
+    private void TxtCantidad_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+      {
+        e.Handled = true;
+      }
+    }
+  }
 }
 
