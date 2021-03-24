@@ -58,11 +58,12 @@
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
       this.tabControl1.Controls.Add(this.tabPage3);
+      this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-      this.tabControl1.Location = new System.Drawing.Point(2, 3);
+      this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(811, 459);
+      this.tabControl1.Size = new System.Drawing.Size(825, 464);
       this.tabControl1.TabIndex = 0;
       // 
       // tabPage1
@@ -84,7 +85,7 @@
       this.tabPage1.Location = new System.Drawing.Point(4, 25);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(803, 430);
+      this.tabPage1.Size = new System.Drawing.Size(817, 435);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "tabPage1";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -109,9 +110,10 @@
       // GrdNumeros
       // 
       this.GrdNumeros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.GrdNumeros.Location = new System.Drawing.Point(310, 6);
+      this.GrdNumeros.Dock = System.Windows.Forms.DockStyle.Right;
+      this.GrdNumeros.Location = new System.Drawing.Point(276, 3);
       this.GrdNumeros.Name = "GrdNumeros";
-      this.GrdNumeros.Size = new System.Drawing.Size(460, 409);
+      this.GrdNumeros.Size = new System.Drawing.Size(538, 429);
       this.GrdNumeros.TabIndex = 8;
       // 
       // TxtM
@@ -214,10 +216,10 @@
       // 
       // tabPage2
       // 
-      this.tabPage2.Location = new System.Drawing.Point(4, 22);
+      this.tabPage2.Location = new System.Drawing.Point(4, 25);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(786, 418);
+      this.tabPage2.Size = new System.Drawing.Size(803, 430);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "tabPage2";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -225,10 +227,10 @@
       // tabPage3
       // 
       this.tabPage3.Controls.Add(this.TxtIntregantes);
-      this.tabPage3.Location = new System.Drawing.Point(4, 22);
+      this.tabPage3.Location = new System.Drawing.Point(4, 25);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3.Size = new System.Drawing.Size(786, 418);
+      this.tabPage3.Size = new System.Drawing.Size(803, 430);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "tabPage3";
       this.tabPage3.UseVisualStyleBackColor = true;
@@ -248,6 +250,7 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(825, 464);
       this.Controls.Add(this.tabControl1);
       this.Name = "FrmNumPseudoaleatorios";
