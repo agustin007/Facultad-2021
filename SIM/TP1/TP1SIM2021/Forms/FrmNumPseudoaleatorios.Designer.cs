@@ -48,9 +48,15 @@
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.tabPage3 = new System.Windows.Forms.TabPage();
       this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
+      this.Btn_Histograma = new System.Windows.Forms.Button();
+      this.label7 = new System.Windows.Forms.Label();
+      this.CmbIntervalos = new System.Windows.Forms.ComboBox();
+      this.BtnChiCuadrado = new System.Windows.Forms.Button();
+      this.BtnTestKs = new System.Windows.Forms.Button();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.GrdNumeros)).BeginInit();
+      this.tabPage2.SuspendLayout();
       this.tabPage3.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -235,6 +241,11 @@
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.BtnTestKs);
+      this.tabPage2.Controls.Add(this.BtnChiCuadrado);
+      this.tabPage2.Controls.Add(this.CmbIntervalos);
+      this.tabPage2.Controls.Add(this.label7);
+      this.tabPage2.Controls.Add(this.Btn_Histograma);
       this.tabPage2.Location = new System.Drawing.Point(4, 25);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -265,6 +276,51 @@
       this.TxtIntregantes.Text = "Agustín Carranza 67298, Marcos Mariatti 70707, Erik Martinez 66697, Chiara Masset" +
     "ti 74184, Gonzalo Medrano 72412, Facundo Mondati 74284";
       // 
+      // Btn_Histograma
+      // 
+      this.Btn_Histograma.Location = new System.Drawing.Point(240, 35);
+      this.Btn_Histograma.Name = "Btn_Histograma";
+      this.Btn_Histograma.Size = new System.Drawing.Size(177, 30);
+      this.Btn_Histograma.TabIndex = 0;
+      this.Btn_Histograma.Text = "Generar Histograma";
+      this.Btn_Histograma.UseVisualStyleBackColor = true;
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(24, 42);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(69, 17);
+      this.label7.TabIndex = 1;
+      this.label7.Text = "Intervalos";
+      // 
+      // CmbIntervalos
+      // 
+      this.CmbIntervalos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.CmbIntervalos.FormattingEnabled = true;
+      this.CmbIntervalos.Location = new System.Drawing.Point(113, 41);
+      this.CmbIntervalos.Name = "CmbIntervalos";
+      this.CmbIntervalos.Size = new System.Drawing.Size(121, 24);
+      this.CmbIntervalos.TabIndex = 2;
+      // 
+      // BtnChiCuadrado
+      // 
+      this.BtnChiCuadrado.Location = new System.Drawing.Point(423, 35);
+      this.BtnChiCuadrado.Name = "BtnChiCuadrado";
+      this.BtnChiCuadrado.Size = new System.Drawing.Size(177, 30);
+      this.BtnChiCuadrado.TabIndex = 3;
+      this.BtnChiCuadrado.Text = "Chi Cuadrado";
+      this.BtnChiCuadrado.UseVisualStyleBackColor = true;
+      // 
+      // BtnTestKs
+      // 
+      this.BtnTestKs.Location = new System.Drawing.Point(606, 35);
+      this.BtnTestKs.Name = "BtnTestKs";
+      this.BtnTestKs.Size = new System.Drawing.Size(177, 30);
+      this.BtnTestKs.TabIndex = 4;
+      this.BtnTestKs.Text = "Test KS";
+      this.BtnTestKs.UseVisualStyleBackColor = true;
+      // 
       // FrmNumPseudoaleatorios
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,6 +334,8 @@
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.GrdNumeros)).EndInit();
+      this.tabPage2.ResumeLayout(false);
+      this.tabPage2.PerformLayout();
       this.tabPage3.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -305,5 +363,10 @@
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.TextBox TxtCantidad;
     private System.Windows.Forms.Button BtnLimpiar;
+    private System.Windows.Forms.Button BtnTestKs;
+    private System.Windows.Forms.Button BtnChiCuadrado;
+    private System.Windows.Forms.ComboBox CmbIntervalos;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.Button Btn_Histograma;
   }
 }

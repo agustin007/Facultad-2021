@@ -53,6 +53,14 @@ namespace TP1SIM2021.Clases
             }
             return numerosPseudoaleatorios;
         }
+        
+        public void GenerarHistograma(int intervalos, List<int> numerosAleatorios)
+        {
+          var histograma = new Histogram(intervalos, 0, 1);
+         
+          
+         
+        }
    
     }
 }

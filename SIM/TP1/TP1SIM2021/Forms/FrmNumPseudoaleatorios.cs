@@ -29,6 +29,8 @@ namespace TP1SIM2021.Forms
             new Metodo {Id=3, Descripcion = "Provisto por el lenguaje"}
         };
 
+        int[] numeroIntervalos = new int[4] { 5,10,15,20};
+
         private void FrmNumPseudoaleatorios_Load(object sender, EventArgs e)
         {
             this.tabPage1.Text = "Numeros Pseudoaleatorios";
@@ -38,6 +40,10 @@ namespace TP1SIM2021.Forms
             this.CmbMetodos.DisplayMember = "Descripcion";
             this.CmbMetodos.ValueMember = "Id";
             this.CmbMetodos.SelectedIndex = -1;
+            this.CmbIntervalos.DataSource = numeroIntervalos;
+            //this.CmbIntervalos.ValueMember = numeroIntervalos[CmbIntervalos.SelectedIndex].ToString();
+            this.CmbIntervalos.SelectedIndex = -1;
+
         }
 
         private void BtnGenerar_Click(object sender, EventArgs e)
@@ -192,6 +198,7 @@ namespace TP1SIM2021.Forms
         e.Handled = true;
       }
     }
+    
   }
 }
 
