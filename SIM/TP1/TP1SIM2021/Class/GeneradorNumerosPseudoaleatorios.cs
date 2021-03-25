@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CenterSpace.NMath.Core;
 
 namespace TP1SIM2021.Clases
 {
@@ -52,5 +53,6 @@ namespace TP1SIM2021.Clases
             }
             return numerosPseudoaleatorios;
         }
+   
     }
 }
