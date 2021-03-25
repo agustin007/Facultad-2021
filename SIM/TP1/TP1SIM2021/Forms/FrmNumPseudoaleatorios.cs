@@ -4,6 +4,7 @@ using System.Data;
 using System.Windows.Forms;
 using TP1SIM2021.Clases;
 
+
 namespace TP1SIM2021.Forms
 {
     public partial class FrmNumPseudoaleatorios : Form
@@ -94,7 +95,8 @@ namespace TP1SIM2021.Forms
                     break;
             }
         }
-
+    
+    
         private void CmbMetodos_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (CmbMetodos.SelectedIndex == 0)
