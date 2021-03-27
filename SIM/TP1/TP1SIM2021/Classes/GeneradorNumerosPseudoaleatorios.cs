@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CenterSpace.NMath.Core;
 
-namespace TP1SIM2021.Clases
+namespace TP1SIM2021.Classes
 {
 
     class GeneradorNumerosPseudoaleatorios
@@ -13,11 +13,10 @@ namespace TP1SIM2021.Clases
             List<double> numerosPseudoaleatorios = new List<double>();
             double numeroPseudoaleatorio;
             int xi = semilla;
-
             for (int index = 0; index < cantidad; index++)
             {
-                xi = (a * semilla + c) % m;
-                numeroPseudoaleatorio = xi / m;
+                xi = (a * xi + c) % m;
+                numeroPseudoaleatorio = (double)xi / m;
                 numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
             }
 
@@ -32,8 +31,8 @@ namespace TP1SIM2021.Clases
 
             for (int index = 0; index < cantidad; index++)
             {
-                xi = (a * semilla) % m;
-                numeroPseudoaleatorio = xi / m;
+                xi = (a * xi) % m;
+                numeroPseudoaleatorio = (double)xi / m;
                 numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
             }
 
@@ -52,14 +51,6 @@ namespace TP1SIM2021.Clases
                 numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
             }
             return numerosPseudoaleatorios;
-        }
-        
-        public void GenerarHistograma(int intervalos, List<int> numerosAleatorios)
-        {
-          var histograma = new Histogram(intervalos, 0, 1);
-         
-          
-         
         }
    
     }
