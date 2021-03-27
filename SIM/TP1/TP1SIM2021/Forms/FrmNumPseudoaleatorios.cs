@@ -110,65 +110,140 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerar_Click(object sender, EventArgs e)
         {
+            string semillaStr;
+            string aStr;
+            string cStr;
+            string mStr;
+            string cantidadStr;
+
             int metodoSeleccionado =CmbMetodos.SelectedIndex;
             switch (metodoSeleccionado)
             {
                 case 0:
-                    if (TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty && TxtC.Text != string.Empty &&
-                        TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty)
-                    {
-                        int semilla = Convert.ToInt32(TxtSemilla.Text);
-                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
-                        int a = Convert.ToInt32(TxtA.Text);
-                        int c = Convert.ToInt32(TxtC.Text);
-                        int m = Convert.ToInt32(TxtM.Text);
+                    semillaStr = TxtSemilla.Text;
+                    aStr = TxtA.Text;
+                    cStr = TxtC.Text;
+                    mStr = TxtM.Text;
+                    cantidadStr = TxtCantidad.Text;
 
-                        numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(cantidad, semilla, a, c, m);
-                        GenerarTabla(numerosPseudoaleatorios);
-
-                    }
-                    else
+                    if (semillaStr == string.Empty || Convert.ToInt32(semillaStr) < 0)
                     {
-                        MessageBox.Show("Por favor, ingrese los parámetros necesarios para poder generar los números pseudoaleatorios",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("La semilla tiene que ser mayor o igual a cero", "Error", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
+                    if (aStr == string.Empty || Convert.ToInt32(aStr) <= 0)
+                    {
+                        MessageBox.Show("La constante A tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (cStr == string.Empty || Convert.ToInt32(cStr) <= 0)
+                    {
+                        MessageBox.Show("La constante C tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (mStr == string.Empty || Convert.ToInt32(mStr) <= 0)
+                    {
+                        MessageBox.Show("La constante M tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (Convert.ToInt32(semillaStr) >= Convert.ToInt32(mStr))
+                    {
+                        MessageBox.Show("La semilla tiene que ser menor que la constante M", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (Convert.ToInt32(aStr) >= Convert.ToInt32(mStr))
+                    {
+                        MessageBox.Show("La constante A tiene que ser menor que la constante M", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (Convert.ToInt32(cStr) >= Convert.ToInt32(mStr))
+                    {
+                        MessageBox.Show("La constante C tiene que ser menor que la constante M", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (cantidadStr == string.Empty || Convert.ToInt32(cantidadStr) <= 0)
+                    {
+                        MessageBox.Show("La cantidad de números a generar tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(
+                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(cStr), 
+                        Convert.ToInt32(mStr));
+                    GenerarTabla(numerosPseudoaleatorios);
+
                     break;
 
                 case 1:
-                    if (TxtSemilla.Text != string.Empty && TxtA.Text != string.Empty && TxtC.Text != string.Empty &&
-                        TxtM.Text != string.Empty && TxtCantidad.Text != string.Empty)
+                    semillaStr = TxtSemilla.Text;
+                    aStr = TxtA.Text;
+                    mStr = TxtM.Text;
+                    cantidadStr = TxtCantidad.Text;
+
+                    if (semillaStr == string.Empty || Convert.ToInt32(semillaStr) < 0)
                     {
-
-                        int semilla = Convert.ToInt32(TxtSemilla.Text);
-                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
-                        int a = Convert.ToInt32(TxtA.Text);
-                        int c = Convert.ToInt32(TxtC.Text);
-                        int m = Convert.ToInt32(TxtM.Text);
-
-                        numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialMultiplicativo(cantidad, semilla, a, m);
-                        GenerarTabla(numerosPseudoaleatorios);
-
+                        MessageBox.Show("La semilla tiene que ser mayor o igual a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
-                    else
+                    if (aStr == string.Empty || Convert.ToInt32(aStr) <= 0)
                     {
-                        MessageBox.Show("Por favor, ingrese los parámetros necesarios para poder generar los números pseudoaleatorios",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("La constante A tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
+                    if (mStr == string.Empty || Convert.ToInt32(mStr) <= 0)
+                    {
+                        MessageBox.Show("La constante M tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (Convert.ToInt32(semillaStr) >= Convert.ToInt32(mStr))
+                    {
+                        MessageBox.Show("La semilla tiene que ser menor que la constante M", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (Convert.ToInt32(aStr) >= Convert.ToInt32(mStr))
+                    {
+                        MessageBox.Show("La constante A tiene que ser menor que la constante M", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (cantidadStr == string.Empty || Convert.ToInt32(cantidadStr) <= 0)
+                    {
+                        MessageBox.Show("La cantidad de números a generar tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialMultiplicativo(
+                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(mStr));
+                    GenerarTabla(numerosPseudoaleatorios);
+
                     break;
 
                 case 2:
-                    if (TxtCantidad.Text != string.Empty)
+                    cantidadStr = TxtCantidad.Text;
+                    if (cantidadStr == string.Empty || Convert.ToInt32(cantidadStr) <= 0)
                     {
-                        int cantidad = Convert.ToInt32(TxtCantidad.Text);
+                        MessageBox.Show("La cantidad de números a generar tiene que ser mayor a cero", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
-                        numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(cantidad);
-                        GenerarTabla(numerosPseudoaleatorios);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Por favor, ingrese los parámetros necesarios para poder generar los números pseudoaleatorios",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(
+                        Convert.ToInt32(cantidadStr));
+                    GenerarTabla(numerosPseudoaleatorios);
+
                     break;
             }
         }
