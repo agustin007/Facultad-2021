@@ -41,6 +41,14 @@ namespace TP1SIM2021.Forms
             CmbMetodos.ValueMember = "Valor";
             CmbMetodos.SelectedIndex = 0;
 
+            List<ItemComboBox> intervalos = new List<ItemComboBox>();
+            intervalos.Add(new ItemComboBox("10", 10));
+            intervalos.Add(new ItemComboBox("15", 15));
+            intervalos.Add(new ItemComboBox("20", 20));
+            CmbIntervalosGrafico.DataSource = intervalos;
+            CmbIntervalosGrafico.DisplayMember = "Nombre";
+            CmbIntervalosGrafico.ValueMember = "Valor";
+
             LimpiarCampos();
             LimpiarGrilla();
 
