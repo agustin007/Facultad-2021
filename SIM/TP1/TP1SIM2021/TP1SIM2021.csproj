@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Classes\GeneradorNumerosPseudoaleatorios.cs" />
     <Compile Include="Classes\ItemComboBox.cs" />
+    <Compile Include="Controllers\ControllerNumPseudoaleatorios.cs" />
     <Compile Include="Forms\FrmNumPseudoaleatorios.cs">
       <SubType>Form</SubType>
     </Compile>

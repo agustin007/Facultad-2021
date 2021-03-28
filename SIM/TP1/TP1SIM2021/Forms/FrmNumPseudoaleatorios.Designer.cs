@@ -29,42 +29,48 @@
     private void InitializeComponent()
     {
             this.TabPaginas = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.TabPagina1 = new System.Windows.Forms.TabPage();
             this.BtnLimpiar = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
+            this.LblCantidad = new System.Windows.Forms.Label();
             this.TxtCantidad = new System.Windows.Forms.TextBox();
             this.GrdNumerosPseudoaleatorios = new System.Windows.Forms.DataGridView();
             this.TxtM = new System.Windows.Forms.TextBox();
             this.TxtC = new System.Windows.Forms.TextBox();
             this.TxtA = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.BtnGenerar = new System.Windows.Forms.Button();
+            this.LblM = new System.Windows.Forms.Label();
+            this.LblC = new System.Windows.Forms.Label();
+            this.LblA = new System.Windows.Forms.Label();
+            this.LblSemilla = new System.Windows.Forms.Label();
+            this.BtnGenerarNumeros = new System.Windows.Forms.Button();
             this.TxtSemilla = new System.Windows.Forms.TextBox();
             this.CmbMetodos = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.BtnTestKs = new System.Windows.Forms.Button();
-            this.BtnChiCuadrado = new System.Windows.Forms.Button();
-            this.CmbIntervalos = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.Btn_Histograma = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.LblMetodo = new System.Windows.Forms.Label();
+            this.TabPagina2 = new System.Windows.Forms.TabPage();
+            this.CmbIntervalosGrafico = new System.Windows.Forms.ComboBox();
+            this.LblIntervalosGrafico = new System.Windows.Forms.Label();
+            this.BtnGenerarGrafico = new System.Windows.Forms.Button();
+            this.TabPagina3 = new System.Windows.Forms.TabPage();
+            this.GrdTestChiCuadrado = new System.Windows.Forms.DataGridView();
+            this.LblIntervalosTest = new System.Windows.Forms.Label();
+            this.CmbIntervalosTest = new System.Windows.Forms.ComboBox();
+            this.BtnTestChiCuadrado = new System.Windows.Forms.Button();
+            this.TabPagina4 = new System.Windows.Forms.TabPage();
             this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
             this.TabPaginas.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.TabPagina1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.TabPagina2.SuspendLayout();
+            this.TabPagina3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GrdTestChiCuadrado)).BeginInit();
+            this.TabPagina4.SuspendLayout();
             this.SuspendLayout();
             // 
             // TabPaginas
             // 
-            this.TabPaginas.Controls.Add(this.tabPage1);
-            this.TabPaginas.Controls.Add(this.tabPage2);
-            this.TabPaginas.Controls.Add(this.tabPage3);
+            this.TabPaginas.Controls.Add(this.TabPagina1);
+            this.TabPaginas.Controls.Add(this.TabPagina2);
+            this.TabPaginas.Controls.Add(this.TabPagina3);
+            this.TabPaginas.Controls.Add(this.TabPagina4);
             this.TabPaginas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TabPaginas.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.TabPaginas.Location = new System.Drawing.Point(0, 0);
@@ -74,30 +80,29 @@
             this.TabPaginas.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.TabPaginas.TabIndex = 0;
             // 
-            // tabPage1
+            // TabPagina1
             // 
-            this.tabPage1.Controls.Add(this.BtnLimpiar);
-            this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.TxtCantidad);
-            this.tabPage1.Controls.Add(this.GrdNumerosPseudoaleatorios);
-            this.tabPage1.Controls.Add(this.TxtM);
-            this.tabPage1.Controls.Add(this.TxtC);
-            this.tabPage1.Controls.Add(this.TxtA);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.BtnGenerar);
-            this.tabPage1.Controls.Add(this.TxtSemilla);
-            this.tabPage1.Controls.Add(this.CmbMetodos);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(817, 435);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.TabPagina1.Controls.Add(this.BtnLimpiar);
+            this.TabPagina1.Controls.Add(this.LblCantidad);
+            this.TabPagina1.Controls.Add(this.TxtCantidad);
+            this.TabPagina1.Controls.Add(this.GrdNumerosPseudoaleatorios);
+            this.TabPagina1.Controls.Add(this.TxtM);
+            this.TabPagina1.Controls.Add(this.TxtC);
+            this.TabPagina1.Controls.Add(this.TxtA);
+            this.TabPagina1.Controls.Add(this.LblM);
+            this.TabPagina1.Controls.Add(this.LblC);
+            this.TabPagina1.Controls.Add(this.LblA);
+            this.TabPagina1.Controls.Add(this.LblSemilla);
+            this.TabPagina1.Controls.Add(this.BtnGenerarNumeros);
+            this.TabPagina1.Controls.Add(this.TxtSemilla);
+            this.TabPagina1.Controls.Add(this.CmbMetodos);
+            this.TabPagina1.Controls.Add(this.LblMetodo);
+            this.TabPagina1.Location = new System.Drawing.Point(4, 25);
+            this.TabPagina1.Name = "TabPagina1";
+            this.TabPagina1.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPagina1.Size = new System.Drawing.Size(817, 435);
+            this.TabPagina1.TabIndex = 0;
+            this.TabPagina1.UseVisualStyleBackColor = true;
             // 
             // BtnLimpiar
             // 
@@ -109,15 +114,15 @@
             this.BtnLimpiar.UseVisualStyleBackColor = true;
             this.BtnLimpiar.Click += new System.EventHandler(this.BtnLimpiar_Click);
             // 
-            // label6
+            // LblCantidad
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label6.Location = new System.Drawing.Point(19, 201);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(64, 17);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Cantidad";
+            this.LblCantidad.AutoSize = true;
+            this.LblCantidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblCantidad.Location = new System.Drawing.Point(19, 201);
+            this.LblCantidad.Name = "LblCantidad";
+            this.LblCantidad.Size = new System.Drawing.Size(64, 17);
+            this.LblCantidad.TabIndex = 10;
+            this.LblCantidad.Text = "Cantidad";
             // 
             // TxtCantidad
             // 
@@ -161,55 +166,55 @@
             this.TxtA.TabIndex = 3;
             this.TxtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtA_KeyPress);
             // 
-            // label5
+            // LblM
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label5.Location = new System.Drawing.Point(19, 168);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(19, 17);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "m";
+            this.LblM.AutoSize = true;
+            this.LblM.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblM.Location = new System.Drawing.Point(19, 168);
+            this.LblM.Name = "LblM";
+            this.LblM.Size = new System.Drawing.Size(19, 17);
+            this.LblM.TabIndex = 7;
+            this.LblM.Text = "m";
             // 
-            // label4
+            // LblC
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label4.Location = new System.Drawing.Point(19, 135);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(15, 17);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "c";
+            this.LblC.AutoSize = true;
+            this.LblC.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblC.Location = new System.Drawing.Point(19, 135);
+            this.LblC.Name = "LblC";
+            this.LblC.Size = new System.Drawing.Size(15, 17);
+            this.LblC.TabIndex = 6;
+            this.LblC.Text = "c";
             // 
-            // label3
+            // LblA
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(19, 102);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(16, 17);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "a";
+            this.LblA.AutoSize = true;
+            this.LblA.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblA.Location = new System.Drawing.Point(19, 102);
+            this.LblA.Name = "LblA";
+            this.LblA.Size = new System.Drawing.Size(16, 17);
+            this.LblA.TabIndex = 5;
+            this.LblA.Text = "a";
             // 
-            // label2
+            // LblSemilla
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(19, 69);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Semilla";
+            this.LblSemilla.AutoSize = true;
+            this.LblSemilla.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblSemilla.Location = new System.Drawing.Point(19, 69);
+            this.LblSemilla.Name = "LblSemilla";
+            this.LblSemilla.Size = new System.Drawing.Size(53, 17);
+            this.LblSemilla.TabIndex = 4;
+            this.LblSemilla.Text = "Semilla";
             // 
-            // BtnGenerar
+            // BtnGenerarNumeros
             // 
-            this.BtnGenerar.Location = new System.Drawing.Point(95, 227);
-            this.BtnGenerar.Name = "BtnGenerar";
-            this.BtnGenerar.Size = new System.Drawing.Size(175, 26);
-            this.BtnGenerar.TabIndex = 7;
-            this.BtnGenerar.Text = "Generar";
-            this.BtnGenerar.UseVisualStyleBackColor = true;
-            this.BtnGenerar.Click += new System.EventHandler(this.BtnGenerar_Click);
+            this.BtnGenerarNumeros.Location = new System.Drawing.Point(95, 227);
+            this.BtnGenerarNumeros.Name = "BtnGenerarNumeros";
+            this.BtnGenerarNumeros.Size = new System.Drawing.Size(175, 26);
+            this.BtnGenerarNumeros.TabIndex = 7;
+            this.BtnGenerarNumeros.Text = "Generar números";
+            this.BtnGenerarNumeros.UseVisualStyleBackColor = true;
+            this.BtnGenerarNumeros.Click += new System.EventHandler(this.BtnGenerar_Click);
             // 
             // TxtSemilla
             // 
@@ -229,86 +234,114 @@
             this.CmbMetodos.TabIndex = 1;
             this.CmbMetodos.SelectedIndexChanged += new System.EventHandler(this.CmbMetodos_SelectedIndexChanged);
             // 
-            // label1
+            // LblMetodo
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(19, 35);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 17);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Metodo";
+            this.LblMetodo.AutoSize = true;
+            this.LblMetodo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.LblMetodo.Location = new System.Drawing.Point(19, 35);
+            this.LblMetodo.Name = "LblMetodo";
+            this.LblMetodo.Size = new System.Drawing.Size(55, 17);
+            this.LblMetodo.TabIndex = 0;
+            this.LblMetodo.Text = "Metodo";
             // 
-            // tabPage2
+            // TabPagina2
             // 
-            this.tabPage2.Controls.Add(this.BtnTestKs);
-            this.tabPage2.Controls.Add(this.BtnChiCuadrado);
-            this.tabPage2.Controls.Add(this.CmbIntervalos);
-            this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.Btn_Histograma);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(817, 435);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.TabPagina2.Controls.Add(this.CmbIntervalosGrafico);
+            this.TabPagina2.Controls.Add(this.LblIntervalosGrafico);
+            this.TabPagina2.Controls.Add(this.BtnGenerarGrafico);
+            this.TabPagina2.Location = new System.Drawing.Point(4, 25);
+            this.TabPagina2.Name = "TabPagina2";
+            this.TabPagina2.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPagina2.Size = new System.Drawing.Size(817, 435);
+            this.TabPagina2.TabIndex = 1;
+            this.TabPagina2.UseVisualStyleBackColor = true;
             // 
-            // BtnTestKs
+            // CmbIntervalosGrafico
             // 
-            this.BtnTestKs.Location = new System.Drawing.Point(606, 35);
-            this.BtnTestKs.Name = "BtnTestKs";
-            this.BtnTestKs.Size = new System.Drawing.Size(177, 30);
-            this.BtnTestKs.TabIndex = 4;
-            this.BtnTestKs.Text = "Test KS";
-            this.BtnTestKs.UseVisualStyleBackColor = true;
+            this.CmbIntervalosGrafico.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CmbIntervalosGrafico.FormattingEnabled = true;
+            this.CmbIntervalosGrafico.Location = new System.Drawing.Point(95, 32);
+            this.CmbIntervalosGrafico.Name = "CmbIntervalosGrafico";
+            this.CmbIntervalosGrafico.Size = new System.Drawing.Size(175, 24);
+            this.CmbIntervalosGrafico.TabIndex = 2;
             // 
-            // BtnChiCuadrado
+            // LblIntervalosGrafico
             // 
-            this.BtnChiCuadrado.Location = new System.Drawing.Point(423, 35);
-            this.BtnChiCuadrado.Name = "BtnChiCuadrado";
-            this.BtnChiCuadrado.Size = new System.Drawing.Size(177, 30);
-            this.BtnChiCuadrado.TabIndex = 3;
-            this.BtnChiCuadrado.Text = "Chi Cuadrado";
-            this.BtnChiCuadrado.UseVisualStyleBackColor = true;
+            this.LblIntervalosGrafico.AutoSize = true;
+            this.LblIntervalosGrafico.Location = new System.Drawing.Point(20, 35);
+            this.LblIntervalosGrafico.Name = "LblIntervalosGrafico";
+            this.LblIntervalosGrafico.Size = new System.Drawing.Size(69, 17);
+            this.LblIntervalosGrafico.TabIndex = 1;
+            this.LblIntervalosGrafico.Text = "Intervalos";
             // 
-            // CmbIntervalos
+            // BtnGenerarGrafico
             // 
-            this.CmbIntervalos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CmbIntervalos.FormattingEnabled = true;
-            this.CmbIntervalos.Location = new System.Drawing.Point(113, 41);
-            this.CmbIntervalos.Name = "CmbIntervalos";
-            this.CmbIntervalos.Size = new System.Drawing.Size(121, 24);
-            this.CmbIntervalos.TabIndex = 2;
+            this.BtnGenerarGrafico.Location = new System.Drawing.Point(95, 62);
+            this.BtnGenerarGrafico.Name = "BtnGenerarGrafico";
+            this.BtnGenerarGrafico.Size = new System.Drawing.Size(177, 30);
+            this.BtnGenerarGrafico.TabIndex = 0;
+            this.BtnGenerarGrafico.Text = "Generar Gráfico";
+            this.BtnGenerarGrafico.UseVisualStyleBackColor = true;
             // 
-            // label7
+            // TabPagina3
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(26, 44);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(69, 17);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "Intervalos";
+            this.TabPagina3.Controls.Add(this.GrdTestChiCuadrado);
+            this.TabPagina3.Controls.Add(this.LblIntervalosTest);
+            this.TabPagina3.Controls.Add(this.CmbIntervalosTest);
+            this.TabPagina3.Controls.Add(this.BtnTestChiCuadrado);
+            this.TabPagina3.Location = new System.Drawing.Point(4, 25);
+            this.TabPagina3.Name = "TabPagina3";
+            this.TabPagina3.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPagina3.Size = new System.Drawing.Size(817, 435);
+            this.TabPagina3.TabIndex = 3;
+            this.TabPagina3.UseVisualStyleBackColor = true;
             // 
-            // Btn_Histograma
+            // GrdTestChiCuadrado
             // 
-            this.Btn_Histograma.Location = new System.Drawing.Point(240, 35);
-            this.Btn_Histograma.Name = "Btn_Histograma";
-            this.Btn_Histograma.Size = new System.Drawing.Size(177, 30);
-            this.Btn_Histograma.TabIndex = 0;
-            this.Btn_Histograma.Text = "Generar Histograma";
-            this.Btn_Histograma.UseVisualStyleBackColor = true;
+            this.GrdTestChiCuadrado.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.GrdTestChiCuadrado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.GrdTestChiCuadrado.Dock = System.Windows.Forms.DockStyle.Right;
+            this.GrdTestChiCuadrado.Location = new System.Drawing.Point(288, 3);
+            this.GrdTestChiCuadrado.Name = "GrdTestChiCuadrado";
+            this.GrdTestChiCuadrado.Size = new System.Drawing.Size(526, 429);
+            this.GrdTestChiCuadrado.TabIndex = 9;
             // 
-            // tabPage3
+            // LblIntervalosTest
             // 
-            this.tabPage3.Controls.Add(this.TxtIntregantes);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(817, 435);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.LblIntervalosTest.AutoSize = true;
+            this.LblIntervalosTest.Location = new System.Drawing.Point(23, 38);
+            this.LblIntervalosTest.Name = "LblIntervalosTest";
+            this.LblIntervalosTest.Size = new System.Drawing.Size(69, 17);
+            this.LblIntervalosTest.TabIndex = 6;
+            this.LblIntervalosTest.Text = "Intervalos";
+            // 
+            // CmbIntervalosTest
+            // 
+            this.CmbIntervalosTest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CmbIntervalosTest.FormattingEnabled = true;
+            this.CmbIntervalosTest.Location = new System.Drawing.Point(95, 32);
+            this.CmbIntervalosTest.Name = "CmbIntervalosTest";
+            this.CmbIntervalosTest.Size = new System.Drawing.Size(175, 24);
+            this.CmbIntervalosTest.TabIndex = 5;
+            // 
+            // BtnTestChiCuadrado
+            // 
+            this.BtnTestChiCuadrado.Location = new System.Drawing.Point(95, 62);
+            this.BtnTestChiCuadrado.Name = "BtnTestChiCuadrado";
+            this.BtnTestChiCuadrado.Size = new System.Drawing.Size(177, 30);
+            this.BtnTestChiCuadrado.TabIndex = 4;
+            this.BtnTestChiCuadrado.Text = "Test de Chi Cuadrado";
+            this.BtnTestChiCuadrado.UseVisualStyleBackColor = true;
+            // 
+            // TabPagina4
+            // 
+            this.TabPagina4.Controls.Add(this.TxtIntregantes);
+            this.TabPagina4.Location = new System.Drawing.Point(4, 25);
+            this.TabPagina4.Name = "TabPagina4";
+            this.TabPagina4.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPagina4.Size = new System.Drawing.Size(817, 435);
+            this.TabPagina4.TabIndex = 2;
+            this.TabPagina4.UseVisualStyleBackColor = true;
             // 
             // TxtIntregantes
             // 
@@ -331,42 +364,48 @@
             this.Text = "TP1";
             this.Load += new System.EventHandler(this.FrmNumPseudoaleatorios_Load);
             this.TabPaginas.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.TabPagina1.ResumeLayout(false);
+            this.TabPagina1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
+            this.TabPagina2.ResumeLayout(false);
+            this.TabPagina2.PerformLayout();
+            this.TabPagina3.ResumeLayout(false);
+            this.TabPagina3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GrdTestChiCuadrado)).EndInit();
+            this.TabPagina4.ResumeLayout(false);
             this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.TabControl TabPaginas;
-    private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.TabPage tabPage3;
-    private System.Windows.Forms.RichTextBox TxtIntregantes;
-    private System.Windows.Forms.TextBox TxtM;
-    private System.Windows.Forms.TextBox TxtC;
-    private System.Windows.Forms.TextBox TxtA;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Button BtnGenerar;
-    private System.Windows.Forms.TextBox TxtSemilla;
-    private System.Windows.Forms.ComboBox CmbMetodos;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.TextBox TxtCantidad;
-    private System.Windows.Forms.Button BtnLimpiar;
-    private System.Windows.Forms.Button BtnTestKs;
-    private System.Windows.Forms.Button BtnChiCuadrado;
-    private System.Windows.Forms.ComboBox CmbIntervalos;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.Button Btn_Histograma;
-  }
+        private System.Windows.Forms.TabControl TabPaginas;
+        private System.Windows.Forms.TabPage TabPagina1;
+        private System.Windows.Forms.TabPage TabPagina2;
+        private System.Windows.Forms.TabPage TabPagina4;
+        private System.Windows.Forms.RichTextBox TxtIntregantes;
+        private System.Windows.Forms.TextBox TxtM;
+        private System.Windows.Forms.TextBox TxtC;
+        private System.Windows.Forms.TextBox TxtA;
+        private System.Windows.Forms.Label LblM;
+        private System.Windows.Forms.Label LblC;
+        private System.Windows.Forms.Label LblA;
+        private System.Windows.Forms.Label LblSemilla;
+        private System.Windows.Forms.Button BtnGenerarNumeros;
+        private System.Windows.Forms.TextBox TxtSemilla;
+        private System.Windows.Forms.ComboBox CmbMetodos;
+        private System.Windows.Forms.Label LblMetodo;
+        private System.Windows.Forms.Label LblCantidad;
+        private System.Windows.Forms.TextBox TxtCantidad;
+        private System.Windows.Forms.Button BtnLimpiar;
+        private System.Windows.Forms.ComboBox CmbIntervalosGrafico;
+        private System.Windows.Forms.Label LblIntervalosGrafico;
+        private System.Windows.Forms.Button BtnGenerarGrafico;
+        private System.Windows.Forms.TabPage TabPagina3;
+        private System.Windows.Forms.Button BtnTestChiCuadrado;
+        private System.Windows.Forms.Label LblIntervalosTest;
+        private System.Windows.Forms.ComboBox CmbIntervalosTest;
+        private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
+        private System.Windows.Forms.DataGridView GrdTestChiCuadrado;
+    }
 }

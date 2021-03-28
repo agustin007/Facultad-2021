@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using TP1SIM2021.Controllers;
 using TP1SIM2021.Classes;
 
 
@@ -13,6 +14,7 @@ namespace TP1SIM2021.Forms
         /* Atributos*/
 
         List<double> numerosPseudoaleatorios;
+        ControllerNumPseudoaleatorios controlador;
 
         /* Load */
 
@@ -23,9 +25,9 @@ namespace TP1SIM2021.Forms
 
         private void FrmNumPseudoaleatorios_Load(object sender, EventArgs e)
         {
-            tabPage1.Text = "Numeros Pseudoaleatorios";
-            tabPage2.Text = "Grafico";
-            tabPage3.Text = "Integrantes";
+            TabPagina1.Text = "Numeros Pseudoaleatorios";
+            TabPagina2.Text = "Grafico";
+            TabPagina4.Text = "Integrantes";
 
             List<ItemComboBox> metodos = new List<ItemComboBox>();
             metodos.Add(new ItemComboBox("Congruencial lineal", 0));
@@ -76,6 +78,11 @@ namespace TP1SIM2021.Forms
             }
 
             GrdNumerosPseudoaleatorios.DataSource = tabla;
+        }
+
+        private void GenerarGrafico()
+        {
+
         }
 
         /* Eventos */
@@ -175,8 +182,8 @@ namespace TP1SIM2021.Forms
                         return;
                     }
 
-                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(
-                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(cStr), 
+                    numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoCongruencialLineal(
+                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(cStr),
                         Convert.ToInt32(mStr));
                     GenerarTabla(numerosPseudoaleatorios);
 
@@ -225,8 +232,8 @@ namespace TP1SIM2021.Forms
                         return;
                     }
 
-                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialMultiplicativo(
-                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(mStr));
+                    numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoCongruencialMultiplicativo(
+                       Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(mStr));
                     GenerarTabla(numerosPseudoaleatorios);
 
                     break;
@@ -240,7 +247,7 @@ namespace TP1SIM2021.Forms
                         return;
                     }
 
-                    numerosPseudoaleatorios = GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(
+                    numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoProvistoPorLenguaje(
                         Convert.ToInt32(cantidadStr));
                     GenerarTabla(numerosPseudoaleatorios);
 
