@@ -309,7 +309,7 @@
             // LblIntervalosTest
             // 
             this.LblIntervalosTest.AutoSize = true;
-            this.LblIntervalosTest.Location = new System.Drawing.Point(23, 38);
+            this.LblIntervalosTest.Location = new System.Drawing.Point(20, 35);
             this.LblIntervalosTest.Name = "LblIntervalosTest";
             this.LblIntervalosTest.Size = new System.Drawing.Size(69, 17);
             this.LblIntervalosTest.TabIndex = 6;
