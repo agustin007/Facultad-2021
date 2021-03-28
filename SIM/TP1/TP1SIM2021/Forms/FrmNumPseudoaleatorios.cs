@@ -90,6 +90,7 @@ namespace TP1SIM2021.Forms
 
         private void GenerarGrafico(List<double>numerosPseudoaleatorios)
         {
+<<<<<<< HEAD
             Tuple<double, double>[] TuplaIntervalos10  = {
                 Tuple.Create(0.0, 0.1),
                 Tuple.Create(0.1, 0.2),
@@ -107,6 +108,29 @@ namespace TP1SIM2021.Forms
             chartGraficoFrecuencias.Titles.Add("Histograma");
             chartGraficoFrecuencias.Palette = ChartColorPalette.Fire;
             for (int index = 0; index < TuplaIntervalos10.Length; index++)
+=======
+            chartGraficoFrecuencias.Titles.Clear();
+            chartGraficoFrecuencias.Series.Clear();
+
+            Tuple<double, double>[] TuplaIntervalos10  = {
+            Tuple.Create(0.0,0.1),
+            Tuple.Create(0.1,0.2),
+            Tuple.Create(0.2,0.3),
+            Tuple.Create(0.3,0.4),
+            Tuple.Create(0.4,0.5),
+            Tuple.Create(0.5,0.6),
+            Tuple.Create(0.6,0.7),
+            Tuple.Create(0.7,0.8),
+            Tuple.Create(0.8,0.9),
+            Tuple.Create(0.9,1.0)
+          };
+          int[] cantidadxIntervalo = new int[10];
+          chartGraficoFrecuencias.Titles.Add("Histograma");
+          chartGraficoFrecuencias.Palette = ChartColorPalette.Fire;
+          for(int index = 0; index < TuplaIntervalos10.Length; index++)
+          {
+            for(int indexJ=0;indexJ < numerosPseudoaleatorios.Count; indexJ++)
+>>>>>>> c5cd84be7468af50cc618e3fd0de62534a7d05a2
             {
                 for (int indexJ=0;indexJ < numerosPseudoaleatorios.Count; indexJ++)
                 {
