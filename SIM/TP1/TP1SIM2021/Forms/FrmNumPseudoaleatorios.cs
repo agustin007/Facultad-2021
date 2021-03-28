@@ -92,7 +92,10 @@ namespace TP1SIM2021.Forms
 
         private void GenerarGrafico(List<double>numerosPseudoaleatorios)
         {
-          Tuple<double, double>[] TuplaIntervalos10  = {
+            chartGraficoFrecuencias.Titles.Clear();
+            chartGraficoFrecuencias.Series.Clear();
+
+            Tuple<double, double>[] TuplaIntervalos10  = {
             Tuple.Create(0.0,0.1),
             Tuple.Create(0.1,0.2),
             Tuple.Create(0.2,0.3),
