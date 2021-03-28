@@ -28,6 +28,8 @@
     /// </summary>
     private void InitializeComponent()
     {
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       this.TabPaginas = new System.Windows.Forms.TabControl();
       this.TabPagina1 = new System.Windows.Forms.TabPage();
       this.BtnLimpiar = new System.Windows.Forms.Button();
@@ -56,6 +58,7 @@
       this.BtnTestChiCuadrado = new System.Windows.Forms.Button();
       this.TabPagina4 = new System.Windows.Forms.TabPage();
       this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
+      this.chartGraficoFrecuencias = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.TabPaginas.SuspendLayout();
       this.TabPagina1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).BeginInit();
@@ -63,6 +66,7 @@
       this.TabPagina3.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.GrdTestChiCuadrado)).BeginInit();
       this.TabPagina4.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.chartGraficoFrecuencias)).BeginInit();
       this.SuspendLayout();
       // 
       // TabPaginas
@@ -246,6 +250,7 @@
       // 
       // TabPagina2
       // 
+      this.TabPagina2.Controls.Add(this.chartGraficoFrecuencias);
       this.TabPagina2.Controls.Add(this.CmbIntervalosGrafico);
       this.TabPagina2.Controls.Add(this.LblIntervalosGrafico);
       this.TabPagina2.Controls.Add(this.BtnGenerarGrafico);
@@ -282,6 +287,7 @@
       this.BtnGenerarGrafico.TabIndex = 0;
       this.BtnGenerarGrafico.Text = "Generar Gráfico";
       this.BtnGenerarGrafico.UseVisualStyleBackColor = true;
+      this.BtnGenerarGrafico.Click += new System.EventHandler(this.BtnGenerarGrafico_Click);
       // 
       // TabPagina3
       // 
@@ -354,6 +360,21 @@
       this.TxtIntregantes.Text = "Agustín Carranza 67298, Marcos Mariatti 70707, Erik Martinez 66697, Chiara Masset" +
     "ti 74184, Gonzalo Medrano 72412, Facundo Mondati 74284";
       // 
+      // chartGraficoFrecuencias
+      // 
+      this.chartGraficoFrecuencias.BorderlineColor = System.Drawing.Color.Black;
+      this.chartGraficoFrecuencias.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+      chartArea2.Name = "ChartArea1";
+      this.chartGraficoFrecuencias.ChartAreas.Add(chartArea2);
+      this.chartGraficoFrecuencias.Dock = System.Windows.Forms.DockStyle.Bottom;
+      legend2.Name = "Legend1";
+      this.chartGraficoFrecuencias.Legends.Add(legend2);
+      this.chartGraficoFrecuencias.Location = new System.Drawing.Point(3, 98);
+      this.chartGraficoFrecuencias.Name = "chartGraficoFrecuencias";
+      this.chartGraficoFrecuencias.Size = new System.Drawing.Size(811, 334);
+      this.chartGraficoFrecuencias.TabIndex = 3;
+      this.chartGraficoFrecuencias.Text = "chartGrafico";
+      // 
       // FrmNumPseudoaleatorios
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -373,6 +394,7 @@
       this.TabPagina3.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.GrdTestChiCuadrado)).EndInit();
       this.TabPagina4.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.chartGraficoFrecuencias)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -407,5 +429,6 @@
         private System.Windows.Forms.ComboBox CmbAlfa;
         private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
         private System.Windows.Forms.DataGridView GrdTestChiCuadrado;
-    }
+    private System.Windows.Forms.DataVisualization.Charting.Chart chartGraficoFrecuencias;
+  }
 }
