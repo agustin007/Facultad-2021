@@ -1,6 +1,6 @@
 ﻿namespace TP1SIM2021.Forms
 {
-  partial class FrmNumPseudoaleatorios
+    partial class FrmNumPseudoaleatorios
     {
     /// <summary>
     /// Required designer variable.
@@ -13,11 +13,11 @@
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing)
     {
-      if (disposing && (components != null))
-      {
-        components.Dispose();
-      }
-      base.Dispose(disposing);
+        if (disposing && (components != null))
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
     #region Windows Form Designer generated code
@@ -429,6 +429,6 @@
         private System.Windows.Forms.ComboBox CmbAlfa;
         private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
         private System.Windows.Forms.DataGridView GrdTestChiCuadrado;
-    private System.Windows.Forms.DataVisualization.Charting.Chart chartGraficoFrecuencias;
-  }
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartGraficoFrecuencias;
+    }
 }
