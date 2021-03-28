@@ -366,7 +366,7 @@
             this.BtnTest.TabIndex = 4;
             this.BtnTest.Text = "Test de Chi Cuadrado";
             this.BtnTest.UseVisualStyleBackColor = true;
-            this.BtnTest.Click += new System.EventHandler(this.BtnTestChiCuadrado_Click);
+            this.BtnTest.Click += new System.EventHandler(this.BtnTest_Click);
             // 
             // TabPagina4
             // 

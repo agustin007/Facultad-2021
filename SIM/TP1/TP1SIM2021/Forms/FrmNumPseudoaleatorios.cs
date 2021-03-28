@@ -148,7 +148,7 @@ namespace TP1SIM2021.Forms
             }
         }
 
-        private void BtnGenerar_Click(object sender, EventArgs e)
+        private void BtnGenerarNumeros_Click(object sender, EventArgs e)
         {
             string semillaStr;
             string aStr;
@@ -297,13 +297,18 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerarGrafico_Click(object sender, EventArgs e)
         {
-          int numeroIntervalos =Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
-          GenerarGrafico( numeroIntervalos, numerosPseudoaleatorios);
+            int numeroIntervalos =Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
+            GenerarGrafico( numeroIntervalos, numerosPseudoaleatorios);
         }
 
-    /* Validaciones que no permiten ingresar letras o espacios en los campos */
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            
+        }
 
-    private void TxtSemilla_KeyPress(object sender, KeyPressEventArgs e)
+        /* Validaciones que no permiten ingresar letras o espacios en los campos */
+
+        private void TxtSemilla_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {

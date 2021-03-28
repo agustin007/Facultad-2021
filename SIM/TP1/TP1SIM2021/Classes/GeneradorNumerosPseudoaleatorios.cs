@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CenterSpace.NMath.Core;
 
 namespace TP1SIM2021.Classes
 {
