@@ -90,40 +90,29 @@ namespace TP1SIM2021.Forms
             GrdNumerosPseudoaleatorios.DataSource = tabla;
         }
 
-        private void GenerarGrafico(List<double>numerosPseudoaleatorios)
+        private void GenerarGrafico(int cantidadIntervalos, List<double>numerosPseudoaleatorios)
         {
             chartGraficoFrecuencias.Titles.Clear();
             chartGraficoFrecuencias.Series.Clear();
-
-            Tuple<double, double>[] TuplaIntervalos10  = {
-            Tuple.Create(0.0,0.1),
-            Tuple.Create(0.1,0.2),
-            Tuple.Create(0.2,0.3),
-            Tuple.Create(0.3,0.4),
-            Tuple.Create(0.4,0.5),
-            Tuple.Create(0.5,0.6),
-            Tuple.Create(0.6,0.7),
-            Tuple.Create(0.7,0.8),
-            Tuple.Create(0.8,0.9),
-            Tuple.Create(0.9,1.0)
-          };
-          int[] cantidadxIntervalo = new int[10];
+          List<(double, double)> intervalosGrafico = controlador.ObtenerRangoIntervalos(cantidadIntervalos,0.0,1.0);
+            
+          int[] cantidadxIntervalo = new int[cantidadIntervalos];
           chartGraficoFrecuencias.Titles.Add("Histograma");
           chartGraficoFrecuencias.Palette = ChartColorPalette.Fire;
-          for(int index = 0; index < TuplaIntervalos10.Length; index++)
+          for(int index = 0; index < intervalosGrafico.Count; index++)
           {
             for(int indexJ=0;indexJ < numerosPseudoaleatorios.Count; indexJ++)
             {
-              if(numerosPseudoaleatorios[indexJ] >= TuplaIntervalos10[index].Item1 && numerosPseudoaleatorios[indexJ] < TuplaIntervalos10[index].Item2)
+              if(numerosPseudoaleatorios[indexJ] >= intervalosGrafico[index].Item1 && numerosPseudoaleatorios[indexJ] < intervalosGrafico[index].Item2)
               {
                 cantidadxIntervalo[index] += 1;
 
               }
             }
           }
-          for(int index = 0; index < TuplaIntervalos10.Length; index++)
+          for(int index = 0; index < intervalosGrafico.Count; index++)
           {
-            Series serie = chartGraficoFrecuencias.Series.Add(TuplaIntervalos10[index].ToString());
+            Series serie = chartGraficoFrecuencias.Series.Add(intervalosGrafico[index].ToString());
             serie.Label = cantidadxIntervalo[index].ToString();
             serie.Points.Add(cantidadxIntervalo[index]);
           }
@@ -308,7 +297,8 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerarGrafico_Click(object sender, EventArgs e)
         {
-          GenerarGrafico(numerosPseudoaleatorios);
+          int numeroIntervalos =Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
+          GenerarGrafico( numeroIntervalos, numerosPseudoaleatorios);
         }
 
     /* Validaciones que no permiten ingresar letras o espacios en los campos */
