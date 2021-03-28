@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using TP1SIM2021.Controllers;
 using TP1SIM2021.Classes;
-using System.Windows.Forms.DataVisualization.Charting;
 
 
 namespace TP1SIM2021.Forms
@@ -52,9 +52,7 @@ namespace TP1SIM2021.Forms
 
             LimpiarCampos();
             LimpiarGrilla();
-
-           
-
+            
         }
 
         /* Métodos */
@@ -92,38 +90,39 @@ namespace TP1SIM2021.Forms
 
         private void GenerarGrafico(List<double>numerosPseudoaleatorios)
         {
-          Tuple<double, double>[] TuplaIntervalos10  = {
-            Tuple.Create(0.0,0.1),
-            Tuple.Create(0.1,0.2),
-            Tuple.Create(0.2,0.3),
-            Tuple.Create(0.3,0.4),
-            Tuple.Create(0.4,0.5),
-            Tuple.Create(0.5,0.6),
-            Tuple.Create(0.6,0.7),
-            Tuple.Create(0.7,0.8),
-            Tuple.Create(0.8,0.9),
-            Tuple.Create(0.9,1.0)
-          };
-          int[] cantidadxIntervalo = new int[10];
-          chartGraficoFrecuencias.Titles.Add("Histograma");
-          chartGraficoFrecuencias.Palette = ChartColorPalette.Fire;
-          for(int index = 0; index < TuplaIntervalos10.Length; index++)
-          {
-            for(int indexJ=0;indexJ < numerosPseudoaleatorios.Count; indexJ++)
-            {
-              if(numerosPseudoaleatorios[indexJ] >= TuplaIntervalos10[index].Item1 && numerosPseudoaleatorios[indexJ] < TuplaIntervalos10[index].Item2)
-              {
-                cantidadxIntervalo[index] += 1;
+            Tuple<double, double>[] TuplaIntervalos10  = {
+                Tuple.Create(0.0, 0.1),
+                Tuple.Create(0.1, 0.2),
+                Tuple.Create(0.2, 0.3),
+                Tuple.Create(0.3, 0.4),
+                Tuple.Create(0.4, 0.5),
+                Tuple.Create(0.5, 0.6),
+                Tuple.Create(0.6, 0.7),
+                Tuple.Create(0.7, 0.8),
+                Tuple.Create(0.8, 0.9),
+                Tuple.Create(0.9, 1.0)
+            };
 
-              }
+            int[] cantidadxIntervalo = new int[10];
+            chartGraficoFrecuencias.Titles.Add("Histograma");
+            chartGraficoFrecuencias.Palette = ChartColorPalette.Fire;
+            for (int index = 0; index < TuplaIntervalos10.Length; index++)
+            {
+                for (int indexJ=0;indexJ < numerosPseudoaleatorios.Count; indexJ++)
+                {
+                    if (numerosPseudoaleatorios[indexJ] >= TuplaIntervalos10[index].Item1 && 
+                        numerosPseudoaleatorios[indexJ] < TuplaIntervalos10[index].Item2)
+                    {
+                        cantidadxIntervalo[index] += 1;
+                    }
+                }
             }
-          }
-          for(int index = 0; index < TuplaIntervalos10.Length; index++)
-          {
-            Series serie = chartGraficoFrecuencias.Series.Add(TuplaIntervalos10[index].ToString());
-            serie.Label = cantidadxIntervalo[index].ToString();
-            serie.Points.Add(cantidadxIntervalo[index]);
-          }
+            for (int index = 0; index < TuplaIntervalos10.Length; index++)
+            {
+                Series serie = chartGraficoFrecuencias.Series.Add(TuplaIntervalos10[index].ToString());
+                serie.Label = cantidadxIntervalo[index].ToString();
+                serie.Points.Add(cantidadxIntervalo[index]);
+            }
         }
 
         /* Eventos */
@@ -156,7 +155,7 @@ namespace TP1SIM2021.Forms
             }
         }
 
-        private void BtnGenerar_Click(object sender, EventArgs e)
+        private void BtnGenerarNumeros_Click(object sender, EventArgs e)
         {
             string semillaStr;
             string aStr;
@@ -305,12 +304,17 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerarGrafico_Click(object sender, EventArgs e)
         {
-          GenerarGrafico(numerosPseudoaleatorios);
+            GenerarGrafico(numerosPseudoaleatorios);
         }
 
-    /* Validaciones que no permiten ingresar letras o espacios en los campos */
+        private void BtnTestChiCuadrado_Click(object sender, EventArgs e)
+        {
 
-    private void TxtSemilla_KeyPress(object sender, KeyPressEventArgs e)
+        }
+
+        /* Validaciones que no permiten ingresar letras o espacios en los campos */
+
+        private void TxtSemilla_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
@@ -350,6 +354,5 @@ namespace TP1SIM2021.Forms
             }
         }
 
-  
-  } 
+    } 
 }
