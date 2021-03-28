@@ -21,7 +21,7 @@ namespace TP1SIM2021.Controllers
             return GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(cantidad);
         }
 
-        public List<(double, double)> ObtenerRangoIntervalos(int cantidadIntervalos, double minimo, double maximo)
+        public List<(double, double)> ObtenerIntervalos(int cantidadIntervalos, double minimo, double maximo)
         {
             List<(double, double)> intervalos = new List<(double, double)>();
             double rangoTotal = maximo - minimo;
@@ -36,8 +36,12 @@ namespace TP1SIM2021.Controllers
                 }
                 limiteSuperior = limiteInferior + rangoIntervalos;
 
-                intervalos.Add((Math.Truncate(limiteInferior * 10000) / 10000,
-                    Math.Truncate(limiteSuperior * 10000) / 10000));
+
+                Console.WriteLine("#############################");
+                Console.WriteLine(Math.Round(limiteInferior, 2));
+                Console.WriteLine(Math.Round(limiteSuperior, 2));
+
+                intervalos.Add((Math.Round(limiteInferior, 2), Math.Round(limiteSuperior, 2)));
 
                 limiteInferior = limiteSuperior;
             }

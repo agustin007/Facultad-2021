@@ -16,7 +16,7 @@ namespace TP1SIM2021.Classes
             {
                 xi = (a * xi + c) % m;
                 numeroPseudoaleatorio = (double)xi / m;
-                numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
+                numerosPseudoaleatorios.Add(Math.Round(numeroPseudoaleatorio, 4));
             }
 
             return numerosPseudoaleatorios;
@@ -32,7 +32,7 @@ namespace TP1SIM2021.Classes
             {
                 xi = (a * xi) % m;
                 numeroPseudoaleatorio = (double)xi / m;
-                numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
+                numerosPseudoaleatorios.Add(Math.Round(numeroPseudoaleatorio, 4));
             }
 
             return numerosPseudoaleatorios;
@@ -47,7 +47,7 @@ namespace TP1SIM2021.Classes
             for (int index = 0; index < cantidad; index++)
             {
                 numeroPseudoaleatorio = random.NextDouble();
-                numerosPseudoaleatorios.Add(Math.Truncate(numeroPseudoaleatorio * 10000) / 10000);
+                numerosPseudoaleatorios.Add(Math.Round(numeroPseudoaleatorio, 4));
             }
             return numerosPseudoaleatorios;
         }

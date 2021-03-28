@@ -28,8 +28,8 @@
     /// </summary>
     private void InitializeComponent()
     {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.TabPaginas = new System.Windows.Forms.TabControl();
             this.TabPagina1 = new System.Windows.Forms.TabPage();
             this.BtnLimpiar = new System.Windows.Forms.Button();
@@ -53,14 +53,12 @@
             this.LblIntervalosGrafico = new System.Windows.Forms.Label();
             this.BtnGenerarGrafico = new System.Windows.Forms.Button();
             this.TabPagina3 = new System.Windows.Forms.TabPage();
+            this.LblIntervalosTest = new System.Windows.Forms.Label();
             this.CmbIntervalosTest = new System.Windows.Forms.ComboBox();
             this.GrdTest = new System.Windows.Forms.DataGridView();
-            this.LblAlfaTest = new System.Windows.Forms.Label();
-            this.CmbAlfaTest = new System.Windows.Forms.ComboBox();
             this.BtnTest = new System.Windows.Forms.Button();
             this.TabPagina4 = new System.Windows.Forms.TabPage();
             this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
-            this.LblIntervalosTest = new System.Windows.Forms.Label();
             this.TabPaginas.SuspendLayout();
             this.TabPagina1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).BeginInit();
@@ -267,14 +265,14 @@
             // 
             this.chartGraficoFrecuencias.BorderlineColor = System.Drawing.Color.Black;
             this.chartGraficoFrecuencias.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea2.Name = "ChartArea1";
-            this.chartGraficoFrecuencias.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea1";
+            this.chartGraficoFrecuencias.ChartAreas.Add(chartArea1);
             this.chartGraficoFrecuencias.Dock = System.Windows.Forms.DockStyle.Bottom;
-            legend2.Name = "Legend1";
-            this.chartGraficoFrecuencias.Legends.Add(legend2);
-            this.chartGraficoFrecuencias.Location = new System.Drawing.Point(3, 98);
+            legend1.Name = "Legend1";
+            this.chartGraficoFrecuencias.Legends.Add(legend1);
+            this.chartGraficoFrecuencias.Location = new System.Drawing.Point(3, 114);
             this.chartGraficoFrecuencias.Name = "chartGraficoFrecuencias";
-            this.chartGraficoFrecuencias.Size = new System.Drawing.Size(811, 334);
+            this.chartGraficoFrecuencias.Size = new System.Drawing.Size(811, 318);
             this.chartGraficoFrecuencias.TabIndex = 3;
             this.chartGraficoFrecuencias.Text = "chartGrafico";
             // 
@@ -298,7 +296,7 @@
             // 
             // BtnGenerarGrafico
             // 
-            this.BtnGenerarGrafico.Location = new System.Drawing.Point(95, 62);
+            this.BtnGenerarGrafico.Location = new System.Drawing.Point(95, 66);
             this.BtnGenerarGrafico.Name = "BtnGenerarGrafico";
             this.BtnGenerarGrafico.Size = new System.Drawing.Size(177, 30);
             this.BtnGenerarGrafico.TabIndex = 0;
@@ -311,8 +309,6 @@
             this.TabPagina3.Controls.Add(this.LblIntervalosTest);
             this.TabPagina3.Controls.Add(this.CmbIntervalosTest);
             this.TabPagina3.Controls.Add(this.GrdTest);
-            this.TabPagina3.Controls.Add(this.LblAlfaTest);
-            this.TabPagina3.Controls.Add(this.CmbAlfaTest);
             this.TabPagina3.Controls.Add(this.BtnTest);
             this.TabPagina3.Location = new System.Drawing.Point(4, 25);
             this.TabPagina3.Name = "TabPagina3";
@@ -320,6 +316,15 @@
             this.TabPagina3.Size = new System.Drawing.Size(817, 435);
             this.TabPagina3.TabIndex = 3;
             this.TabPagina3.UseVisualStyleBackColor = true;
+            // 
+            // LblIntervalosTest
+            // 
+            this.LblIntervalosTest.AutoSize = true;
+            this.LblIntervalosTest.Location = new System.Drawing.Point(20, 35);
+            this.LblIntervalosTest.Name = "LblIntervalosTest";
+            this.LblIntervalosTest.Size = new System.Drawing.Size(69, 17);
+            this.LblIntervalosTest.TabIndex = 11;
+            this.LblIntervalosTest.Text = "Intervalos";
             // 
             // CmbIntervalosTest
             // 
@@ -340,27 +345,9 @@
             this.GrdTest.Size = new System.Drawing.Size(526, 429);
             this.GrdTest.TabIndex = 9;
             // 
-            // LblAlfaTest
-            // 
-            this.LblAlfaTest.AutoSize = true;
-            this.LblAlfaTest.Location = new System.Drawing.Point(20, 69);
-            this.LblAlfaTest.Name = "LblAlfaTest";
-            this.LblAlfaTest.Size = new System.Drawing.Size(32, 17);
-            this.LblAlfaTest.TabIndex = 6;
-            this.LblAlfaTest.Text = "Alfa";
-            // 
-            // CmbAlfaTest
-            // 
-            this.CmbAlfaTest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CmbAlfaTest.FormattingEnabled = true;
-            this.CmbAlfaTest.Location = new System.Drawing.Point(95, 66);
-            this.CmbAlfaTest.Name = "CmbAlfaTest";
-            this.CmbAlfaTest.Size = new System.Drawing.Size(175, 24);
-            this.CmbAlfaTest.TabIndex = 5;
-            // 
             // BtnTest
             // 
-            this.BtnTest.Location = new System.Drawing.Point(95, 99);
+            this.BtnTest.Location = new System.Drawing.Point(95, 66);
             this.BtnTest.Name = "BtnTest";
             this.BtnTest.Size = new System.Drawing.Size(177, 30);
             this.BtnTest.TabIndex = 4;
@@ -388,15 +375,6 @@
             this.TxtIntregantes.TabIndex = 1;
             this.TxtIntregantes.Text = "Agustín Carranza 67298, Marcos Mariatti 70707, Erik Martinez 66697, Chiara Masset" +
     "ti 74184, Gonzalo Medrano 72412, Facundo Mondati 74284";
-            // 
-            // LblIntervalosTest
-            // 
-            this.LblIntervalosTest.AutoSize = true;
-            this.LblIntervalosTest.Location = new System.Drawing.Point(20, 35);
-            this.LblIntervalosTest.Name = "LblIntervalosTest";
-            this.LblIntervalosTest.Size = new System.Drawing.Size(69, 17);
-            this.LblIntervalosTest.TabIndex = 11;
-            this.LblIntervalosTest.Text = "Intervalos";
             // 
             // FrmNumPseudoaleatorios
             // 
@@ -448,8 +426,6 @@
         private System.Windows.Forms.Button BtnGenerarGrafico;
         private System.Windows.Forms.TabPage TabPagina3;
         private System.Windows.Forms.Button BtnTest;
-        private System.Windows.Forms.Label LblAlfaTest;
-        private System.Windows.Forms.ComboBox CmbAlfaTest;
         private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
         private System.Windows.Forms.DataGridView GrdTest;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartGraficoFrecuencias;

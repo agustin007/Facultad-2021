@@ -46,15 +46,19 @@ namespace TP1SIM2021.Forms
             intervalos.Add(new ItemComboBox("10", 10));
             intervalos.Add(new ItemComboBox("15", 15));
             intervalos.Add(new ItemComboBox("20", 20));
+
             CmbIntervalosGrafico.DataSource = intervalos;
             CmbIntervalosGrafico.DisplayMember = "Nombre";
             CmbIntervalosGrafico.ValueMember = "Valor";
+            CmbIntervalosGrafico.SelectedIndex = 0;
+
+            CmbIntervalosTest.DataSource = intervalos;
+            CmbIntervalosTest.DisplayMember = "Nombre";
+            CmbIntervalosTest.ValueMember = "Valor";
+            CmbIntervalosTest.SelectedIndex = 0;
 
             LimpiarCampos();
             LimpiarGrilla();
-
-           
-
         }
 
         /* Métodos */
@@ -94,7 +98,7 @@ namespace TP1SIM2021.Forms
         {
             chartGraficoFrecuencias.Titles.Clear();
             chartGraficoFrecuencias.Series.Clear();
-          List<(double, double)> intervalosGrafico = controlador.ObtenerRangoIntervalos(cantidadIntervalos,0.0,1.0);
+            List<(double, double)> intervalosGrafico = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
             
           int[] cantidadxIntervalo = new int[cantidadIntervalos];
           chartGraficoFrecuencias.Titles.Add("Histograma");
@@ -297,13 +301,22 @@ namespace TP1SIM2021.Forms
 
         private void BtnGenerarGrafico_Click(object sender, EventArgs e)
         {
-            int numeroIntervalos =Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
+            int numeroIntervalos = Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
             GenerarGrafico( numeroIntervalos, numerosPseudoaleatorios);
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            
+            int cantidadIntervalos = Convert.ToInt32(CmbIntervalosTest.SelectedValue);
+            List<(double, double)> intervalos = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
+
+           /* Console.WriteLine("#############################");
+            foreach ((double, double) intervalo in intervalos)
+            {
+                Console.WriteLine(Convert.ToString(intervalo.Item1) + " - " + Convert.ToString(intervalo.Item2));
+            }
+            Console.WriteLine("#############################");
+            */
         }
 
         /* Validaciones que no permiten ingresar letras o espacios en los campos */
