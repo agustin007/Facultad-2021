@@ -283,6 +283,7 @@ namespace TP1SIM2021.Forms
             }
 
             GenerarTablaNumerosPseudoaleatorios(numerosPseudoaleatorios);
+            limpiarGrafico();
         }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
@@ -345,6 +346,12 @@ namespace TP1SIM2021.Forms
             {
                 e.Handled = true;
             }
+        }
+
+        private void limpiarGrafico()
+        {
+            chartGraficoFrecuencias.Titles.Clear();
+            chartGraficoFrecuencias.Series.Clear();
         }
     } 
 }
