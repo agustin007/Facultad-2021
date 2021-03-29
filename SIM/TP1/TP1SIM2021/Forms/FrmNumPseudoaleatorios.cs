@@ -91,9 +91,13 @@ namespace TP1SIM2021.Forms
 
         private void GenerarGrafico(int cantidadIntervalos, List<double>numerosPseudoaleatorios)
         {
-            chartGraficoFrecuencias.Titles.Clear();
-            chartGraficoFrecuencias.Series.Clear();
-            List<(double, double)> intervalosGrafico = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
+          double intervalo = Math.Round(1.0 / cantidadIntervalos, 2);
+          chartGraficoFrecuencias.Titles.Clear();
+          chartGraficoFrecuencias.Series.Clear();
+          chartGraficoFrecuencias.ChartAreas["AreaHisto"].AxisX.Minimum = 0.0;
+          chartGraficoFrecuencias.ChartAreas["AreaHisto"].AxisX.Maximum = 1.0;
+          chartGraficoFrecuencias.ChartAreas["AreaHisto"].AxisX.Interval = intervalo;
+          List<(double, double)> intervalosGrafico = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
             
           int[] cantidadxIntervalo = new int[cantidadIntervalos];
           chartGraficoFrecuencias.Titles.Add("Histograma");
