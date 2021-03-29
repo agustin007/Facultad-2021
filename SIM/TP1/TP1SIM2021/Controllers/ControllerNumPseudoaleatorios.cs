@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using TP1SIM2021.Classes;
 
@@ -21,6 +22,20 @@ namespace TP1SIM2021.Controllers
             return GeneradorNumerosPseudoaleatorios.GenerarConMetodoProvistoPorLenguaje(cantidad);
         }
 
+        public DataTable ConstruirTablaNumerosPseudoaleatorios (List<double> numerosPseudoaleatorios)
+        {
+            DataTable tabla = new DataTable();
+
+            tabla.Columns.Add("N°");
+            tabla.Columns.Add("Número pseudoaleatorio");
+            for (int i = 0; i < numerosPseudoaleatorios.Count; i++)
+            {
+                tabla.Rows.Add(i + 1, numerosPseudoaleatorios[i]);
+            }
+
+            return tabla;
+        }
+
         public List<(double, double)> ObtenerIntervalos(int cantidadIntervalos, double minimo, double maximo)
         {
             List<(double, double)> intervalos = new List<(double, double)>();
@@ -36,17 +51,19 @@ namespace TP1SIM2021.Controllers
                 }
                 limiteSuperior = limiteInferior + rangoIntervalos;
 
-
-                Console.WriteLine("#############################");
-                Console.WriteLine(Math.Round(limiteInferior, 2));
-                Console.WriteLine(Math.Round(limiteSuperior, 2));
-
                 intervalos.Add((Math.Round(limiteInferior, 2), Math.Round(limiteSuperior, 2)));
 
                 limiteInferior = limiteSuperior;
             }
 
             return intervalos;
+        }
+
+        public DataTable GenerarTablaTestChiCuadrado(List<(double, double)> intervalos)
+        {
+            DataTable tabla = new DataTable();
+
+            return tabla;
         }
 
     }

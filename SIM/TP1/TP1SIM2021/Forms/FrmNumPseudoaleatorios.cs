@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TP1SIM2021.Controllers;
 using TP1SIM2021.Classes;
@@ -79,19 +79,9 @@ namespace TP1SIM2021.Forms
             GrdNumerosPseudoaleatorios.Rows.Clear();
         }
 
-        private void GenerarTabla(List<double> lista)
+        private void GenerarTablaNumerosPseudoaleatorios(List<double> lista)
         {
-            LimpiarGrilla();
-
-            DataTable tabla = new DataTable();
-            tabla.Columns.Add("N°");
-            tabla.Columns.Add("Número pseudoaleatorio");
-            for (int i = 0; i < lista.Count; i++)
-            {
-                tabla.Rows.Add(i + 1, lista[i]);
-            }
-
-            GrdNumerosPseudoaleatorios.DataSource = tabla;
+            GrdNumerosPseudoaleatorios.DataSource = controlador.ConstruirTablaNumerosPseudoaleatorios(lista);
         }
 
         private void GenerarGrafico(int cantidadIntervalos, List<double>numerosPseudoaleatorios)
@@ -222,7 +212,6 @@ namespace TP1SIM2021.Forms
                     numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoCongruencialLineal(
                         Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(cStr),
                         Convert.ToInt32(mStr));
-                    GenerarTabla(numerosPseudoaleatorios);
 
                     break;
 
@@ -271,7 +260,6 @@ namespace TP1SIM2021.Forms
 
                     numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoCongruencialMultiplicativo(
                        Convert.ToInt32(cantidadStr), Convert.ToInt32(semillaStr), Convert.ToInt32(aStr), Convert.ToInt32(mStr));
-                    GenerarTabla(numerosPseudoaleatorios);
 
                     break;
 
@@ -286,10 +274,11 @@ namespace TP1SIM2021.Forms
 
                     numerosPseudoaleatorios = controlador.GenerarNumerosPseudoaleatoriosConMetodoProvistoPorLenguaje(
                         Convert.ToInt32(cantidadStr));
-                    GenerarTabla(numerosPseudoaleatorios);
-                    
+
                     break;
             }
+
+            GenerarTablaNumerosPseudoaleatorios(numerosPseudoaleatorios);
         }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
@@ -310,13 +299,12 @@ namespace TP1SIM2021.Forms
             int cantidadIntervalos = Convert.ToInt32(CmbIntervalosTest.SelectedValue);
             List<(double, double)> intervalos = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
 
-           /* Console.WriteLine("#############################");
-            foreach ((double, double) intervalo in intervalos)
+            Console.WriteLine("########################");
+            foreach (double numero in numerosPseudoaleatorios)
             {
-                Console.WriteLine(Convert.ToString(intervalo.Item1) + " - " + Convert.ToString(intervalo.Item2));
+                Console.WriteLine(numero);
             }
-            Console.WriteLine("#############################");
-            */
+
         }
 
         /* Validaciones que no permiten ingresar letras o espacios en los campos */
