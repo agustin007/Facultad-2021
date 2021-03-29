@@ -28,11 +28,6 @@ namespace TP1SIM2021.Forms
         {
             controlador = new ControllerNumPseudoaleatorios();
 
-            TabPagina1.Text = "Numeros Pseudoaleatorios";
-            TabPagina2.Text = "Grafico";
-            TabPagina3.Text = "Test de Chi Cuadrado";
-            TabPagina4.Text = "Integrantes";
-
             List<ItemComboBox> metodos = new List<ItemComboBox>();
             metodos.Add(new ItemComboBox("Congruencial lineal", 0));
             metodos.Add(new ItemComboBox("Congruencial multiplicativo", 1));
