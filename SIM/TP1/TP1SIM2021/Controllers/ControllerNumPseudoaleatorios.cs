@@ -59,9 +59,57 @@ namespace TP1SIM2021.Controllers
             return intervalos;
         }
 
-        public DataTable GenerarTablaTestChiCuadrado(List<(double, double)> intervalos)
+        public DataTable ConstruirTablaTestChiCuadrado(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
         {
             DataTable tabla = new DataTable();
+
+            // Calculo frecuencia por intervalo
+            int[] frecuenciaPorIntervalo = new int[intervalos.Count];
+            for (int i = 0; i < intervalos.Count; i++)
+            {
+                frecuenciaPorIntervalo[i] = 0;
+            }
+            foreach (double numeroPseudoaleatorio in numerosPseudoaleatorios)
+            {
+                for (int i = 0; i < intervalos.Count; i++)
+                {
+                    (double, double) intervalo = intervalos[i];
+                    if (intervalo.Item1 <= numeroPseudoaleatorio && numeroPseudoaleatorio < intervalo.Item2)
+                    {
+                        frecuenciaPorIntervalo[i] = frecuenciaPorIntervalo[i] + 1;
+                        break;
+                    }
+                }
+            }
+
+            // Genero tabla
+            int fo = 0;
+            double c = 0;
+            double cAcum = 0;
+            double fe = (double)numerosPseudoaleatorios.Count / intervalos.Count;
+            for (int i = 0; i < intervalos.Count; i++)
+            {
+                if (i == 0)
+                {
+                    tabla.Columns.Add("Intervalo");
+                    tabla.Columns.Add("fo");
+                    tabla.Columns.Add("fe");
+                    tabla.Columns.Add("C");
+                    tabla.Columns.Add("C (AC)");
+                }
+
+                fo = frecuenciaPorIntervalo[i];
+                c = Math.Pow(fo - fe, 2) / fe;
+                cAcum = cAcum + c;
+
+                string intervaloStr = Convert.ToString(intervalos[i].Item1) + " - " + Convert.ToString(intervalos[i].Item2);
+                string foStr = fo.ToString();
+                string feStr = Math.Round(fe, 4).ToString();
+                string cStr = Math.Round(c, 4).ToString();
+                string cAcumStr = Math.Round(cAcum, 4).ToString();
+
+                tabla.Rows.Add(intervaloStr, foStr, feStr, cStr, cAcumStr);
+            }
 
             return tabla;
         }

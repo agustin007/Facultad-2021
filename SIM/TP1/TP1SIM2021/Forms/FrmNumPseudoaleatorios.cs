@@ -84,6 +84,11 @@ namespace TP1SIM2021.Forms
             GrdNumerosPseudoaleatorios.DataSource = controlador.ConstruirTablaNumerosPseudoaleatorios(lista);
         }
 
+        private void GenerarTablaTest(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
+        {
+            GrdTest.DataSource = controlador.ConstruirTablaTestChiCuadrado(numerosPseudoaleatorios, intervalos);
+        }
+
         private void GenerarGrafico(int cantidadIntervalos, List<double>numerosPseudoaleatorios)
         {
             chartGraficoFrecuencias.Titles.Clear();
@@ -291,20 +296,14 @@ namespace TP1SIM2021.Forms
         private void BtnGenerarGrafico_Click(object sender, EventArgs e)
         {
             int numeroIntervalos = Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
-            GenerarGrafico( numeroIntervalos, numerosPseudoaleatorios);
+            GenerarGrafico(numeroIntervalos, numerosPseudoaleatorios);
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
             int cantidadIntervalos = Convert.ToInt32(CmbIntervalosTest.SelectedValue);
             List<(double, double)> intervalos = controlador.ObtenerIntervalos(cantidadIntervalos, 0.0, 1.0);
-
-            Console.WriteLine("########################");
-            foreach (double numero in numerosPseudoaleatorios)
-            {
-                Console.WriteLine(numero);
-            }
-
+            GenerarTablaTest(numerosPseudoaleatorios, intervalos);
         }
 
         /* Validaciones que no permiten ingresar letras o espacios en los campos */
@@ -348,7 +347,5 @@ namespace TP1SIM2021.Forms
                 e.Handled = true;
             }
         }
-
-  
-  } 
+    } 
 }
