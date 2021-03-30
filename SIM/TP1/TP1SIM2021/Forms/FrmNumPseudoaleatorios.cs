@@ -85,6 +85,8 @@ namespace TP1SIM2021.Forms
 
         private void LimpiarGrillaTestChiCuadrado()
         {
+            acumulacion_estadistico.Text = "";
+            msj_informativo.Text = "";
             GrdTest.DataSource = null;
             GrdTest.Rows.Clear();
         }
@@ -107,6 +109,7 @@ namespace TP1SIM2021.Forms
             chartHistograma.ChartAreas["chartHistogramaArea"].AxisX.Interval = Math.Round(1.0 / intervalos.Count, 4);
 
             chartHistograma.Series.Add("Frecuencias observadas");
+            chartHistograma.Series["Frecuencias observadas"].Points.Clear();
             chartHistograma.Series["Frecuencias observadas"].Color = Color.DodgerBlue;
             for (int i = 0; i < intervalos.Count; i++)
             {
