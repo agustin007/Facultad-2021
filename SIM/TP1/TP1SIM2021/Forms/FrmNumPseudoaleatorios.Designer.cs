@@ -28,7 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.TabPaginas = new System.Windows.Forms.TabControl();
             this.TabPagina1 = new System.Windows.Forms.TabPage();
             this.BtnLimpiar = new System.Windows.Forms.Button();
@@ -58,6 +58,8 @@
             this.BtnRealizarTest = new System.Windows.Forms.Button();
             this.TabPagina4 = new System.Windows.Forms.TabPage();
             this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
+            this.acumulacion_estadistico = new System.Windows.Forms.Label();
+            this.msj_informativo = new System.Windows.Forms.Label();
             this.TabPaginas.SuspendLayout();
             this.TabPagina1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).BeginInit();
@@ -267,14 +269,14 @@
             // 
             this.chartHistograma.BorderlineColor = System.Drawing.Color.Black;
             this.chartHistograma.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.Name = "chartHistogramaArea";
-            this.chartHistograma.ChartAreas.Add(chartArea1);
+            chartArea3.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.Name = "chartHistogramaArea";
+            this.chartHistograma.ChartAreas.Add(chartArea3);
             this.chartHistograma.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.chartHistograma.Location = new System.Drawing.Point(3, 114);
             this.chartHistograma.Name = "chartHistograma";
@@ -312,6 +314,8 @@
             // 
             // TabPagina3
             // 
+            this.TabPagina3.Controls.Add(this.msj_informativo);
+            this.TabPagina3.Controls.Add(this.acumulacion_estadistico);
             this.TabPagina3.Controls.Add(this.LblIntervalosTest);
             this.TabPagina3.Controls.Add(this.CmbIntervalosTest);
             this.TabPagina3.Controls.Add(this.GrdTest);
@@ -327,11 +331,11 @@
             // LblIntervalosTest
             // 
             this.LblIntervalosTest.AutoSize = true;
-            this.LblIntervalosTest.Location = new System.Drawing.Point(20, 35);
+            this.LblIntervalosTest.Location = new System.Drawing.Point(3, 35);
             this.LblIntervalosTest.Name = "LblIntervalosTest";
-            this.LblIntervalosTest.Size = new System.Drawing.Size(69, 17);
+            this.LblIntervalosTest.Size = new System.Drawing.Size(90, 17);
             this.LblIntervalosTest.TabIndex = 11;
-            this.LblIntervalosTest.Text = "Intervalos";
+            this.LblIntervalosTest.Text = "Intervalos (k)";
             // 
             // CmbIntervalosTest
             // 
@@ -384,6 +388,24 @@
             this.TxtIntregantes.TabIndex = 1;
             this.TxtIntregantes.Text = "Agustín Carranza 67298\nMarcos Mariatti 70707\nErik Martinez 66697\nChiara Massetti " +
     "74184\nGonzalo Medrano 72412\nFacundo Mondati 74284";
+            // 
+            // acumulacion_estadistico
+            // 
+            this.acumulacion_estadistico.AutoSize = true;
+            this.acumulacion_estadistico.Location = new System.Drawing.Point(20, 302);
+            this.acumulacion_estadistico.MaximumSize = new System.Drawing.Size(250, 34);
+            this.acumulacion_estadistico.Name = "acumulacion_estadistico";
+            this.acumulacion_estadistico.Size = new System.Drawing.Size(0, 17);
+            this.acumulacion_estadistico.TabIndex = 12;
+            // 
+            // msj_informativo
+            // 
+            this.msj_informativo.AutoSize = true;
+            this.msj_informativo.Location = new System.Drawing.Point(20, 372);
+            this.msj_informativo.MaximumSize = new System.Drawing.Size(250, 51);
+            this.msj_informativo.Name = "msj_informativo";
+            this.msj_informativo.Size = new System.Drawing.Size(0, 17);
+            this.msj_informativo.TabIndex = 13;
             // 
             // FrmNumPseudoaleatorios
             // 
@@ -440,5 +462,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartHistograma;
         private System.Windows.Forms.ComboBox CmbIntervalosTest;
         private System.Windows.Forms.Label LblIntervalosTest;
+        private System.Windows.Forms.Label acumulacion_estadistico;
+        private System.Windows.Forms.Label msj_informativo;
     }
 }

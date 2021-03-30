@@ -7,6 +7,7 @@ namespace TP1SIM2021.Controllers
 {
     class ControllerNumPseudoaleatorios
     {
+        public double acumuladoEstadistico;
         public List<double> GenerarNumerosPseudoaleatoriosConMetodoCongruencialLineal (int cantidad, int semilla, int a, int c, int m)
         {
             return GeneradorNumerosPseudoaleatorios.GenerarConMetodoCongruencialLineal(cantidad, semilla, a, c, m);
@@ -107,8 +108,11 @@ namespace TP1SIM2021.Controllers
                 }
 
                 fo = frecuenciaPorIntervalo[i];
+                //c => Se calcula el estadistico de prueba.
                 c = Math.Pow(fo - fe, 2) / fe;
+                //cAcum => Acumulacion de cada estadistico
                 cAcum = cAcum + c;
+                acumuladoEstadistico = cAcum;
 
                 string intervaloStr = Convert.ToString(intervalos[i].Item1) + " - " + Convert.ToString(intervalos[i].Item2);
                 string foStr = fo.ToString();

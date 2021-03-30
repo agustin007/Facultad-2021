@@ -164,6 +164,7 @@ namespace TP1SIM2021.Forms
             int metodoSeleccionado = CmbMetodos.SelectedIndex;
             switch (metodoSeleccionado)
             {
+                //Congruencia lineal
                 case 0:
                     semillaStr = TxtSemilla.Text;
                     aStr = TxtA.Text;
@@ -226,6 +227,7 @@ namespace TP1SIM2021.Forms
 
                     break;
 
+                //Congruencial multiplicativo
                 case 1:
                     semillaStr = TxtSemilla.Text;
                     aStr = TxtA.Text;
@@ -274,6 +276,7 @@ namespace TP1SIM2021.Forms
 
                     break;
 
+                //Provisto por el lengaje
                 case 2:
                     cantidadStr = TxtCantidad.Text;
                     if (cantidadStr == string.Empty || Convert.ToInt32(cantidadStr) <= 0)
@@ -330,6 +333,8 @@ namespace TP1SIM2021.Forms
             intervalos = controlador.ObtenerIntervalos(0.0, 1.0, cantidadIntervalos);
             frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaObservadaPorIntervalo(numerosPseudoaleatorios, intervalos);
             GenerarTablaTest();
+            acumulacion_estadistico.Text = "El estadístico de prueba obtenido es: '" + controlador.acumuladoEstadistico + "'";
+            msj_informativo.Text = "El valor crítico obtenido por tabla debe ser mayor a '" + controlador.acumuladoEstadistico + "' para que la hipótesis no se rechace";
         }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
