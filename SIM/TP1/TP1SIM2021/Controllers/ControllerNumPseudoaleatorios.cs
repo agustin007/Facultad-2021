@@ -36,35 +36,32 @@ namespace TP1SIM2021.Controllers
             return tabla;
         }
 
-        public List<(double, double)> ObtenerIntervalos(int cantidadIntervalos, double minimo, double maximo)
+        public List<(double, double)> ObtenerIntervalos(double minimo, double maximo, int cantidadIntervalos)
         {
             List<(double, double)> intervalos = new List<(double, double)>();
+
             double rangoTotal = maximo - minimo;
             double rangoIntervalos = rangoTotal / cantidadIntervalos;
-
             double limiteInferior = 0;
             double limiteSuperior = 0;
-            for (int i=0; i < cantidadIntervalos; i++)
-            {   if (i == 0)
+            for (int i = 0; i < cantidadIntervalos; i++)
+            {
+                if (i == 0)
                 {
                     limiteInferior = minimo;
                 }
                 limiteSuperior = limiteInferior + rangoIntervalos;
-
                 intervalos.Add((Math.Round(limiteInferior, 2), Math.Round(limiteSuperior, 2)));
-
                 limiteInferior = limiteSuperior;
             }
 
             return intervalos;
         }
 
-        public DataTable ConstruirTablaTestChiCuadrado(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
+        public int[] ObtenerFrecuenciaPorIntervalo(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
         {
-            DataTable tabla = new DataTable();
-
-            // Calculo frecuencia por intervalo
             int[] frecuenciaPorIntervalo = new int[intervalos.Count];
+
             for (int i = 0; i < intervalos.Count; i++)
             {
                 frecuenciaPorIntervalo[i] = 0;
@@ -82,11 +79,18 @@ namespace TP1SIM2021.Controllers
                 }
             }
 
-            // Genero tabla
+            return frecuenciaPorIntervalo;
+        }
+
+        public DataTable ConstruirTablaTestChiCuadrado(List<(double, double)> intervalos, int[] frecuenciaPorIntervalo,  
+            int cantidadNumerosPseudoaleatorios)
+        {
+            DataTable tabla = new DataTable();
+
             int fo = 0;
             double c = 0;
             double cAcum = 0;
-            double fe = (double)numerosPseudoaleatorios.Count / intervalos.Count;
+            double fe = (double)cantidadNumerosPseudoaleatorios / intervalos.Count;
             for (int i = 0; i < intervalos.Count; i++)
             {
                 if (i == 0)
