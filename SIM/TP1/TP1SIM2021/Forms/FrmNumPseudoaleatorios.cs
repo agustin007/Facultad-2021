@@ -16,7 +16,7 @@ namespace TP1SIM2021.Forms
 
         List<double> numerosPseudoaleatorios;
         List<(double, double)> intervalos;
-        int[] frecuenciaPorIntervalo;
+        List<int> frecuenciaPorIntervalo;
         ControllerNumPseudoaleatorios controlador;
 
         /* Load */
@@ -82,7 +82,8 @@ namespace TP1SIM2021.Forms
         }
 
         private void GenerarGrafico()
-        {
+        {  
+            chartGrafico.Titles.Clear();
             chartGrafico.Titles.Add("Histograma");
 
             chartGrafico.ChartAreas["chartGraficoArea"].AxisX.Minimum = 0.0;
@@ -94,7 +95,10 @@ namespace TP1SIM2021.Forms
             chartGrafico.Series["Frecuencias observadas"].Palette = ChartColorPalette.BrightPastel;
             for (int i = 0; i < intervalos.Count; i++)
             {
-                chartGrafico.Series["Frecuencias observadas"].Points.AddXY((intervalos[i].Item1 + intervalos[i].Item2) / 2, frecuenciaPorIntervalo[i]);
+                Console.WriteLine(intervalos[i].Item1.ToString() + " - " + intervalos[i].Item2.ToString());
+                Console.WriteLine(frecuenciaPorIntervalo[i]);
+                chartGrafico.Series["Frecuencias observadas"].Points.AddXY((intervalos[i].Item1 + intervalos[i].Item2) / 2, 
+                    frecuenciaPorIntervalo[i]);
             }
         }
 
@@ -270,7 +274,6 @@ namespace TP1SIM2021.Forms
             }
 
             GenerarTablaNumerosPseudoaleatorios();
-            limpiarGrafico();
         }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
@@ -284,7 +287,7 @@ namespace TP1SIM2021.Forms
         {
             int cantidadIntervalos = Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
             intervalos = controlador.ObtenerIntervalos(0.0, 1.0, cantidadIntervalos);
-            frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaPorIntervalo(numerosPseudoaleatorios, intervalos);
+            frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaObservadaPorIntervalo(numerosPseudoaleatorios, intervalos);
             GenerarGrafico();
         }
 
@@ -292,7 +295,7 @@ namespace TP1SIM2021.Forms
         {
             int cantidadIntervalos = Convert.ToInt32(CmbIntervalosTest.SelectedValue);
             intervalos = controlador.ObtenerIntervalos(0.0, 1.0, cantidadIntervalos);
-            frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaPorIntervalo(numerosPseudoaleatorios, intervalos);
+            frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaObservadaPorIntervalo(numerosPseudoaleatorios, intervalos);
             GenerarTablaTest();
         }
 
@@ -336,12 +339,6 @@ namespace TP1SIM2021.Forms
             {
                 e.Handled = true;
             }
-        }
-
-        private void limpiarGrafico()
-        {
-            chartGrafico.Titles.Clear();
-            chartGrafico.Series.Clear();
         }
     } 
 }

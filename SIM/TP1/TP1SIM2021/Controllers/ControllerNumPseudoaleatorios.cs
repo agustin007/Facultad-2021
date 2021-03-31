@@ -38,7 +38,7 @@ namespace TP1SIM2021.Controllers
 
         public List<(double, double)> ObtenerIntervalos(double minimo, double maximo, int cantidadIntervalos)
         {
-            List<(double, double)> intervalos = new List<(double, double)>();
+            List<(double, double)> intervalos = new List<(double, double)>(cantidadIntervalos);
 
             double rangoTotal = maximo - minimo;
             double rangoIntervalos = rangoTotal / cantidadIntervalos;
@@ -50,30 +50,34 @@ namespace TP1SIM2021.Controllers
                 {
                     limiteInferior = minimo;
                 }
+                else
+                {
+                    limiteInferior = limiteSuperior;
+                }
                 limiteSuperior = limiteInferior + rangoIntervalos;
-                intervalos.Add((Math.Round(limiteInferior, 2), Math.Round(limiteSuperior, 2)));
-                limiteInferior = limiteSuperior;
+                intervalos.Insert(i, ((Math.Round(limiteInferior, 2), Math.Round(limiteSuperior, 2))));
             }
 
             return intervalos;
         }
 
-        public int[] ObtenerFrecuenciaPorIntervalo(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
+        public List<int> ObtenerFrecuenciaObservadaPorIntervalo(List<double> numerosPseudoaleatorios, List<(double, double)> intervalos)
         {
-            int[] frecuenciaPorIntervalo = new int[intervalos.Count];
-
+            List<int> frecuenciaPorIntervalo = new List<int>(intervalos.Count);
             for (int i = 0; i < intervalos.Count; i++)
             {
-                frecuenciaPorIntervalo[i] = 0;
+                frecuenciaPorIntervalo.Insert(i, 0);
             }
-            foreach (double numeroPseudoaleatorio in numerosPseudoaleatorios)
+
+            for (int i = 0; i < numerosPseudoaleatorios.Count; i++)
             {
-                for (int i = 0; i < intervalos.Count; i++)
+                double numeroPseudoaleatorio = numerosPseudoaleatorios[i];
+                for (int j = 0; j < intervalos.Count; j++)
                 {
-                    (double, double) intervalo = intervalos[i];
+                    (double, double) intervalo = intervalos[j];
                     if (intervalo.Item1 <= numeroPseudoaleatorio && numeroPseudoaleatorio < intervalo.Item2)
                     {
-                        frecuenciaPorIntervalo[i] = frecuenciaPorIntervalo[i] + 1;
+                        frecuenciaPorIntervalo.Insert(j, frecuenciaPorIntervalo[j] + 1);
                         break;
                     }
                 }
@@ -82,7 +86,7 @@ namespace TP1SIM2021.Controllers
             return frecuenciaPorIntervalo;
         }
 
-        public DataTable ConstruirTablaTestChiCuadrado(List<(double, double)> intervalos, int[] frecuenciaPorIntervalo,  
+        public DataTable ConstruirTablaTestChiCuadrado(List<(double, double)> intervalos, List<int> frecuenciaPorIntervalo,  
             int cantidadNumerosPseudoaleatorios)
         {
             DataTable tabla = new DataTable();
