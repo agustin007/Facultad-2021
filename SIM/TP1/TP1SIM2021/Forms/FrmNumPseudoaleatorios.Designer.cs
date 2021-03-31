@@ -28,7 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.TabPaginas = new System.Windows.Forms.TabControl();
             this.TabPagina1 = new System.Windows.Forms.TabPage();
             this.BtnLimpiar = new System.Windows.Forms.Button();
@@ -267,14 +267,14 @@
             // 
             this.chartHistograma.BorderlineColor = System.Drawing.Color.Black;
             this.chartHistograma.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea3.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.Name = "chartHistogramaArea";
-            this.chartHistograma.ChartAreas.Add(chartArea3);
+            chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.Name = "chartHistogramaArea";
+            this.chartHistograma.ChartAreas.Add(chartArea1);
             this.chartHistograma.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.chartHistograma.Location = new System.Drawing.Point(3, 114);
             this.chartHistograma.Name = "chartHistograma";
@@ -380,10 +380,10 @@
             this.TxtIntregantes.Location = new System.Drawing.Point(6, 6);
             this.TxtIntregantes.Name = "TxtIntregantes";
             this.TxtIntregantes.ReadOnly = true;
-            this.TxtIntregantes.Size = new System.Drawing.Size(163, 134);
+            this.TxtIntregantes.Size = new System.Drawing.Size(200, 120);
             this.TxtIntregantes.TabIndex = 1;
-            this.TxtIntregantes.Text = "Agustín Carranza 67298, Marcos Mariatti 70707, Erik Martinez 66697, Chiara Masset" +
-    "ti 74184, Gonzalo Medrano 72412, Facundo Mondati 74284";
+            this.TxtIntregantes.Text = "Agustín Carranza 67298\nMarcos Mariatti 70707\nErik Martinez 66697\nChiara Massetti " +
+    "74184\nGonzalo Medrano 72412\nFacundo Mondati 74284";
             // 
             // FrmNumPseudoaleatorios
             // 
