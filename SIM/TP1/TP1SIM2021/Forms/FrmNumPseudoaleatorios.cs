@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using TP1SIM2021.Controllers;
 using TP1SIM2021.Classes;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using System.Drawing;
 
 namespace TP1SIM2021.Forms
 {
@@ -107,7 +107,7 @@ namespace TP1SIM2021.Forms
             chartHistograma.ChartAreas["chartHistogramaArea"].AxisX.Interval = Math.Round(1.0 / intervalos.Count, 4);
 
             chartHistograma.Series.Add("Frecuencias observadas");
-            chartHistograma.Series["Frecuencias observadas"].Palette = ChartColorPalette.BrightPastel;
+            chartHistograma.Series["Frecuencias observadas"].Color = Color.DodgerBlue;
             for (int i = 0; i < intervalos.Count; i++)
             {
                 chartHistograma.Series["Frecuencias observadas"].Points.AddXY((intervalos[i].Item1 + intervalos[i].Item2) / 2, 
