@@ -44,10 +44,10 @@ namespace TP1SIM2021.Forms
             intervalos.Add(new ItemComboBox("15", 15));
             intervalos.Add(new ItemComboBox("20", 20));
 
-            CmbIntervalosGrafico.DataSource = intervalos;
-            CmbIntervalosGrafico.DisplayMember = "Nombre";
-            CmbIntervalosGrafico.ValueMember = "Valor";
-            CmbIntervalosGrafico.SelectedIndex = 0;
+            CmbIntervalosHistograma.DataSource = intervalos;
+            CmbIntervalosHistograma.DisplayMember = "Nombre";
+            CmbIntervalosHistograma.ValueMember = "Valor";
+            CmbIntervalosHistograma.SelectedIndex = 0;
 
             CmbIntervalosTest.DataSource = intervalos;
             CmbIntervalosTest.DisplayMember = "Nombre";
@@ -55,7 +55,9 @@ namespace TP1SIM2021.Forms
             CmbIntervalosTest.SelectedIndex = 0;
 
             LimpiarCampos();
-            LimpiarGrilla();
+            LimpiarGrillaNumerosPseudoaleatorios();
+            LimpiarChartHistograma();
+            LimpiarGrillaTestChiCuadrado();
         }
 
         /* Métodos */
@@ -69,42 +71,56 @@ namespace TP1SIM2021.Forms
             TxtCantidad.Clear();
         }
 
-        private void LimpiarGrilla()
+        private void LimpiarGrillaNumerosPseudoaleatorios()
         {
-            numerosPseudoaleatorios = new List<double>();
             GrdNumerosPseudoaleatorios.DataSource = null;
             GrdNumerosPseudoaleatorios.Rows.Clear();
         }
 
+        private void LimpiarChartHistograma()
+        {
+            chartHistograma.Titles.Clear();
+            chartHistograma.Series.Clear();
+        }
+
+        private void LimpiarGrillaTestChiCuadrado()
+        {
+            GrdTest.DataSource = null;
+            GrdTest.Rows.Clear();
+        }
+
         private void GenerarTablaNumerosPseudoaleatorios()
         {
+            LimpiarGrillaNumerosPseudoaleatorios();
+
             GrdNumerosPseudoaleatorios.DataSource = controlador.ConstruirTablaNumerosPseudoaleatorios(numerosPseudoaleatorios);
         }
 
         private void GenerarGrafico()
-        {  
-            chartGrafico.Titles.Clear();
-            chartGrafico.Titles.Add("Histograma");
+        {
+            LimpiarChartHistograma();
 
-            chartGrafico.ChartAreas["chartGraficoArea"].AxisX.Minimum = 0.0;
-            chartGrafico.ChartAreas["chartGraficoArea"].AxisX.Maximum = 1.0;
-            chartGrafico.ChartAreas["chartGraficoArea"].AxisX.Interval = Math.Round(1.0 / intervalos.Count, 4);
+            chartHistograma.Titles.Add("Histograma");
 
-            chartGrafico.Series.Clear();
-            chartGrafico.Series.Add("Frecuencias observadas");
-            chartGrafico.Series["Frecuencias observadas"].Palette = ChartColorPalette.BrightPastel;
+            chartHistograma.ChartAreas["chartHistogramaArea"].AxisX.Minimum = 0.0;
+            chartHistograma.ChartAreas["chartHistogramaArea"].AxisX.Maximum = 1.0;
+            chartHistograma.ChartAreas["chartHistogramaArea"].AxisX.Interval = Math.Round(1.0 / intervalos.Count, 4);
+
+            chartHistograma.Series.Add("Frecuencias observadas");
+            chartHistograma.Series["Frecuencias observadas"].Palette = ChartColorPalette.BrightPastel;
             for (int i = 0; i < intervalos.Count; i++)
             {
-                Console.WriteLine(intervalos[i].Item1.ToString() + " - " + intervalos[i].Item2.ToString());
-                Console.WriteLine(frecuenciaPorIntervalo[i]);
-                chartGrafico.Series["Frecuencias observadas"].Points.AddXY((intervalos[i].Item1 + intervalos[i].Item2) / 2, 
+                chartHistograma.Series["Frecuencias observadas"].Points.AddXY((intervalos[i].Item1 + intervalos[i].Item2) / 2, 
                     frecuenciaPorIntervalo[i]);
             }
         }
 
         private void GenerarTablaTest()
         {
-            GrdTest.DataSource = controlador.ConstruirTablaTestChiCuadrado(intervalos, frecuenciaPorIntervalo, numerosPseudoaleatorios.Count);
+            LimpiarGrillaTestChiCuadrado();
+
+            GrdTest.DataSource = controlador.ConstruirTablaTestChiCuadrado(intervalos, frecuenciaPorIntervalo, 
+                numerosPseudoaleatorios.Count);
         }
 
         /* Eventos */
@@ -273,30 +289,70 @@ namespace TP1SIM2021.Forms
                     break;
             }
 
+            if (intervalos != null)
+            {
+                intervalos.Clear();
+            }
+            if (frecuenciaPorIntervalo != null)
+            {
+                frecuenciaPorIntervalo.Clear();
+            }
+
+            LimpiarChartHistograma();
+            LimpiarGrillaTestChiCuadrado();
+
             GenerarTablaNumerosPseudoaleatorios();
         }
 
-        private void BtnLimpiar_Click(object sender, EventArgs e)
+        private void BtnGenerarHistograma_Click(object sender, EventArgs e)
         {
-            CmbMetodos.SelectedIndex = 0;
-            this.LimpiarCampos();
-            this.LimpiarGrilla();
-        }
-
-        private void BtnGenerarGrafico_Click(object sender, EventArgs e)
-        {
-            int cantidadIntervalos = Convert.ToInt32(CmbIntervalosGrafico.SelectedValue);
+            if (numerosPseudoaleatorios == null || numerosPseudoaleatorios.Count == 0)
+            {
+                MessageBox.Show("Debe generar números pseudoaleatorios para poder generar el Histograma", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            int cantidadIntervalos = Convert.ToInt32(CmbIntervalosHistograma.SelectedValue);
             intervalos = controlador.ObtenerIntervalos(0.0, 1.0, cantidadIntervalos);
             frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaObservadaPorIntervalo(numerosPseudoaleatorios, intervalos);
             GenerarGrafico();
         }
 
-        private void BtnTest_Click(object sender, EventArgs e)
+        private void BtnRealizarTest_Click(object sender, EventArgs e)
         {
+            if (numerosPseudoaleatorios == null || numerosPseudoaleatorios.Count == 0)
+            {
+                MessageBox.Show("Debe generar números pseudoaleatorios para poder realizar el Test de Chi Cuadrado", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             int cantidadIntervalos = Convert.ToInt32(CmbIntervalosTest.SelectedValue);
             intervalos = controlador.ObtenerIntervalos(0.0, 1.0, cantidadIntervalos);
             frecuenciaPorIntervalo = controlador.ObtenerFrecuenciaObservadaPorIntervalo(numerosPseudoaleatorios, intervalos);
             GenerarTablaTest();
+        }
+
+        private void BtnLimpiar_Click(object sender, EventArgs e)
+        {
+            CmbMetodos.SelectedIndex = 0;
+
+            if (numerosPseudoaleatorios != null)
+            {
+                numerosPseudoaleatorios.Clear();
+            }
+            if (intervalos != null)
+            {
+                intervalos.Clear();
+            }
+            if (frecuenciaPorIntervalo != null)
+            {
+                frecuenciaPorIntervalo.Clear();
+            }
+
+            LimpiarCampos();
+            LimpiarGrillaNumerosPseudoaleatorios();
+            LimpiarChartHistograma();
+            LimpiarGrillaTestChiCuadrado();
         }
 
         /* Validaciones que no permiten ingresar letras o espacios en los campos */

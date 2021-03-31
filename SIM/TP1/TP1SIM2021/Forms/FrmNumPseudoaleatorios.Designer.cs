@@ -28,7 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.TabPaginas = new System.Windows.Forms.TabControl();
             this.TabPagina1 = new System.Windows.Forms.TabPage();
             this.BtnLimpiar = new System.Windows.Forms.Button();
@@ -47,22 +47,22 @@
             this.CmbMetodos = new System.Windows.Forms.ComboBox();
             this.LblMetodo = new System.Windows.Forms.Label();
             this.TabPagina2 = new System.Windows.Forms.TabPage();
-            this.chartGrafico = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.CmbIntervalosGrafico = new System.Windows.Forms.ComboBox();
+            this.chartHistograma = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.CmbIntervalosHistograma = new System.Windows.Forms.ComboBox();
             this.LblIntervalosGrafico = new System.Windows.Forms.Label();
-            this.BtnGenerarGrafico = new System.Windows.Forms.Button();
+            this.BtnGenerarHistograma = new System.Windows.Forms.Button();
             this.TabPagina3 = new System.Windows.Forms.TabPage();
             this.LblIntervalosTest = new System.Windows.Forms.Label();
             this.CmbIntervalosTest = new System.Windows.Forms.ComboBox();
             this.GrdTest = new System.Windows.Forms.DataGridView();
-            this.BtnTest = new System.Windows.Forms.Button();
+            this.BtnRealizarTest = new System.Windows.Forms.Button();
             this.TabPagina4 = new System.Windows.Forms.TabPage();
             this.TxtIntregantes = new System.Windows.Forms.RichTextBox();
             this.TabPaginas.SuspendLayout();
             this.TabPagina1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).BeginInit();
             this.TabPagina2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartGrafico)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHistograma)).BeginInit();
             this.TabPagina3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdTest)).BeginInit();
             this.TabPagina4.SuspendLayout();
@@ -102,7 +102,7 @@
             this.TabPagina1.Controls.Add(this.LblMetodo);
             this.TabPagina1.Location = new System.Drawing.Point(4, 25);
             this.TabPagina1.Name = "TabPagina1";
-            this.TabPagina1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.TabPagina1.Padding = new System.Windows.Forms.Padding(3);
             this.TabPagina1.Size = new System.Drawing.Size(817, 435);
             this.TabPagina1.TabIndex = 0;
             this.TabPagina1.Text = "Numeros Pseudoaleatorios";
@@ -251,45 +251,45 @@
             // 
             // TabPagina2
             // 
-            this.TabPagina2.Controls.Add(this.chartGrafico);
-            this.TabPagina2.Controls.Add(this.CmbIntervalosGrafico);
+            this.TabPagina2.Controls.Add(this.chartHistograma);
+            this.TabPagina2.Controls.Add(this.CmbIntervalosHistograma);
             this.TabPagina2.Controls.Add(this.LblIntervalosGrafico);
-            this.TabPagina2.Controls.Add(this.BtnGenerarGrafico);
+            this.TabPagina2.Controls.Add(this.BtnGenerarHistograma);
             this.TabPagina2.Location = new System.Drawing.Point(4, 25);
             this.TabPagina2.Name = "TabPagina2";
-            this.TabPagina2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.TabPagina2.Padding = new System.Windows.Forms.Padding(3);
             this.TabPagina2.Size = new System.Drawing.Size(817, 435);
             this.TabPagina2.TabIndex = 1;
-            this.TabPagina2.Text = "Grafico";
+            this.TabPagina2.Text = "Histograma";
             this.TabPagina2.UseVisualStyleBackColor = true;
             // 
-            // chartGrafico
+            // chartHistograma
             // 
-            this.chartGrafico.BorderlineColor = System.Drawing.Color.Black;
-            this.chartGrafico.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea1.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea1.Name = "chartGraficoArea";
-            this.chartGrafico.ChartAreas.Add(chartArea1);
-            this.chartGrafico.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.chartGrafico.Location = new System.Drawing.Point(3, 114);
-            this.chartGrafico.Name = "chartGrafico";
-            this.chartGrafico.Size = new System.Drawing.Size(811, 318);
-            this.chartGrafico.TabIndex = 3;
-            this.chartGrafico.Text = "chartGrafico";
+            this.chartHistograma.BorderlineColor = System.Drawing.Color.Black;
+            this.chartHistograma.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea3.AxisX.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX2.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisX2.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisY.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.Name = "chartHistogramaArea";
+            this.chartHistograma.ChartAreas.Add(chartArea3);
+            this.chartHistograma.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.chartHistograma.Location = new System.Drawing.Point(3, 114);
+            this.chartHistograma.Name = "chartHistograma";
+            this.chartHistograma.Size = new System.Drawing.Size(811, 318);
+            this.chartHistograma.TabIndex = 3;
+            this.chartHistograma.Text = "chartGrafico";
             // 
-            // CmbIntervalosGrafico
+            // CmbIntervalosHistograma
             // 
-            this.CmbIntervalosGrafico.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CmbIntervalosGrafico.FormattingEnabled = true;
-            this.CmbIntervalosGrafico.Location = new System.Drawing.Point(95, 32);
-            this.CmbIntervalosGrafico.Name = "CmbIntervalosGrafico";
-            this.CmbIntervalosGrafico.Size = new System.Drawing.Size(175, 24);
-            this.CmbIntervalosGrafico.TabIndex = 2;
+            this.CmbIntervalosHistograma.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CmbIntervalosHistograma.FormattingEnabled = true;
+            this.CmbIntervalosHistograma.Location = new System.Drawing.Point(95, 32);
+            this.CmbIntervalosHistograma.Name = "CmbIntervalosHistograma";
+            this.CmbIntervalosHistograma.Size = new System.Drawing.Size(175, 24);
+            this.CmbIntervalosHistograma.TabIndex = 2;
             // 
             // LblIntervalosGrafico
             // 
@@ -300,25 +300,25 @@
             this.LblIntervalosGrafico.TabIndex = 1;
             this.LblIntervalosGrafico.Text = "Intervalos";
             // 
-            // BtnGenerarGrafico
+            // BtnGenerarHistograma
             // 
-            this.BtnGenerarGrafico.Location = new System.Drawing.Point(95, 66);
-            this.BtnGenerarGrafico.Name = "BtnGenerarGrafico";
-            this.BtnGenerarGrafico.Size = new System.Drawing.Size(177, 30);
-            this.BtnGenerarGrafico.TabIndex = 0;
-            this.BtnGenerarGrafico.Text = "Generar Gráfico";
-            this.BtnGenerarGrafico.UseVisualStyleBackColor = true;
-            this.BtnGenerarGrafico.Click += new System.EventHandler(this.BtnGenerarGrafico_Click);
+            this.BtnGenerarHistograma.Location = new System.Drawing.Point(95, 66);
+            this.BtnGenerarHistograma.Name = "BtnGenerarHistograma";
+            this.BtnGenerarHistograma.Size = new System.Drawing.Size(177, 30);
+            this.BtnGenerarHistograma.TabIndex = 0;
+            this.BtnGenerarHistograma.Text = "Generar Histograma";
+            this.BtnGenerarHistograma.UseVisualStyleBackColor = true;
+            this.BtnGenerarHistograma.Click += new System.EventHandler(this.BtnGenerarHistograma_Click);
             // 
             // TabPagina3
             // 
             this.TabPagina3.Controls.Add(this.LblIntervalosTest);
             this.TabPagina3.Controls.Add(this.CmbIntervalosTest);
             this.TabPagina3.Controls.Add(this.GrdTest);
-            this.TabPagina3.Controls.Add(this.BtnTest);
+            this.TabPagina3.Controls.Add(this.BtnRealizarTest);
             this.TabPagina3.Location = new System.Drawing.Point(4, 25);
             this.TabPagina3.Name = "TabPagina3";
-            this.TabPagina3.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.TabPagina3.Padding = new System.Windows.Forms.Padding(3);
             this.TabPagina3.Size = new System.Drawing.Size(817, 435);
             this.TabPagina3.TabIndex = 3;
             this.TabPagina3.Text = "Test de Chi Cuadrado";
@@ -353,22 +353,22 @@
             this.GrdTest.Size = new System.Drawing.Size(526, 429);
             this.GrdTest.TabIndex = 9;
             // 
-            // BtnTest
+            // BtnRealizarTest
             // 
-            this.BtnTest.Location = new System.Drawing.Point(95, 66);
-            this.BtnTest.Name = "BtnTest";
-            this.BtnTest.Size = new System.Drawing.Size(177, 30);
-            this.BtnTest.TabIndex = 4;
-            this.BtnTest.Text = "Test de Chi Cuadrado";
-            this.BtnTest.UseVisualStyleBackColor = true;
-            this.BtnTest.Click += new System.EventHandler(this.BtnTest_Click);
+            this.BtnRealizarTest.Location = new System.Drawing.Point(95, 66);
+            this.BtnRealizarTest.Name = "BtnRealizarTest";
+            this.BtnRealizarTest.Size = new System.Drawing.Size(177, 30);
+            this.BtnRealizarTest.TabIndex = 4;
+            this.BtnRealizarTest.Text = "Test de Chi Cuadrado";
+            this.BtnRealizarTest.UseVisualStyleBackColor = true;
+            this.BtnRealizarTest.Click += new System.EventHandler(this.BtnRealizarTest_Click);
             // 
             // TabPagina4
             // 
             this.TabPagina4.Controls.Add(this.TxtIntregantes);
             this.TabPagina4.Location = new System.Drawing.Point(4, 25);
             this.TabPagina4.Name = "TabPagina4";
-            this.TabPagina4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.TabPagina4.Padding = new System.Windows.Forms.Padding(3);
             this.TabPagina4.Size = new System.Drawing.Size(817, 435);
             this.TabPagina4.TabIndex = 2;
             this.TabPagina4.Text = "Integrantes";
@@ -400,7 +400,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.GrdNumerosPseudoaleatorios)).EndInit();
             this.TabPagina2.ResumeLayout(false);
             this.TabPagina2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartGrafico)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHistograma)).EndInit();
             this.TabPagina3.ResumeLayout(false);
             this.TabPagina3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GrdTest)).EndInit();
@@ -430,14 +430,14 @@
         private System.Windows.Forms.Label LblCantidad;
         private System.Windows.Forms.TextBox TxtCantidad;
         private System.Windows.Forms.Button BtnLimpiar;
-        private System.Windows.Forms.ComboBox CmbIntervalosGrafico;
+        private System.Windows.Forms.ComboBox CmbIntervalosHistograma;
         private System.Windows.Forms.Label LblIntervalosGrafico;
-        private System.Windows.Forms.Button BtnGenerarGrafico;
+        private System.Windows.Forms.Button BtnGenerarHistograma;
         private System.Windows.Forms.TabPage TabPagina3;
-        private System.Windows.Forms.Button BtnTest;
+        private System.Windows.Forms.Button BtnRealizarTest;
         private System.Windows.Forms.DataGridView GrdNumerosPseudoaleatorios;
         private System.Windows.Forms.DataGridView GrdTest;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartGrafico;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartHistograma;
         private System.Windows.Forms.ComboBox CmbIntervalosTest;
         private System.Windows.Forms.Label LblIntervalosTest;
     }
