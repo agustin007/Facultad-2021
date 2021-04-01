@@ -1,83 +1,51 @@
-from random import uniform
+import random
 import matplotlib.pyplot as plt
 import numpy as np
+from soporte.helper import *
 
 
-class ControladorGeneradorNumeros:
+class ControladorGeneradorNumerosPseudoaleatorios:
 
-    def generar_numeros_congruente_mixo(self, cantidad, semilla, a, c, m):
-
-        # Convierto tipos de datos
-        cantidad = int(cantidad)
-        semilla = round(float(semilla.replace(",", ".")), 4)
-        a = round(float(a.replace(",", ".")), 4)
-        c = round(float(c.replace(",", ".")), 4)
-        m = round(float(m.replace(",", ".")), 4)
+    def generar_numeros_pseudoaleatorios_congruencial_lineal(self, cantidad, semilla, a, c, m):
 
         # Inicializo datos
         numeros_generados = []
 
         # Genero lista de numeros aleatorios
-        for i in range(0, cantidad):
-            if i == 0:
-                aleatorio = round(semilla % m, 4)
-            else:
-                aleatorio = round((a * semilla + c) % m, 4)
-            aleatorio_decimal = round(aleatorio / m, 4)
-            numeros_generados.append({
-                "nro_orden": i + 1,
-                "semilla": semilla,
-                "aleatorio_decimal": aleatorio_decimal
-            })
-            semilla = aleatorio
+        xi = semilla
+        for _ in range(0, cantidad):
+            xi = truncar((a * xi + c) % m, 4)
+            numero_pseualeatorio = truncar(xi / m, 4)
+            numeros_generados.append(numero_pseualeatorio)
 
         return numeros_generados
 
-    def generar_numeros_congruente_multiplicativo(self, cantidad, semilla, a, m):
-
-        # Convierto tipos de datos
-        cantidad = int(cantidad)
-        semilla = round(float(semilla.replace(",", ".")), 4)
-        a = round(float(a.replace(",", ".")), 4)
-        m = round(float(m.replace(",", ".")), 4)
+    def generar_numeros_pseudoaleatorios_congruencial_multiplicativo(self, cantidad, semilla, a, m):
 
         # Inicializo datos
         numeros_generados = []
 
         # Genero lista de numeros aleatorios
-        for i in range(0, cantidad):
-            if i == 0:
-                aleatorio = round(semilla % m, 4)
-            else:
-                aleatorio = round((a * semilla) % m, 4)
-            aleatorio_decimal = round(aleatorio / m, 4)
-            numeros_generados.append({
-                "nro_orden": i + 1,
-                "semilla": semilla,
-                "aleatorio_decimal": aleatorio_decimal
-            })
-            semilla = aleatorio
+        xi = semilla
+        for _ in range(0, cantidad):
+            xi = round((a * xi) % m, 4)
+            numero_pseualeatorio = truncar(xi / m, 4)
+            numeros_generados.append(numero_pseualeatorio)
 
         return numeros_generados
 
-    def generar_numeros_provisto_por_lenguaje(self, cantidad):
+    def generar_numeros_pseudoaleatorios_provisto_por_lenguaje(self, cantidad):
 
-        # Convierto tipos de datos
-        cantidad = int(cantidad)
-
-        # Inicializo datos
         numeros_generados = []
 
         # Genero lista de numeros aleatorios
-        for i in range(0, cantidad):
-            aleatorio_decimal = round(uniform(0, 1), 4)
-            numeros_generados.append({
-                "nro_orden": i + 1,
-                "aleatorio_decimal": aleatorio_decimal
-            })
+        for _ in range(0, cantidad):
+            numero_pseualeatorio = truncar(random.random(), 4)
+            numeros_generados.append(numero_pseualeatorio)
 
         return numeros_generados
 
+    """
     def calcular_frecuencias_por_intervalo(self, numeros_aleatorios, cantidad_intervalos):
 
         # Convierto tipos de datos
@@ -159,3 +127,4 @@ class ControladorGeneradorNumeros:
                         textcoords="offset points", ha="center", va="bottom")
         fig.tight_layout()
         plt.show()
+    """
