@@ -1,4 +1,5 @@
 import random
+import sorting
 import matplotlib.pyplot as plt
 import numpy as np
 from soporte.helper import *
@@ -8,10 +9,8 @@ class ControladorGeneradorNumerosPseudoaleatorios:
 
     def generar_numeros_pseudoaleatorios_congruencial_lineal(self, cantidad, semilla, a, c, m):
 
-        # Inicializo datos
-        numeros_generados = []
-
         # Genero lista de numeros aleatorios
+        numeros_generados = []
         xi = semilla
         for _ in range(0, cantidad):
             xi = truncar((a * xi + c) % m, 4)
@@ -22,10 +21,8 @@ class ControladorGeneradorNumerosPseudoaleatorios:
 
     def generar_numeros_pseudoaleatorios_congruencial_multiplicativo(self, cantidad, semilla, a, m):
 
-        # Inicializo datos
-        numeros_generados = []
-
         # Genero lista de numeros aleatorios
+        numeros_generados = []
         xi = semilla
         for _ in range(0, cantidad):
             xi = round((a * xi) % m, 4)
@@ -36,72 +33,59 @@ class ControladorGeneradorNumerosPseudoaleatorios:
 
     def generar_numeros_pseudoaleatorios_provisto_por_lenguaje(self, cantidad):
 
-        numeros_generados = []
-
         # Genero lista de numeros aleatorios
+        numeros_generados = []
         for _ in range(0, cantidad):
             numero_pseualeatorio = truncar(random.random(), 4)
             numeros_generados.append(numero_pseualeatorio)
 
         return numeros_generados
 
-    """
-    def calcular_frecuencias_por_intervalo(self, numeros_aleatorios, cantidad_intervalos):
+    def realizar_test_chi_cuadrado(self, numeros_pseudoaleatorios, cantidad_intervalos):
 
-        # Convierto tipos de datos
-        cantidad_intervalos = int(cantidad_intervalos)
-
-        # Inicializo datos
-        min = 0
-        max = 1
-        paso = (max - min) / cantidad_intervalos
+        # Genero lista de intervalos
         intervalos = []
-        frecuencias_x_intervalo = {}
-
-        # Genero lista de intervalos e inicializo keys en diccionario de frecuencias por intervalo
+        max_intervalo = 0
+        paso = Decimal(1 / cantidad_intervalos).quantize(SIXPLACES)
         for i in range(0, cantidad_intervalos):
-            min_intervalo = round(min, 4)
-            max_intervalo = round(min_intervalo + paso, 4)
-            media_intervalo = round(((min_intervalo + max_intervalo) / 2), 4)
-            intervalos.append({
-                "minimo": min_intervalo,
-                "maximo": max_intervalo,
-                "media": media_intervalo
+            min_intervalo = Decimal(max_intervalo).quantize(SIXPLACES)
+            max_intervalo = Decimal(min_intervalo + paso).quantize(SIXPLACES)
+            intervalos.append((min_intervalo, max_intervalo))
+
+        # Ordeno lista de numeros pseudoaleatorios para facilitar el calculo de frecuencias por intervalo, optimizando
+        # el procesamiento con un algoritmo de ordenamiento de O(n * log n)
+        numeros_pseudoaleatorios = sorting.merge(numeros_pseudoaleatorios)
+
+        # Calculo frecuencias por intervalos
+        frecuencias_x_intervalo = [0] * cantidad_intervalos
+        index = 0
+        for numero_pseudoaleatorio in numeros_pseudoaleatorios:
+            if not (intervalos[index][0] <= numero_pseudoaleatorio < intervalos[index][1]):
+                index += 1
+            frecuencias_x_intervalo[index] += 1
+
+        # Genero una lista de diccionarios con el calculo de la prueba de chi cuadrado por intervalo y guardo el final
+        # en una variable
+        chi_cuadrado_x_intervalo = []
+        fe = len(numeros_pseudoaleatorios) / cantidad_intervalos
+        c_acum = 0
+        for i in range(0, cantidad_intervalos):
+            intervalo = (intervalos[i][0].quantize(TWOPLACES), intervalos[i][1].quantize(TWOPLACES))
+            fo = frecuencias_x_intervalo[i]
+            c = ((fo - fe) ** 2) / fe
+            c_acum += c
+            chi_cuadrado_x_intervalo.append({
+                "intervalo": intervalo,
+                "fo": fo,
+                "fe": round(fe, 4),
+                "c": round(c, 4),
+                "c_acum": round(c_acum, 4)
             })
-            frecuencias_x_intervalo[media_intervalo] = 0
-            min = max_intervalo
+        chi_cuadrado = round(c_acum, 4)
 
-        # Genero diccionario de frecuencias por intervalo
-        for numero_aleatorio in numeros_aleatorios:
-            for intervalo in intervalos:
-                if intervalo.get("minimo") <= numero_aleatorio.get("aleatorio_decimal") < intervalo.get("maximo"):
-                    frecuencias_x_intervalo[intervalo["media"]] += 1
+        return chi_cuadrado_x_intervalo, chi_cuadrado
 
-        # Genero listas de medias, frecuencias observadas y esperadas a partir de datos anteriores
-        frecuencia_esperada = round(len(numeros_aleatorios) / cantidad_intervalos, 4)
-        if frecuencia_esperada == int(frecuencia_esperada):
-            frecuencia_esperada = int(frecuencia_esperada)
-        medias = [str(intervalo.get("media")).replace(".", ",") for intervalo in intervalos]
-        frecuencias_obsevadas = list(frecuencias_x_intervalo.values())
-        frecuencias_esperadas = [frecuencia_esperada] * len(intervalos)
-
-        return medias, frecuencias_obsevadas, frecuencias_esperadas
-
-    def prueba_chicuadrado(self, frecuencias_observadas, frecuencias_esperadas):
-
-        # Inicializo datos
-        valores = [] * len(frecuencias_observadas)
-        chi_cuadrado = 0
-
-        # La funcion chisquare devuele en el primer campo el valor de chi cuadrado y en el segundo de p
-        for i in range(len(frecuencias_esperadas)):
-            aux = round(((frecuencias_observadas[i] - frecuencias_esperadas[i]) ** 2) / frecuencias_esperadas[i], 4)
-            valores.append(aux)
-        for valor in valores:
-            chi_cuadrado += round(valor, 4)
-
-        return chi_cuadrado
-
+    """
     def generar_grafico_frecuencias(self, medias, frecuencias_observadas, frecuencias_esperadas):
 
         # Creo grafico
