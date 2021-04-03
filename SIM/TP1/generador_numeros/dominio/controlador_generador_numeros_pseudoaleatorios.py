@@ -24,7 +24,7 @@ class ControladorGeneradorNumerosPseudoaleatorios:
         numeros_generados = []
         xi = semilla
         for _ in range(0, cantidad):
-            xi = round((a * xi) % m, 4)
+            xi = truncar((a * xi) % m, 4)
             numero_pseualeatorio = truncar(xi / m, 4)
             numeros_generados.append(numero_pseualeatorio)
 
