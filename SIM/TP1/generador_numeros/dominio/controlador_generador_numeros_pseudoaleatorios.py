@@ -41,7 +41,7 @@ class ControladorGeneradorNumerosPseudoaleatorios:
 
         return numeros_generados
 
-    def realizar_test_chi_cuadrado(self, numeros_pseudoaleatorios, cantidad_intervalos):
+    def obtener_intervalos(self, cantidad_intervalos):
 
         # Genero lista de intervalos
         intervalos = []
@@ -52,11 +52,45 @@ class ControladorGeneradorNumerosPseudoaleatorios:
             max_intervalo = Decimal(min_intervalo + paso).quantize(SIXPLACES)
             intervalos.append((min_intervalo, max_intervalo))
 
+        return intervalos
+
+    def generar_histograma(self, numeros_pseudoaleatorios, intervalos):
+
+        # Creo grafico
+        fig, ax = plt.subplots()
+
+        cantidad_intervalos = len(intervalos)
+        n_bins = cantidad_intervalos
+        x = numeros_pseudoaleatorios
+
+        ax.hist(x, n_bins, range=(0, 1), rwidth=0.8, color="navy", label="Frecuencias observadas")
+        ax.legend(prop={"size": 8})
+        ax.set_title("Histograma")
+
+        xticks = []
+        xticks_labels = []
+        for intervalo in intervalos:
+            media = (intervalo[0] + intervalo[1]) / 2
+            xticks.append(media)
+            if cantidad_intervalos <= 10:
+                xticks_labels.append(str(round(media, 2)))
+            else:
+                xticks_labels.append(str(round(media, 3)))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks_labels, rotation=45)
+
+        plt.xlabel("Valores")
+        plt.ylabel("Cantidad")
+        plt.show()
+
+    def realizar_test_chi_cuadrado(self, numeros_pseudoaleatorios, intervalos):
+
         # Ordeno lista de numeros pseudoaleatorios para facilitar el calculo de frecuencias por intervalo, optimizando
         # el procesamiento con un algoritmo de ordenamiento de O(n * log n)
         numeros_pseudoaleatorios = sorting.merge(numeros_pseudoaleatorios)
 
         # Calculo frecuencias por intervalos
+        cantidad_intervalos = len(intervalos)
         frecuencias_x_intervalo = [0] * cantidad_intervalos
         index = 0
         for numero_pseudoaleatorio in numeros_pseudoaleatorios:
@@ -85,30 +119,3 @@ class ControladorGeneradorNumerosPseudoaleatorios:
 
         return chi_cuadrado_x_intervalo, chi_cuadrado
 
-    """
-    def generar_grafico_frecuencias(self, medias, frecuencias_observadas, frecuencias_esperadas):
-
-        # Creo grafico
-        x = np.arange(len(medias))
-        width = 0.35
-        fig, ax = plt.subplots()
-        rects1 = ax.bar(x - width / 2, frecuencias_observadas, width, label="Observadas")
-        rects2 = ax.bar(x + width / 2, frecuencias_esperadas, width, label="Esperadas")
-
-        ax.set_ylabel("Cantidad")
-        ax.set_title("Frecuencias esperadas y observadas")
-        ax.set_xticks(x)
-        ax.set_xticklabels(medias)
-        ax.legend()
-
-        for rect in rects1:
-            height = rect.get_height()
-            ax.annotate("{}".format(height), xy=(rect.get_x() + rect.get_width() / 2, height), xytext=(0, 3),
-                        textcoords="offset points", ha="center", va="bottom")
-        for rect in rects2:
-            height = rect.get_height()
-            ax.annotate("{}".format(height), xy=(rect.get_x() + rect.get_width() / 2, height), xytext=(0, 3),
-                        textcoords="offset points", ha="center", va="bottom")
-        fig.tight_layout()
-        plt.show()
-    """

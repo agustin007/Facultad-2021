@@ -16,6 +16,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
     """ Constructor """
 
     def __init__(self):
+
         # Genero ventana a partir de ui y creo controlador
         QMainWindow.__init__(self)
         uic.loadUi(Ruta.generar_ruta("interfaz/ventana_generador_numeros_pseudoaleatorios.ui"), self)
@@ -40,6 +41,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
     """ Acciones """
 
     def accion_seleccionar_metodo(self):
+
         # Activo o desactivo inputs dependiendo del metodo elegido
         metodo = self.cmb_metodo_generacion.itemData(self.cmb_metodo_generacion.currentIndex())
         if metodo == 0:
@@ -64,6 +66,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
             self.txt_m.setEnabled(False)
 
     def accion_generar_numeros(self):
+
         # Obtengo metodo
         metodo = self.cmb_metodo_generacion.itemData(self.cmb_metodo_generacion.currentIndex())
 
@@ -152,12 +155,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.cargar_tabla_numeros_pseudoaleatorios()
 
     def accion_generar_histograma(self):
-        """
-        # Muestro grafico de frecuencias
-        self.controlador.generar_grafico_frecuencias(medias, observadas, esperadas)
-        """
 
-    def accion_test_chi_cuadrado(self):
         # Valido que se hayan generado numeros pseusoaleatorios con anterioridad
         if len(self.numeros_pseudoaleatorios) == 0:
             self.mostrar_mensaje("Error", "Primero debe generar los números pseusoaleatorios")
@@ -166,14 +164,34 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         # Obtengo parametros
         cantidad_intervalos = self.cmb_cantidad_intervalos.itemData(self.cmb_cantidad_intervalos.currentIndex())
 
+        # Obtengo intervalos
+        intervalos = self.controlador.obtener_intervalos(cantidad_intervalos)
+
+        # Genero y muestro histograma
+        self.controlador.generar_histograma(self.numeros_pseudoaleatorios, intervalos)
+
+    def accion_test_chi_cuadrado(self):
+
+        # Valido que se hayan generado numeros pseusoaleatorios con anterioridad
+        if len(self.numeros_pseudoaleatorios) == 0:
+            self.mostrar_mensaje("Error", "Primero debe generar los números pseusoaleatorios")
+            return
+
+        # Obtengo parametros
+        cantidad_intervalos = self.cmb_cantidad_intervalos.itemData(self.cmb_cantidad_intervalos.currentIndex())
+
+        # Obtengo intervalos
+        intevalos = self.controlador.obtener_intervalos(cantidad_intervalos)
+
         # Realizo prueba de chi cuadrado
         chi_cuadrado_x_intervalo, chi_cuadrado = self.controlador.realizar_test_chi_cuadrado(
-            self.numeros_pseudoaleatorios, cantidad_intervalos)
+            self.numeros_pseudoaleatorios, intevalos)
 
         # Muestro resultados de prueba de chi cuadrado
         self.cargar_tabla_test_chi_cuadrado(chi_cuadrado_x_intervalo, chi_cuadrado)
 
     def accion_limpiar(self):
+
         # Limpio datos y elementos de interfaz
         self.limpiar_datos()
         self.limpiar_formulario()
@@ -182,6 +200,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
     """ Metodos """
 
     def preparar_interfaz(self):
+
         # Cargo combo box de metodo de generacion
         self.cmb_metodo_generacion.clear()
         self.cmb_metodo_generacion.addItem("Congruencial lineal", 0)
@@ -203,9 +222,11 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.grid_test_chi_cuadrado.setHorizontalHeaderLabels(["Intervalo", "fo", "fe", "C", "C (AC)"])
 
     def limpiar_datos(self):
+
         self.numeros_pseudoaleatorios = []
 
     def limpiar_formulario(self):
+
         # Limpio txts
         self.txt_semilla.clear()
         self.txt_a.clear()
@@ -224,6 +245,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.cmb_cantidad_intervalos.setCurrentIndex(0)
 
     def limpiar_tablas(self):
+
         # Limpio grilla de numeros generados
         self.grid_numeros_generados.clearSelection()
         self.grid_numeros_generados.setCurrentCell(-1, -1)
@@ -235,6 +257,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.grid_test_chi_cuadrado.setRowCount(0)
 
     def mostrar_mensaje(self, titulo, mensaje):
+
         # Muestro mensaje
         box = QMessageBox()
         box.setWindowTitle(titulo)
@@ -243,6 +266,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         box.exec_()
 
     def cargar_tabla_numeros_pseudoaleatorios(self):
+
         self.grid_numeros_generados.setRowCount(len(self.numeros_pseudoaleatorios))
         index = 0
         for numero_pseudoaleatorio in self.numeros_pseudoaleatorios:
