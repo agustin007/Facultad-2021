@@ -216,8 +216,9 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.grid_numeros_generados.setHorizontalHeaderLabels(["N° de orden", "Número aleatorio"])
 
         # Preparo tabla de test de chi cuadrado
-        self.grid_test_chi_cuadrado.setColumnCount(5)
-        self.grid_test_chi_cuadrado.setHorizontalHeaderLabels(["Intervalo", "fo", "fe", "C", "C (AC)"])
+        self.grid_test_chi_cuadrado.setColumnCount(7)
+        self.grid_test_chi_cuadrado.setHorizontalHeaderLabels(["Intervalo", "fo", "fo (AC)", "fe", "fe (AC)", "C",
+                                                               "C (AC)"])
 
     def limpiar_datos(self):
 
@@ -288,16 +289,20 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
             intervalo_str = str(chi_cuadrado_intervalo.get("intervalo")[0]).replace(".", ",") + " - " + \
                             str(chi_cuadrado_intervalo.get("intervalo")[1]).replace(".", ",")
             fo_str = str(chi_cuadrado_intervalo.get("fo")).replace(".", ",")
+            fo_acum_str = str(chi_cuadrado_intervalo.get("fo_acum")).replace(".", ",")
             fe_str = str(chi_cuadrado_intervalo.get("fe")).replace(".", ",")
+            fe_acum_str = str(chi_cuadrado_intervalo.get("fe_acum")).replace(".", ",")
             c_str = str(chi_cuadrado_intervalo.get("c")).replace(".", ",")
             c_acum_str = str(chi_cuadrado_intervalo.get("c_acum")).replace(".", ",")
 
             # Agrego fila a tabla
             self.grid_test_chi_cuadrado.setItem(index, 0, QTableWidgetItem(intervalo_str))
             self.grid_test_chi_cuadrado.setItem(index, 1, QTableWidgetItem(fo_str))
-            self.grid_test_chi_cuadrado.setItem(index, 2, QTableWidgetItem(fe_str))
-            self.grid_test_chi_cuadrado.setItem(index, 3, QTableWidgetItem(c_str))
-            self.grid_test_chi_cuadrado.setItem(index, 4, QTableWidgetItem(c_acum_str))
+            self.grid_test_chi_cuadrado.setItem(index, 2, QTableWidgetItem(fo_acum_str))
+            self.grid_test_chi_cuadrado.setItem(index, 3, QTableWidgetItem(fe_str))
+            self.grid_test_chi_cuadrado.setItem(index, 4, QTableWidgetItem(fe_acum_str))
+            self.grid_test_chi_cuadrado.setItem(index, 5, QTableWidgetItem(c_str))
+            self.grid_test_chi_cuadrado.setItem(index, 6, QTableWidgetItem(c_acum_str))
             index += 1
 
         self.mostrar_mensaje("Test de Chi Cuadrado",

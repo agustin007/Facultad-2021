@@ -101,16 +101,22 @@ class ControladorGeneradorNumerosPseudoaleatorios:
         # en una variable
         chi_cuadrado_x_intervalo = []
         fe = len(numeros_pseudoaleatorios) / cantidad_intervalos
+        fo_acum = 0
+        fe_acum = 0
         c_acum = 0
         for i in range(0, cantidad_intervalos):
             intervalo = (intervalos[i][0].quantize(TWOPLACES), intervalos[i][1].quantize(TWOPLACES))
             fo = frecuencias_x_intervalo[i]
+            fo_acum += fo
+            fe_acum += fe
             c = ((fo - fe) ** 2) / fe
             c_acum += c
             chi_cuadrado_x_intervalo.append({
                 "intervalo": intervalo,
                 "fo": fo,
+                "fo_acum": round(fo_acum, 4),
                 "fe": round(fe, 4),
+                "fe_acum": round(fe_acum, 4),
                 "c": round(c, 4),
                 "c_acum": round(c_acum, 4)
             })
