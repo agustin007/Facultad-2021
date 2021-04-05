@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from PyQt5 import uic
 from dominio.controlador_generador_numeros_pseudoaleatorios import ControladorGeneradorNumerosPseudoaleatorios
-from soporte.validador_decimales import ValidadorDecimales
 from soporte.validador_enteros import ValidadorEnteros
 from soporte.ruta import Ruta
 
@@ -23,12 +22,11 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
         self.controlador = ControladorGeneradorNumerosPseudoaleatorios()
 
         # Agrego validadores a los campos
-        validador_decimales = ValidadorDecimales(12, 4)
         validador_enteros = ValidadorEnteros(12)
-        self.txt_semilla.setValidator(validador_decimales)
-        self.txt_a.setValidator(validador_decimales)
-        self.txt_c.setValidator(validador_decimales)
-        self.txt_m.setValidator(validador_decimales)
+        self.txt_semilla.setValidator(validador_enteros)
+        self.txt_a.setValidator(validador_enteros)
+        self.txt_c.setValidator(validador_enteros)
+        self.txt_m.setValidator(validador_enteros)
         self.txt_cantidad_numeros.setValidator(validador_enteros)
 
         # Conecto los botones con los eventos
@@ -89,8 +87,8 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
 
         # Valido parametros dependiendo del metodo
         if metodo == 0:
-            if semilla is None or semilla < 0:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor o igual a cero")
+            if semilla is None or semilla <= 0:
+                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor a cero")
                 return
             if a is None or a <= 0:
                 self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser mayor a cero")
@@ -113,8 +111,8 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
             if cantidad_numeros is None or cantidad_numeros <= 0:
                 self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
         elif metodo == 1:
-            if semilla is None or semilla < 0:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor o igual a cero")
+            if semilla is None or semilla <= 0:
+                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor a cero")
                 return
             if a is None or a <= 0:
                 self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser mayor a cero")
