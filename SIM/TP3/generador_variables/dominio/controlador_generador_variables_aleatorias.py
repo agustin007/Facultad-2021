@@ -1,5 +1,6 @@
 import random
 import sorting
+from scipy import stats
 import matplotlib.pyplot as plt
 from soporte.helper import *
 
@@ -37,32 +38,35 @@ class ControladorGeneradorVariablesAleatorias:
 
         return variables_generadas
 
-    """
-    def obtener_intervalos(self, cantidad_intervalos):
+    def ordenar_variables_aleatorias(self, variables_aleatorias):
+
+        # Ordeno lista de variables aleatorias para facilitar la obtencion de mínimo y máximo y obtención de frecuencias
+        # por intervalo, optimizando el procesamiento con un algoritmo de ordenamiento de O(n * log n)
+        return sorting.merge(variables_aleatorias)
+
+    def obtener_intervalos(self, cantidad_intervalos, minimo, maximo):
 
         # Genero lista de intervalos
         intervalos = []
-        max_intervalo = 0
-        paso = Decimal(1 / cantidad_intervalos).quantize(SIXPLACES)
+        max_intervalo = minimo
+        paso = Decimal((maximo - minimo) / cantidad_intervalos).quantize(SIXPLACES)
         for i in range(0, cantidad_intervalos):
             min_intervalo = Decimal(max_intervalo).quantize(SIXPLACES)
             max_intervalo = Decimal(min_intervalo + paso).quantize(SIXPLACES)
             intervalos.append((min_intervalo, max_intervalo))
 
         return intervalos
-    """
 
-    """
-    def generar_histograma(self, numeros_pseudoaleatorios, intervalos):
+    def generar_histograma(self, variables_aleatorias, intervalos, minimo, maximo):
 
         # Creo grafico
         fig, ax = plt.subplots()
 
         cantidad_intervalos = len(intervalos)
         n_bins = cantidad_intervalos
-        x = numeros_pseudoaleatorios
+        x = variables_aleatorias
 
-        ax.hist(x, n_bins, range=(0, 1), rwidth=0.8, color="navy", label="Frecuencias observadas")
+        ax.hist(x, n_bins, range=(minimo, maximo), rwidth=0.8, color="navy", label="Frecuencias observadas")
         ax.legend(prop={"size": 8})
         ax.set_title("Histograma")
 
@@ -71,59 +75,62 @@ class ControladorGeneradorVariablesAleatorias:
         for intervalo in intervalos:
             media = (intervalo[0] + intervalo[1]) / 2
             xticks.append(media)
-            if cantidad_intervalos <= 10:
-                xticks_labels.append(str(round(media, 2)))
-            else:
-                xticks_labels.append(str(round(media, 3)))
+            xticks_labels.append(str(round(media, 2)))
         ax.set_xticks(xticks)
         ax.set_xticklabels(xticks_labels, rotation=45)
 
         plt.xlabel("Valores")
         plt.ylabel("Cantidad")
         plt.show()
-    """
 
-    """
-    def realizar_test_chi_cuadrado(self, numeros_pseudoaleatorios, intervalos):
-
-        # Ordeno lista de numeros pseudoaleatorios para facilitar el calculo de frecuencias por intervalo, optimizando
-        # el procesamiento con un algoritmo de ordenamiento de O(n * log n)
-        numeros_pseudoaleatorios = sorting.merge(numeros_pseudoaleatorios)
-
-        # Calculo frecuencias por intervalos
+    def obtener_frecuencias_por_intervalos(self, variables_aleatorias, parametros_variables_aleatorias, intervalos):
+    
+        # Calculo frecuencias observadas por intervalo
         cantidad_intervalos = len(intervalos)
-        frecuencias_x_intervalo = [0] * cantidad_intervalos
+        frecuencias_observadas_x_intervalo = [0] * cantidad_intervalos
         index = 0
-        for numero_pseudoaleatorio in numeros_pseudoaleatorios:
-            if not (intervalos[index][0] <= numero_pseudoaleatorio < intervalos[index][1]):
+        for variable_aleatoria in variables_aleatorias:
+            if not (intervalos[index][0] <= variable_aleatoria < intervalos[index][1]):
                 index += 1
-            frecuencias_x_intervalo[index] += 1
+            frecuencias_observadas_x_intervalo[index] += 1
 
-        # Genero una lista de diccionarios con el calculo de la prueba de chi cuadrado por intervalo y guardo el final
-        # en una variable
-        chi_cuadrado_x_intervalo = []
-        fe = len(numeros_pseudoaleatorios) / cantidad_intervalos
+        # Calculo frecuencias esperadas por intervalo
+        distribucion = parametros_variables_aleatorias.get("distribucion")
+        if distribucion == 0:
+            fe = Decimal(len(variables_aleatorias) / cantidad_intervalos)
+            frecuencias_esperadas_x_intervalo = [fe] * cantidad_intervalos
+        else:
+            frecuencias_esperadas_x_intervalo = [None] * cantidad_intervalos
+            for i in range(0, cantidad_intervalos):
+                intervalo = intervalos[i]
+                if distribucion == 1:
+                    mu = parametros_variables_aleatorias.get("mu")
+                    sigma = parametros_variables_aleatorias.get("sigma")
+                    fe = Decimal((stats.norm(mu, sigma).cdf(float(intervalo[1])) -
+                                  stats.norm(mu, sigma).cdf(float(intervalo[0]))) * len(variables_aleatorias))
+                else:
+                    lambd = parametros_variables_aleatorias.get("lambda")
+                    fe = Decimal((stats.expon(0, 1 / lambd).cdf(float(intervalo[1])) -
+                                  stats.expon(0, 1 / lambd).cdf(float(intervalo[0]))) * len(variables_aleatorias))
+                frecuencias_esperadas_x_intervalo[i] = fe
+
+        # Genero una lista de diccionarios con las frecuencias observadas y esperadas por intervalo
+        frecuencias_x_intervalo = []
         fo_acum = 0
         fe_acum = 0
-        c_acum = 0
         for i in range(0, cantidad_intervalos):
             intervalo = (intervalos[i][0].quantize(TWOPLACES), intervalos[i][1].quantize(TWOPLACES))
-            fo = frecuencias_x_intervalo[i]
+            fo = frecuencias_observadas_x_intervalo[i]
             fo_acum += fo
+            fe = frecuencias_esperadas_x_intervalo[i]
             fe_acum += fe
-            c = ((fo - fe) ** 2) / fe
-            c_acum += c
-            chi_cuadrado_x_intervalo.append({
+            frecuencias_x_intervalo.append({
                 "intervalo": intervalo,
                 "fo": fo,
                 "fo_acum": round(fo_acum, 4),
-                "fe": round(fe, 4),
+                "fe": fe.quantize(FOURPLACES),
                 "fe_acum": round(fe_acum, 4),
-                "c": round(c, 4),
-                "c_acum": round(c_acum, 4)
             })
-        chi_cuadrado = round(c_acum, 4)
 
-        return chi_cuadrado_x_intervalo, chi_cuadrado
-    """
+        return frecuencias_x_intervalo
 

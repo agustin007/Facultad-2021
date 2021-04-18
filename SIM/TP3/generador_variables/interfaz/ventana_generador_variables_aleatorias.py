@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from dominio.controlador_generador_variables_aleatorias import ControladorGeneradorVariablesAleatorias
 from soporte.validador_enteros import ValidadorEnteros
 from soporte.validador_decimales import ValidadorDecimales
@@ -12,6 +12,7 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
 
     controlador = None
     variables_aleatorias = []
+    parametros_variables_aleatorias = {}
 
     """ Constructor """
 
@@ -24,7 +25,7 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
 
         # Agrego validadores a los campos
         validador_decimales_negativos = ValidadorDecimales(12, 4, True)
-        validador_decimales = ValidadorDecimales(12)
+        validador_decimales = ValidadorDecimales(12, 4)
         validador_enteros = ValidadorEnteros(12)
         self.txt_a.setValidator(validador_decimales_negativos)
         self.txt_b.setValidator(validador_decimales_negativos)
@@ -36,7 +37,7 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         # Conecto los botones con los eventos
         self.cmb_distribucion.currentIndexChanged.connect(self.accion_seleccionar_distribucion)
         self.btn_generar_variables.clicked.connect(self.accion_generar_variables)
-        # self.btn_generar_histograma.clicked.connect(self.accion_generar_histograma)
+        self.btn_generar_histograma.clicked.connect(self.accion_generar_histograma)
         self.btn_limpiar.clicked.connect(self.accion_limpiar)
 
     """ Acciones """
@@ -108,6 +109,9 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
             if b is None:
                 self.mostrar_mensaje("Error", "El parámetro \"b\" no puede ser vacío")
                 return
+            if a >= b:
+                self.mostrar_mensaje("Error", "El parámetro \"a\" no puede ser mayor o igual al parámetro \"b\"")
+                return
             if cantidad_variables is None or cantidad_variables <= 0:
                 self.mostrar_mensaje("Error", "La cantidad de variables tiene que ser mayor a cero")
                 return
@@ -135,12 +139,26 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         # Genero variables aleatorias dependiendo de la distribución seleccionada
         if distribucion == 0:
             self.variables_aleatorias = self.controlador.generar_variables_aleatorias_uniforme(cantidad_variables, a, b)
+            self.parametros_variables_aleatorias = {
+                "distribucion": distribucion,
+                "a": a,
+                "b": b
+            }
         elif distribucion == 1:
             self.variables_aleatorias = self.controlador.generar_variables_aleatorias_normal(cantidad_variables, mu,
                                                                                              sigma)
+            self.parametros_variables_aleatorias = {
+                "distribucion": distribucion,
+                "mu": mu,
+                "sigma": sigma
+            }
         elif distribucion == 2:
             self.variables_aleatorias = self.controlador.generar_variables_aleatorias_exponencial(cantidad_variables,
                                                                                                   lambd)
+            self.parametros_variables_aleatorias = {
+                "distribucion": distribucion,
+                "lambda": lambd
+            }
 
         # Limpio tablas
         self.limpiar_tablas()
@@ -148,23 +166,38 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         # Cargo tabla
         self.cargar_tabla_variables_aleatorias()
 
-    """
     def accion_generar_histograma(self):
 
-        # Valido que se hayan generado numeros pseusoaleatorios con anterioridad
-        if len(self.numeros_pseudoaleatorios) == 0:
-            self.mostrar_mensaje("Error", "Primero debe generar los números pseusoaleatorios")
+        # Valido que se hayan generado variables aleatorias con anterioridad
+        if len(self.variables_aleatorias) == 0:
+            self.mostrar_mensaje("Error", "Primero debe generar las variables aleatorias")
             return
 
         # Obtengo parametros
         cantidad_intervalos = self.cmb_cantidad_intervalos.itemData(self.cmb_cantidad_intervalos.currentIndex())
 
+        # Ordeno lista de variables aleatorias y obtengo el mínimo y el máximo
+        self.variables_aleatorias = self.controlador.ordenar_variables_aleatorias(self.variables_aleatorias)
+        if self.parametros_variables_aleatorias.get("distribucion") == 0:
+            minimo = self.parametros_variables_aleatorias.get("a")
+            maximo = self.parametros_variables_aleatorias.get("b")
+        elif self.parametros_variables_aleatorias.get("distribucion") == 1:
+            minimo = self.variables_aleatorias[0] - 0.0001
+            maximo = self.variables_aleatorias[len(self.variables_aleatorias) - 1] + 0.0001
+        else:
+            minimo = 0
+            maximo = self.variables_aleatorias[len(self.variables_aleatorias) - 1] + 0.0001
+
         # Obtengo intervalos
-        intervalos = self.controlador.obtener_intervalos(cantidad_intervalos)
+        intervalos = self.controlador.obtener_intervalos(cantidad_intervalos, minimo, maximo)
 
         # Genero y muestro histograma
-        self.controlador.generar_histograma(self.numeros_pseudoaleatorios, intervalos)
-    """
+        self.controlador.generar_histograma(self.variables_aleatorias, intervalos, minimo, maximo)
+
+        # Genero y muestro tabla de frecuencias
+        frecuencias_x_intervalo = self.controlador.obtener_frecuencias_por_intervalos(
+            self.variables_aleatorias, self.parametros_variables_aleatorias, intervalos)
+        self.cargar_tabla_frecuencias(frecuencias_x_intervalo)
 
     def accion_limpiar(self):
 
@@ -200,6 +233,7 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
     def limpiar_datos(self):
 
         self.variables_aleatorias = []
+        self.parametros_variables_aleatorias = {}
 
     def limpiar_formulario(self):
 
@@ -214,9 +248,9 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         # Activo txts
         self.txt_a.setEnabled(True)
         self.txt_b.setEnabled(True)
-        self.txt_mu.setEnabled(True)
-        self.txt_sigma.setEnabled(True)
-        self.txt_lambda.setEnabled(True)
+        self.txt_mu.setEnabled(False)
+        self.txt_sigma.setEnabled(False)
+        self.txt_lambda.setEnabled(False)
 
         # Selecciono opcion por defecto en combo boxs
         self.cmb_distribucion.setCurrentIndex(0)
@@ -258,38 +292,34 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
             self.grid_variables_generadas.setItem(index, 1, QTableWidgetItem(variable_aleatoria_str))
             index += 1
 
-    """
-    def cargar_tabla_frecuencias(self, chi_cuadrado_x_intervalo, chi_cuadrado):
+    def cargar_tabla_frecuencias(self, frecuencias_x_intervalo):
 
-        self.grid_test_chi_cuadrado.setRowCount(len(chi_cuadrado_x_intervalo))
+        self.grid_frecuencias.setRowCount(len(frecuencias_x_intervalo))
         index = 0
-        for chi_cuadrado_intervalo in chi_cuadrado_x_intervalo:
+        for frecuencias_intervalo in frecuencias_x_intervalo:
 
             # Obtengo datos en formato conveniente
-            intervalo_str = str(chi_cuadrado_intervalo.get("intervalo")[0]).replace(".", ",") + " - " + \
-                            str(chi_cuadrado_intervalo.get("intervalo")[1]).replace(".", ",")
-            fo_str = str(chi_cuadrado_intervalo.get("fo")).replace(".", ",")
-            fo_acum_str = str(chi_cuadrado_intervalo.get("fo_acum")).replace(".", ",")
-            fe_str = str(chi_cuadrado_intervalo.get("fe")).replace(".", ",")
-            fe_acum_str = str(chi_cuadrado_intervalo.get("fe_acum")).replace(".", ",")
-            c_str = str(chi_cuadrado_intervalo.get("c")).replace(".", ",")
-            c_acum_str = str(chi_cuadrado_intervalo.get("c_acum")).replace(".", ",")
+            if frecuencias_intervalo.get("intervalo")[0] >= 0:
+                minimo_intervalo = str(frecuencias_intervalo.get("intervalo")[0]).replace(".", ",")
+            else:
+                minimo_intervalo = "(" + str(frecuencias_intervalo.get("intervalo")[0]).replace(".", ",") + ")"
+            if frecuencias_intervalo.get("intervalo")[1] >= 0:
+                maximo_intervalo = str(frecuencias_intervalo.get("intervalo")[1]).replace(".", ",")
+            else:
+                maximo_intervalo = "(" + str(frecuencias_intervalo.get("intervalo")[1]).replace(".", ",") + ")"
+            intervalo_str = minimo_intervalo + " - " + maximo_intervalo
+            fo_str = str(frecuencias_intervalo.get("fo")).replace(".", ",")
+            fo_acum_str = str(frecuencias_intervalo.get("fo_acum")).replace(".", ",")
+            fe_str = str(frecuencias_intervalo.get("fe")).replace(".", ",")
+            fe_acum_str = str(frecuencias_intervalo.get("fe_acum")).replace(".", ",")
 
             # Agrego fila a tabla
-            self.grid_test_chi_cuadrado.setItem(index, 0, QTableWidgetItem(intervalo_str))
-            self.grid_test_chi_cuadrado.setItem(index, 1, QTableWidgetItem(fo_str))
-            self.grid_test_chi_cuadrado.setItem(index, 2, QTableWidgetItem(fo_acum_str))
-            self.grid_test_chi_cuadrado.setItem(index, 3, QTableWidgetItem(fe_str))
-            self.grid_test_chi_cuadrado.setItem(index, 4, QTableWidgetItem(fe_acum_str))
-            self.grid_test_chi_cuadrado.setItem(index, 5, QTableWidgetItem(c_str))
-            self.grid_test_chi_cuadrado.setItem(index, 6, QTableWidgetItem(c_acum_str))
+            self.grid_frecuencias.setItem(index, 0, QTableWidgetItem(intervalo_str))
+            self.grid_frecuencias.setItem(index, 1, QTableWidgetItem(fo_str))
+            self.grid_frecuencias.setItem(index, 2, QTableWidgetItem(fo_acum_str))
+            self.grid_frecuencias.setItem(index, 3, QTableWidgetItem(fe_str))
+            self.grid_frecuencias.setItem(index, 4, QTableWidgetItem(fe_acum_str))
             index += 1
-
-        self.mostrar_mensaje("Test de Chi Cuadrado",
-                             "El estadístico de prueba obtenido es %s. El mismo debe ser menor o igual al obtenido por "
-                             "tabla para que la hipótesis no se rechace"
-                             % str(chi_cuadrado).replace(".", ","))
-    """
 
     """ Eventos """
 

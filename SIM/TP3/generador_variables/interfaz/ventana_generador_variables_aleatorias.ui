@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>973</width>
+    <width>1123</width>
     <height>630</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>973</width>
+    <width>1123</width>
     <height>630</height>
    </size>
   </property>
@@ -1013,7 +1013,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>600</width>
+            <width>750</width>
             <height>250</height>
            </size>
           </property>
@@ -1038,12 +1038,12 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>600</width>
+            <width>750</width>
             <height>350</height>
            </size>
           </property>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>118</number>
+           <number>148</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
