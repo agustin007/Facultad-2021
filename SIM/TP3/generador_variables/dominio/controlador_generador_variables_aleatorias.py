@@ -6,40 +6,38 @@ from soporte.helper import *
 
 class ControladorGeneradorVariablesAleatorias:
 
-    def generar_numeros_pseudoaleatorios_congruencial_lineal(self, cantidad, semilla, a, c, m):
+    def generar_variables_aleatorias_uniforme(self, cantidad, a, b):
 
-        # Genero lista de numeros aleatorios
-        numeros_generados = []
-        xi = semilla
+        # Genero lista de variables aleatorias
+        variables_generadas = []
         for _ in range(0, cantidad):
-            xi = truncar((a * xi + c) % m, 4)
-            numero_pseualeatorio = truncar(xi / m, 4)
-            numeros_generados.append(numero_pseualeatorio)
+            variable_aleatoria = truncar(a + random.random() * (b - a), 4)
+            variables_generadas.append(variable_aleatoria)
 
-        return numeros_generados
+        return variables_generadas
 
-    def generar_numeros_pseudoaleatorios_congruencial_multiplicativo(self, cantidad, semilla, a, m):
+    def generar_variables_aleatorias_normal(self, cantidad, mu, sigma):
 
-        # Genero lista de numeros aleatorios
-        numeros_generados = []
-        xi = semilla
+        # Genero lista de variables aleatorias
+        variables_generadas = []
         for _ in range(0, cantidad):
-            xi = truncar((a * xi) % m, 4)
-            numero_pseualeatorio = truncar(xi / m, 4)
-            numeros_generados.append(numero_pseualeatorio)
+            z = math.sqrt(-2 * math.log(1 - random.random())) * math.cos(2 * math.pi * random.random())
+            variable_aleatoria = truncar(mu + z * sigma, 4)
+            variables_generadas.append(variable_aleatoria)
 
-        return numeros_generados
+        return variables_generadas
 
-    def generar_numeros_pseudoaleatorios_provisto_por_lenguaje(self, cantidad):
+    def generar_variables_aleatorias_exponencial(self, cantidad, lambd):
 
-        # Genero lista de numeros aleatorios
-        numeros_generados = []
+        # Genero lista de variables aleatorias
+        variables_generadas = []
         for _ in range(0, cantidad):
-            numero_pseualeatorio = truncar(random.random(), 4)
-            numeros_generados.append(numero_pseualeatorio)
+            variable_aleatoria = truncar(-1 / lambd * math.log(1 - random.random()), 4)
+            variables_generadas.append(variable_aleatoria)
 
-        return numeros_generados
+        return variables_generadas
 
+    """
     def obtener_intervalos(self, cantidad_intervalos):
 
         # Genero lista de intervalos
@@ -52,7 +50,9 @@ class ControladorGeneradorVariablesAleatorias:
             intervalos.append((min_intervalo, max_intervalo))
 
         return intervalos
+    """
 
+    """
     def generar_histograma(self, numeros_pseudoaleatorios, intervalos):
 
         # Creo grafico
@@ -81,7 +81,9 @@ class ControladorGeneradorVariablesAleatorias:
         plt.xlabel("Valores")
         plt.ylabel("Cantidad")
         plt.show()
+    """
 
+    """
     def realizar_test_chi_cuadrado(self, numeros_pseudoaleatorios, intervalos):
 
         # Ordeno lista de numeros pseudoaleatorios para facilitar el calculo de frecuencias por intervalo, optimizando
@@ -123,4 +125,5 @@ class ControladorGeneradorVariablesAleatorias:
         chi_cuadrado = round(c_acum, 4)
 
         return chi_cuadrado_x_intervalo, chi_cuadrado
+    """
 

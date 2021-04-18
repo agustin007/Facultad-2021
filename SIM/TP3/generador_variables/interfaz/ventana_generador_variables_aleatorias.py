@@ -31,11 +31,11 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         self.txt_mu.setValidator(validador_decimales_negativos)
         self.txt_sigma.setValidator(validador_decimales)
         self.txt_lambda.setValidator(validador_decimales)
-        self.txt_cantidad_numeros.setValidator(validador_enteros)
+        self.txt_cantidad_variables.setValidator(validador_enteros)
 
         # Conecto los botones con los eventos
         self.cmb_distribucion.currentIndexChanged.connect(self.accion_seleccionar_distribucion)
-        # self.btn_generar_variables.clicked.connect(self.accion_generar_variables)
+        self.btn_generar_variables.clicked.connect(self.accion_generar_variables)
         # self.btn_generar_histograma.clicked.connect(self.accion_generar_histograma)
         self.btn_limpiar.clicked.connect(self.accion_limpiar)
 
@@ -75,96 +75,78 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
             self.txt_lambda.clear()
             self.txt_lambda.setEnabled(True)
 
-    """
     def accion_generar_variables(self):
 
-        # Obtengo metodo
-        metodo = self.cmb_metodo_generacion.itemData(self.cmb_metodo_generacion.currentIndex())
+        # Obtengo distribución
+        distribucion = self.cmb_distribucion.itemData(self.cmb_distribucion.currentIndex())
 
         # Obtengo parametros verificando que no sean vacios
-        semilla = None
         a = None
-        c = None
-        m = None
-        cantidad_numeros = None
-        if self.txt_semilla.text() != "":
-            semilla = float(self.txt_semilla.text().replace(",", "."))
+        b = None
+        mu = None
+        sigma = None
+        lambd = None
+        cantidad_variables = None
         if self.txt_a.text() != "":
             a = float(self.txt_a.text().replace(",", "."))
-        if self.txt_c.text() != "":
-            c = float(self.txt_c.text().replace(",", "."))
-        if self.txt_m.text() != "":
-            m = float(self.txt_m.text().replace(",", "."))
-        if self.txt_cantidad_numeros.text() != "":
-            cantidad_numeros = int(self.txt_cantidad_numeros.text())
+        if self.txt_b.text() != "":
+            b = float(self.txt_b.text().replace(",", "."))
+        if self.txt_mu.text() != "":
+            mu = float(self.txt_mu.text().replace(",", "."))
+        if self.txt_sigma.text() != "":
+            sigma = float(self.txt_sigma.text().replace(",", "."))
+        if self.txt_lambda.text() != "":
+            lambd = float(self.txt_lambda.text().replace(",", "."))
+        if self.txt_cantidad_variables.text() != "":
+            cantidad_variables = int(self.txt_cantidad_variables.text())
 
-        # Valido parametros dependiendo del metodo
-        if metodo == 0:
-            if semilla is None or semilla <= 0:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor a cero")
+        # Valido parametros dependiendo de la distribución
+        if distribucion == 0:
+            if a is None:
+                self.mostrar_mensaje("Error", "El parámetro \"a\" no puede ser vacío")
                 return
-            if a is None or a <= 0:
-                self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser mayor a cero")
+            if b is None:
+                self.mostrar_mensaje("Error", "El parámetro \"b\" no puede ser vacío")
                 return
-            if c is None or c <= 0:
-                self.mostrar_mensaje("Error", "La constante \"c\" tiene que ser mayor a cero")
+            if cantidad_variables is None or cantidad_variables <= 0:
+                self.mostrar_mensaje("Error", "La cantidad de variables tiene que ser mayor a cero")
                 return
-            if m is None or m <= 0:
-                self.mostrar_mensaje("Error", "La constante \"m\" tiene que ser mayor a cero")
+        elif distribucion == 1:
+            if mu is None:
+                self.mostrar_mensaje("Error", "El parámetro \"mu\" no puede ser vacío")
                 return
-            if semilla >= m:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser menor a la constante \"m\"")
+            if sigma is None or sigma <= 0:
+                self.mostrar_mensaje("Error", "El parámetro \"sigma\" tiene que ser mayor a cero")
                 return
-            if a >= m:
-                self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser menor a la constante \"m\"")
+            if cantidad_variables is None or cantidad_variables <= 0:
+                self.mostrar_mensaje("Error", "La cantidad de variables tiene que ser mayor a cero")
                 return
-            if c >= m:
-                self.mostrar_mensaje("Error", "La constante \"c\" tiene que ser menor a la constante \"m\"")
+        elif distribucion == 2:
+            if lambd is None or lambd <= 0:
+                self.mostrar_mensaje("Error", "El parámetro \"lambda\" tiene que ser mayor a cero")
                 return
-            if cantidad_numeros is None or cantidad_numeros <= 0:
-                self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
-        elif metodo == 1:
-            if semilla is None or semilla <= 0:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser mayor a cero")
+            if cantidad_variables is None or cantidad_variables <= 0:
+                self.mostrar_mensaje("Error", "La cantidad de variables tiene que ser mayor a cero")
                 return
-            if a is None or a <= 0:
-                self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser mayor a cero")
-                return
-            if m is None or m <= 0:
-                self.mostrar_mensaje("Error", "La constante \"m\" tiene que ser mayor a cero")
-                return
-            if semilla >= m:
-                self.mostrar_mensaje("Error", "La semilla tiene que ser menor a la constante \"m\"")
-                return
-            if a >= m:
-                self.mostrar_mensaje("Error", "La constante \"a\" tiene que ser menor a la constante \"m\"")
-                return
-            if cantidad_numeros is None or cantidad_numeros <= 0:
-                self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
-        elif metodo == 2:
-            if cantidad_numeros is None or cantidad_numeros <= 0:
-                self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
 
         # Limpio datos
         self.limpiar_datos()
 
-        # Genero numeros pseusoaleatorios dependiendo del metodo seleccionado
-        if metodo == 0:
-            self.numeros_pseudoaleatorios = self.controlador.generar_numeros_pseudoaleatorios_congruencial_lineal(
-                cantidad_numeros, semilla, a, c, m)
-        elif metodo == 1:
-            self.numeros_pseudoaleatorios = self.controlador.generar_numeros_pseudoaleatorios_congruencial_multiplicativo(
-                cantidad_numeros, semilla, a, m)
-        elif metodo == 2:
-            self.numeros_pseudoaleatorios = self.controlador.generar_numeros_pseudoaleatorios_provisto_por_lenguaje(
-                cantidad_numeros)
+        # Genero variables aleatorias dependiendo de la distribución seleccionada
+        if distribucion == 0:
+            self.variables_aleatorias = self.controlador.generar_variables_aleatorias_uniforme(cantidad_variables, a, b)
+        elif distribucion == 1:
+            self.variables_aleatorias = self.controlador.generar_variables_aleatorias_normal(cantidad_variables, mu,
+                                                                                             sigma)
+        elif distribucion == 2:
+            self.variables_aleatorias = self.controlador.generar_variables_aleatorias_exponencial(cantidad_variables,
+                                                                                                  lambd)
 
         # Limpio tablas
         self.limpiar_tablas()
 
         # Cargo tabla
-        self.cargar_tabla_numeros_pseudoaleatorios()
-    """
+        self.cargar_tabla_variables_aleatorias()
 
     """
     def accion_generar_histograma(self):
@@ -227,7 +209,7 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         self.txt_mu.clear()
         self.txt_sigma.clear()
         self.txt_lambda.clear()
-        self.txt_cantidad_numeros.clear()
+        self.txt_cantidad_variables.clear()
 
         # Activo txts
         self.txt_a.setEnabled(True)
@@ -261,22 +243,20 @@ class VentanaGeneradorVariablesAleatorias(QMainWindow):
         box.setStandardButtons(QMessageBox.Ok)
         box.exec_()
 
-    """
-    def cargar_tabla_numeros_pseudoaleatorios(self):
+    def cargar_tabla_variables_aleatorias(self):
 
-        self.grid_numeros_generados.setRowCount(len(self.numeros_pseudoaleatorios))
+        self.grid_variables_generadas.setRowCount(len(self.variables_aleatorias))
         index = 0
-        for numero_pseudoaleatorio in self.numeros_pseudoaleatorios:
+        for variable_aleatoria in self.variables_aleatorias:
 
             # Obtengo datos en formato conveniente
             nro_orden_str = str(index + 1)
-            numero_pseudoaleatorio_str = str(numero_pseudoaleatorio).replace(".", ",")
+            variable_aleatoria_str = str(variable_aleatoria).replace(".", ",")
 
             # Agrego fila a tabla
-            self.grid_numeros_generados.setItem(index, 0, QTableWidgetItem(nro_orden_str))
-            self.grid_numeros_generados.setItem(index, 1, QTableWidgetItem(numero_pseudoaleatorio_str))
+            self.grid_variables_generadas.setItem(index, 0, QTableWidgetItem(nro_orden_str))
+            self.grid_variables_generadas.setItem(index, 1, QTableWidgetItem(variable_aleatoria_str))
             index += 1
-    """
 
     """
     def cargar_tabla_frecuencias(self, chi_cuadrado_x_intervalo, chi_cuadrado):

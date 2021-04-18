@@ -741,9 +741,9 @@
         <item>
          <layout class="QHBoxLayout" name="lyt_horizontal_2_6">
           <item>
-           <widget class="QLabel" name="lbl_cantidad_numeros">
+           <widget class="QLabel" name="lbl_cantidad_variables">
             <property name="text">
-             <string>Cantidad de números</string>
+             <string>Cantidad de variables</string>
             </property>
            </widget>
           </item>
@@ -761,7 +761,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="txt_cantidad_numeros">
+           <widget class="QLineEdit" name="txt_cantidad_variables">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
