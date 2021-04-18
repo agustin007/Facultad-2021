@@ -110,6 +110,7 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
                 return
             if cantidad_numeros is None or cantidad_numeros <= 0:
                 self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
+                return
         elif metodo == 1:
             if semilla is None or semilla <= 0:
                 self.mostrar_mensaje("Error", "La semilla tiene que ser mayor a cero")
@@ -128,9 +129,11 @@ class VentanaGeneradorNumerosPseudoaleatorios(QMainWindow):
                 return
             if cantidad_numeros is None or cantidad_numeros <= 0:
                 self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
+                return
         elif metodo == 2:
             if cantidad_numeros is None or cantidad_numeros <= 0:
                 self.mostrar_mensaje("Error", "La cantidad de números tiene que ser mayor a cero")
+                return
 
         # Limpio datos
         self.limpiar_datos()
