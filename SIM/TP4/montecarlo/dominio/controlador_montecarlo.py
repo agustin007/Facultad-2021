@@ -1,0 +1,6 @@
+
+
+class ControladorMontecarlo:
+
+    pass
+
