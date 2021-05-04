@@ -488,16 +488,6 @@
     <property name="horizontalSpacing">
      <number>5</number>
     </property>
-    <item row="1" column="0">
-     <widget class="QTableWidget" name="grid_semanas_simuladas">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>455</height>
-       </size>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="lyt_vertical_0_0">
       <item>
@@ -743,7 +733,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -793,7 +783,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -843,7 +833,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -893,7 +883,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -990,7 +980,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -1040,7 +1030,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -1090,7 +1080,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -1187,7 +1177,7 @@
                </size>
               </property>
               <property name="maxLength">
-               <number>2</number>
+               <number>3</number>
               </property>
              </widget>
             </item>
@@ -1524,6 +1514,16 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTableWidget" name="grid_semanas_simuladas">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>455</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
