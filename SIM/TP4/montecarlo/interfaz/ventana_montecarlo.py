@@ -1,4 +1,5 @@
 from PyQt5 import uic
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from dominio.controlador_montecarlo import ControladorMontecarlo
 from soporte.validador_enteros import ValidadorEnteros
@@ -39,6 +40,7 @@ class VentanaMontecarlo(QMainWindow):
         self.txt_costo_tenencia.setValidator(validador_4_enteros)
         self.txt_costo_pedido.setValidator(validador_4_enteros)
         self.txt_costo_agotamiento.setValidator(validador_4_enteros)
+        self.txt_stock_inicial.setValidator(validador_4_enteros)
         self.txt_stock_minimo.setValidator(validador_4_enteros)
 
         # Conecto los botones con los eventos
@@ -71,6 +73,7 @@ class VentanaMontecarlo(QMainWindow):
         costo_tenencia = None
         costo_pedido = None
         costo_agotamiento = None
+        stock_inicial = None
         stock_minimo = None
         if self.txt_cantidad_semanas.text() != "":
             cantidad_semanas = int(self.txt_cantidad_semanas.text())
@@ -100,6 +103,8 @@ class VentanaMontecarlo(QMainWindow):
             costo_pedido = int(self.txt_costo_pedido.text())
         if self.txt_costo_agotamiento.text() != "":
             costo_agotamiento = int(self.txt_costo_agotamiento.text())
+        if self.txt_stock_inicial.text() != "":
+            stock_inicial = int(self.txt_stock_inicial.text())
         if self.txt_stock_minimo.text() != "":
             stock_minimo = int(self.txt_stock_minimo.text())
 
@@ -121,7 +126,7 @@ class VentanaMontecarlo(QMainWindow):
             self.mostrar_mensaje("Error", "La semana hasta la cuál mostrar la simulación no puede ser mayor a la "
                                           "cantidad de semanas simuladas")
             return
-        if semana_hasta > semana_desde:
+        if semana_hasta < semana_desde:
             self.mostrar_mensaje("Error", "La semana desde la cuál mostrar la simulación no puede ser mayor a la "
                                           "semana hasta la cuál mostrar la simulación")
             return
@@ -171,6 +176,10 @@ class VentanaMontecarlo(QMainWindow):
         if costo_agotamiento is None:
             self.mostrar_mensaje("Error", "El costo de agotamiento de las bicicletas no puede ser vacío")
             return
+        if stock_inicial is None:
+            self.mostrar_mensaje("Error", "El stock inicial de bicicletas con el cuál arrancar la simulación no puede "
+                                          "ser vacío")
+            return
         if stock_minimo is None:
             self.mostrar_mensaje("Error", "El stock mínimo de bicicletas que debe haber para verificar si debe "
                                           "realizarse o no un pedido no puede ser vacío")
@@ -184,7 +193,8 @@ class VentanaMontecarlo(QMainWindow):
                                                                   probabilidad_2_tiempo_entrega,
                                                                   probabilidad_3_tiempo_entrega,
                                                                   probabilidad_bicicleta_daniada, costo_tenencia,
-                                                                  costo_pedido, costo_agotamiento, stock_minimo)
+                                                                  costo_pedido, costo_agotamiento, stock_inicial,
+                                                                  stock_minimo)
 
         # Cargo tabla
         self.cargar_tabla_semanas_simuladas()
@@ -194,8 +204,12 @@ class VentanaMontecarlo(QMainWindow):
     def preparar_interfaz(self):
 
         # Preparo tabla de semanas simuladas
-        self.grid_semanas_simuladas.setColumnCount(17)
-        # self.grid_semanas_simuladas.setHorizontalHeaderLabels([])
+        self.grid_semanas_simuladas.setColumnCount(16)
+        self.grid_semanas_simuladas.setHorizontalHeaderLabels(["Semana", "RND", "Demanda", "RND", "Tiempo de entrega",
+                                                               "RND", "Bicicleta dañada", "S. próxima entrega",
+                                                               "Stock actual", "Ventas perdidas", "Costo tenencia",
+                                                               "Costo pedido", "Costo agotamiento", "Costo total",
+                                                               "Costo total acum.", "Costo promedio"])
 
     def limpiar_interfaz(self):
 
@@ -214,6 +228,7 @@ class VentanaMontecarlo(QMainWindow):
         self.txt_costo_tenencia.clear()
         self.txt_costo_pedido.clear()
         self.txt_costo_agotamiento.clear()
+        self.txt_stock_inicial.clear()
         self.txt_stock_minimo.clear()
 
         # Cargo valores por defecto en txts
@@ -228,6 +243,7 @@ class VentanaMontecarlo(QMainWindow):
         self.txt_costo_tenencia.setText("3")
         self.txt_costo_pedido.setText("20")
         self.txt_costo_agotamiento.setText("5")
+        self.txt_stock_inicial.setText("7")
         self.txt_stock_minimo.setText("2")
 
     def limpiar_tabla(self):
@@ -247,7 +263,54 @@ class VentanaMontecarlo(QMainWindow):
         box.exec_()
 
     def cargar_tabla_semanas_simuladas(self):
-        pass
+
+        self.grid_semanas_simuladas.setRowCount(len(self.semanas_simuladas))
+        index = 0
+        for semana_simulada in self.semanas_simuladas:
+            # Obtengo datos en formato conveniente
+
+            semana = str(semana_simulada.get("semana")) if semana_simulada.get("semana") is not None else ""
+            rnd_demanda = str(semana_simulada.get("rnd_demanda")).replace(".", ",") if semana_simulada.get(
+                "rnd_demanda") is not None else ""
+            demanda = str(semana_simulada.get("demanda")) if semana_simulada.get("demanda") is not None else ""
+            rnd_tiempo_entrega = str(semana_simulada.get("rnd_tiempo_entrega")).replace(".", ",") \
+                if semana_simulada.get("rnd_tiempo_entrega") is not None else ""
+            tiempo_entrega = str(semana_simulada.get("tiempo_entrega")) if semana_simulada.get("tiempo_entrega") \
+                is not None else ""
+            rnd_bicicleta_daniada = str(semana_simulada.get("rnd_bicicleta_daniada")).replace(".", ",") \
+                if semana_simulada.get("rnd_bicicleta_daniada") is not None else ""
+            bicicleta_daniada = "" if semana_simulada.get("bicicleta_daniada") is None else \
+                "Si" if semana_simulada.get("bicicleta_daniada") else "No"
+            semana_proxima_entrega = str(semana_simulada.get("semana_proxima_entrega")) \
+                if semana_simulada.get("semana_proxima_entrega") is not None else ""
+            stock = str(semana_simulada.get("stock")) if semana_simulada.get("stock") is not None else ""
+            ventas_perdidas = str(semana_simulada.get("ventas_perdidas")) if semana_simulada.get("ventas_perdidas") \
+                is not None else ""
+            costo_tenencia = "$ " + str(semana_simulada.get("costo_tenencia"))
+            costo_pedido = "$ " + str(semana_simulada.get("costo_pedido"))
+            costo_agotamiento = "$ " + str(semana_simulada.get("costo_agotamiento"))
+            costo_total = "$ " + str(semana_simulada.get("costo_total"))
+            costo_total_acumulado = "$ " + str(semana_simulada.get("costo_total_acumulado"))
+            costo_total_promedio = "$ " + str(semana_simulada.get("costo_total_promedio")).replace(".", ",")
+
+            # Agrego fila a tabla
+            self.grid_semanas_simuladas.setItem(index, 0, QTableWidgetItem(semana))
+            self.grid_semanas_simuladas.setItem(index, 1, QTableWidgetItem(rnd_demanda))
+            self.grid_semanas_simuladas.setItem(index, 2, QTableWidgetItem(demanda))
+            self.grid_semanas_simuladas.setItem(index, 3, QTableWidgetItem(rnd_tiempo_entrega))
+            self.grid_semanas_simuladas.setItem(index, 4, QTableWidgetItem(tiempo_entrega))
+            self.grid_semanas_simuladas.setItem(index, 5, QTableWidgetItem(rnd_bicicleta_daniada))
+            self.grid_semanas_simuladas.setItem(index, 6, QTableWidgetItem(bicicleta_daniada))
+            self.grid_semanas_simuladas.setItem(index, 7, QTableWidgetItem(semana_proxima_entrega))
+            self.grid_semanas_simuladas.setItem(index, 8, QTableWidgetItem(stock))
+            self.grid_semanas_simuladas.setItem(index, 9, QTableWidgetItem(ventas_perdidas))
+            self.grid_semanas_simuladas.setItem(index, 10, QTableWidgetItem(costo_tenencia))
+            self.grid_semanas_simuladas.setItem(index, 11, QTableWidgetItem(costo_pedido))
+            self.grid_semanas_simuladas.setItem(index, 12, QTableWidgetItem(costo_agotamiento))
+            self.grid_semanas_simuladas.setItem(index, 13, QTableWidgetItem(costo_total))
+            self.grid_semanas_simuladas.setItem(index, 14, QTableWidgetItem(costo_total_acumulado))
+            self.grid_semanas_simuladas.setItem(index, 15, QTableWidgetItem(costo_total_promedio))
+            index += 1
 
     """ Eventos """
 

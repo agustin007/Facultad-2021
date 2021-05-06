@@ -7,14 +7,8 @@
     <x>0</x>
     <y>0</y>
     <width>1198</width>
-    <height>711</height>
+    <height>806</height>
    </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>1198</width>
-    <height>711</height>
-   </size>
   </property>
   <property name="palette">
    <palette>
@@ -488,8 +482,30 @@
     <property name="horizontalSpacing">
      <number>5</number>
     </property>
+    <item row="1" column="0">
+     <widget class="QTableWidget" name="grid_semanas_simuladas">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>550</height>
+       </size>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>150</number>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="lyt_vertical_0_0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="lyt_horizontal_1_0">
         <property name="spacing">
@@ -499,6 +515,12 @@
          <layout class="QVBoxLayout" name="lyt_vertical_2_0">
           <item>
            <widget class="QLabel" name="lbl_parametros">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Parámetros generales</string>
             </property>
@@ -510,7 +532,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -654,6 +676,25 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -675,6 +716,12 @@
          <layout class="QVBoxLayout" name="lyt_vertical_2_1">
           <item>
            <widget class="QLabel" name="lbl_probabilidades_demanda">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Prob. demanda</string>
             </property>
@@ -686,7 +733,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -860,6 +907,9 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::MinimumExpanding</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>0</width>
@@ -901,6 +951,9 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -922,6 +975,12 @@
          <layout class="QVBoxLayout" name="lyt_vertical_2_2">
           <item>
            <widget class="QLabel" name="lbl_probabilidades_tiempo_entrega">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Prob. tiempo de entrega</string>
             </property>
@@ -933,7 +992,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1098,6 +1157,9 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -1119,6 +1181,12 @@
          <layout class="QVBoxLayout" name="lyt_vertical_2_3">
           <item>
            <widget class="QLabel" name="lbl_probabilidades_bicicleta_daniada">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Prob. de bicicleta dañada</string>
             </property>
@@ -1130,7 +1198,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1195,6 +1263,9 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -1216,6 +1287,12 @@
          <layout class="QVBoxLayout" name="lyt_vertical_2_4">
           <item>
            <widget class="QLabel" name="lbl_costos">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Costos por unidad</string>
             </property>
@@ -1227,7 +1304,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1365,6 +1442,9 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -1385,9 +1465,15 @@
         <item>
          <layout class="QVBoxLayout" name="lyt_vertical_2_5">
           <item>
-           <widget class="QLabel" name="lbl_realizacion_pedido">
+           <widget class="QLabel" name="lbl_inventario">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Realización de pedido</string>
+             <string>Inventario</string>
             </property>
            </widget>
           </item>
@@ -1397,7 +1483,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
+             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1408,7 +1494,44 @@
            </spacer>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QHBoxLayout" name="lyt_horizontal_3_14">
+            <item>
+             <widget class="QLabel" name="lbl_stock_inicial">
+              <property name="text">
+               <string>Stock inicial</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="separator_horizontal_14">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txt_stock_inicial">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="maxLength">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="lyt_horizontal_3_15">
             <item>
              <widget class="QLabel" name="lbl_stock_minimo">
               <property name="text">
@@ -1417,7 +1540,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="separator_horizontal_14">
+             <spacer name="separator_horizontal_15">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1455,6 +1578,9 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
@@ -1475,7 +1601,7 @@
        <number>5</number>
       </property>
       <item>
-       <spacer name="separator_horizontal_15">
+       <spacer name="separator_horizontal_16">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -1514,16 +1640,6 @@
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QTableWidget" name="grid_semanas_simuladas">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>455</height>
-       </size>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
