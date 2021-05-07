@@ -74,7 +74,7 @@ class ControladorMontecarlo:
             limite_tiempo_entrega_2 = limite_tiempo_entrega_1 + (self.probabilidad_2_tiempo_entrega / 100)
             if 0 < rnd_tiempo_entrega < limite_tiempo_entrega_1:
                 tiempo_entrega = 1
-            elif limite_tiempo_entrega_1 <= rnd_demanda < limite_tiempo_entrega_2:
+            elif limite_tiempo_entrega_1 <= rnd_tiempo_entrega < limite_tiempo_entrega_2:
                 tiempo_entrega = 2
             else:
                 tiempo_entrega = 3
@@ -144,7 +144,7 @@ class ControladorMontecarlo:
             "bicicleta_daniada": None,
             "semana_proxima_entrega": None,
             "stock": stock_inicial,
-            "ventas_perdidas": 0,
+            "ventas_perdidas": None,
             "costo_tenencia": 0,
             "costo_pedido": 0,
             "costo_agotamiento": 0,
@@ -154,7 +154,7 @@ class ControladorMontecarlo:
         }
 
         # Realizo simulación almacenando los vectores estados de las semanas de interés
-        dias_simulados = []
+        dias_simulados = [vector_estado]
         for i in range(1, cantidad_semanas + 1):
             vector_estado = self.simular_semana(vector_estado)
             if semana_desde <= i <= semana_hasta:
