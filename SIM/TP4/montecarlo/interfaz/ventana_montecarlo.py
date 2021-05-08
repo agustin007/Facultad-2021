@@ -1,5 +1,4 @@
 from PyQt5 import uic
-from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from dominio.controlador_montecarlo import ControladorMontecarlo
 from soporte.validador_enteros import ValidadorEnteros
