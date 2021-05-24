@@ -6,7 +6,6 @@ from soporte.ruta import Ruta
 
 
 class VentanaSistemaColas(QMainWindow):
-
     """ Atributos """
 
     controlador = None
@@ -25,22 +24,19 @@ class VentanaSistemaColas(QMainWindow):
         validador_6_enteros = ValidadorEnteros(6)
         validador_4_enteros = ValidadorEnteros(4)
         validador_3_enteros = ValidadorEnteros(3)
-        self.txt_cantidad_semanas.setValidator(validador_6_enteros)
-        self.txt_semana_desde.setValidator(validador_6_enteros)
-        self.txt_semana_hasta.setValidator(validador_6_enteros)
-        self.txt_probabilidad_0_demanda.setValidator(validador_3_enteros)
-        self.txt_probabilidad_1_demanda.setValidator(validador_3_enteros)
-        self.txt_probabilidad_2_demanda.setValidator(validador_3_enteros)
-        self.txt_probabilidad_3_demanda.setValidator(validador_3_enteros)
-        self.txt_probabilidad_1_tiempo_entrega.setValidator(validador_3_enteros)
-        self.txt_probabilidad_2_tiempo_entrega.setValidator(validador_3_enteros)
-        self.txt_probabilidad_3_tiempo_entrega.setValidator(validador_3_enteros)
-        self.txt_probabilidad_bicicleta_daniada.setValidator(validador_3_enteros)
-        self.txt_costo_tenencia.setValidator(validador_4_enteros)
-        self.txt_costo_pedido.setValidator(validador_4_enteros)
-        self.txt_costo_agotamiento.setValidator(validador_4_enteros)
-        self.txt_stock_inicial.setValidator(validador_4_enteros)
-        self.txt_stock_minimo.setValidator(validador_4_enteros)
+        self.txt_tiempo_simulacion.setValidator(validador_6_enteros)
+        self.txt_tiempo_desde.setValidator(validador_6_enteros)
+        self.txt_cantidad_iteraciones.setValidator(validador_6_enteros)
+        self.txt_tiempo_autos.setValidator(validador_3_enteros)
+        self.txt_probabilidad_chico_autos.setValidator(validador_3_enteros)
+        self.txt_probabilidad_grande_autos.setValidator(validador_3_enteros)
+        self.txt_probabilidad_utilitario_autos.setValidator(validador_3_enteros)
+        self.txt_probabilidad_1_tiempo_estacionamiento.setValidator(validador_3_enteros)
+        self.txt_probabilidad_2_tiempo_estacionamiento.setValidator(validador_3_enteros)
+        self.txt_probabilidad_3_tiempo_estacionamiento.setValidator(validador_3_enteros)
+        self.txt_probabilidad_4_tiempo_estacionamiento.setValidator(validador_3_enteros)
+        self.txt_cantidad_cabinas_cobro.setValidator(validador_4_enteros)
+        self.txt_tiempo_cobro.setValidator(validador_4_enteros)
 
         # Conecto los botones con los eventos
         self.btn_limpiar.clicked.connect(self.accion_limpiar)
@@ -51,157 +47,128 @@ class VentanaSistemaColas(QMainWindow):
     def accion_limpiar(self):
 
         # Restauro valores por defecto de interfaz y limpio tabla
-        self.semanas_simuladas = []
+        self.iteraciones_simuladas = []
+        self.preparar_tabla()
         self.limpiar_interfaz()
-        self.limpiar_tabla()
 
     def accion_simular(self):
 
         # Obtengo parametros verificando que no sean vacios
-        cantidad_semanas = None
-        semana_desde = None
-        semana_hasta = None
-        probabilidad_0_demanda = None
-        probabilidad_1_demanda = None
-        probabilidad_2_demanda = None
-        probabilidad_3_demanda = None
-        probabilidad_1_tiempo_entrega = None
-        probabilidad_2_tiempo_entrega = None
-        probabilidad_3_tiempo_entrega = None
-        probabilidad_bicicleta_daniada = None
-        costo_tenencia = None
-        costo_pedido = None
-        costo_agotamiento = None
-        stock_inicial = None
-        stock_minimo = None
-        if self.txt_cantidad_semanas.text() != "":
-            cantidad_semanas = int(self.txt_cantidad_semanas.text())
-        if self.txt_semana_desde.text() != "":
-            semana_desde = int(self.txt_semana_desde.text())
-        if self.txt_semana_hasta.text() != "":
-            semana_hasta = int(self.txt_semana_hasta.text())
-        if self.txt_probabilidad_0_demanda.text() != "":
-            probabilidad_0_demanda = int(self.txt_probabilidad_0_demanda.text())
-        if self.txt_probabilidad_1_demanda.text() != "":
-            probabilidad_1_demanda = int(self.txt_probabilidad_1_demanda.text())
-        if self.txt_probabilidad_2_demanda.text() != "":
-            probabilidad_2_demanda = int(self.txt_probabilidad_2_demanda.text())
-        if self.txt_probabilidad_3_demanda.text() != "":
-            probabilidad_3_demanda = int(self.txt_probabilidad_3_demanda.text())
-        if self.txt_probabilidad_1_tiempo_entrega.text() != "":
-            probabilidad_1_tiempo_entrega = int(self.txt_probabilidad_1_tiempo_entrega.text())
-        if self.txt_probabilidad_2_tiempo_entrega.text() != "":
-            probabilidad_2_tiempo_entrega = int(self.txt_probabilidad_2_tiempo_entrega.text())
-        if self.txt_probabilidad_3_tiempo_entrega.text() != "":
-            probabilidad_3_tiempo_entrega = int(self.txt_probabilidad_3_tiempo_entrega.text())
-        if self.txt_probabilidad_bicicleta_daniada.text() != "":
-            probabilidad_bicicleta_daniada = int(self.txt_probabilidad_bicicleta_daniada.text())
-        if self.txt_costo_tenencia.text() != "":
-            costo_tenencia = int(self.txt_costo_tenencia.text())
-        if self.txt_costo_pedido.text() != "":
-            costo_pedido = int(self.txt_costo_pedido.text())
-        if self.txt_costo_agotamiento.text() != "":
-            costo_agotamiento = int(self.txt_costo_agotamiento.text())
-        if self.txt_stock_inicial.text() != "":
-            stock_inicial = int(self.txt_stock_inicial.text())
-        if self.txt_stock_minimo.text() != "":
-            stock_minimo = int(self.txt_stock_minimo.text())
+        tiempo_simulacion = None
+        tiempo_desde = None
+        cantidad_iteraciones = None
+        tiempo_autos = None
+        probabilidad_chico_autos = None
+        probabilidad_grande_autos = None
+        probabilidad_utilitario_autos = None
+        probabilidad_1_tiempo_estacionamiento = None
+        probabilidad_2_tiempo_estacionamiento = None
+        probabilidad_3_tiempo_estacionamiento = None
+        probabilidad_4_tiempo_estacionamiento = None
+        cantidad_cabinas_cobro = None
+        tiempo_cobro = None
+        if self.txt_tiempo_simulacion.text() != "":
+            tiempo_simulacion = int(self.txt_tiempo_simulacion.text())
+        if self.txt_tiempo_desde.text() != "":
+            tiempo_desde = int(self.txt_tiempo_desde.text())
+        if self.txt_cantidad_iteraciones.text() != "":
+            cantidad_iteraciones = int(self.txt_cantidad_iteraciones.text())
+        if self.txt_tiempo_autos.text() != "":
+            tiempo_autos = int(self.txt_tiempo_autos.text())
+        if self.txt_probabilidad_chico_autos.text() != "":
+            probabilidad_chico_autos = int(self.txt_probabilidad_chico_autos.text())
+        if self.txt_probabilidad_grande_autos.text() != "":
+            probabilidad_grande_autos = int(self.txt_probabilidad_grande_autos.text())
+        if self.txt_probabilidad_utilitario_autos.text() != "":
+            probabilidad_utilitario_autos = int(self.txt_probabilidad_utilitario_autos.text())
+        if self.txt_probabilidad_1_tiempo_estacionamiento.text() != "":
+            probabilidad_1_tiempo_estacionamiento = int(self.txt_probabilidad_1_tiempo_estacionamiento.text())
+        if self.txt_probabilidad_2_tiempo_estacionamiento.text() != "":
+            probabilidad_2_tiempo_estacionamiento = int(self.txt_probabilidad_2_tiempo_estacionamiento.text())
+        if self.txt_probabilidad_3_tiempo_estacionamiento.text() != "":
+            probabilidad_3_tiempo_estacionamiento = int(self.txt_probabilidad_3_tiempo_estacionamiento.text())
+        if self.txt_probabilidad_4_tiempo_estacionamiento.text() != "":
+            probabilidad_4_tiempo_estacionamiento = int(self.txt_probabilidad_4_tiempo_estacionamiento.text())
+        if self.txt_cantidad_cabinas_cobro.text() != "":
+            cantidad_cabinas_cobro = int(self.txt_cantidad_cabinas_cobro.text())
+        if self.txt_tiempo_cobro.text() != "":
+            tiempo_cobro = int(self.txt_tiempo_cobro.text())
 
-        # Valido parametros dependiendo de la distribución
-        if cantidad_semanas is None or cantidad_semanas <= 0:
-            self.mostrar_mensaje("Error", "La cantidad de semanas tiene que ser mayor a cero")
+        # Valido parametros
+        if tiempo_simulacion is None or tiempo_simulacion <= 0:
+            self.mostrar_mensaje("Error", "El tiempo a simular tiene que ser mayor a cero")
             return
-        if semana_desde is None or semana_desde <= 0:
-            self.mostrar_mensaje("Error", "La semana desde la cuál mostrar la simulación tiene que ser mayor a cero")
+        if tiempo_desde is None or tiempo_desde <= 0:
+            self.mostrar_mensaje("Error", "El tiempo desde el cuál mostrar la simulación tiene que ser mayor a cero")
             return
-        if semana_hasta is None or semana_hasta <= 0:
-            self.mostrar_mensaje("Error", "La semana hasta la cuál mostrar la simulación tiene que ser mayor a cero")
+        if cantidad_iteraciones is None or cantidad_iteraciones <= 0:
+            self.mostrar_mensaje("Error", "La cantidad de iteraciones a mostrar de la simulación tiene que ser mayor a "
+                                          "cero")
             return
-        if semana_desde > cantidad_semanas:
-            self.mostrar_mensaje("Error", "La semana desde la cuál mostrar la simulación no puede ser mayor a la "
-                                          "cantidad de semanas simuladas")
+        if tiempo_desde > tiempo_simulacion:
+            self.mostrar_mensaje("Error", "El tiempo desde el cuál mostrar la simulación no puede ser mayor a la "
+                                          "cantidad de tiempo simulado")
             return
-        if semana_hasta > cantidad_semanas:
-            self.mostrar_mensaje("Error", "La semana hasta la cuál mostrar la simulación no puede ser mayor a la "
-                                          "cantidad de semanas simuladas")
+        if tiempo_autos is None or tiempo_autos <= 0:
+            self.mostrar_mensaje("Error", "El tiempo de llegada medio entre autos tiene que ser mayor a cero")
             return
-        if semana_hasta < semana_desde:
-            self.mostrar_mensaje("Error", "La semana desde la cuál mostrar la simulación no puede ser mayor a la "
-                                          "semana hasta la cuál mostrar la simulación")
+        if probabilidad_chico_autos is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que los autos que llegan sean chicos no puede ser vacía")
             return
-        if probabilidad_0_demanda is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que se demanden 0 bicicletas por semana no puede ser "
+        if probabilidad_grande_autos is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que los autos que llegan sean grandes no puede ser vacía")
+            return
+        if probabilidad_utilitario_autos is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que los autos que llegan sean utilitarios no puede ser "
                                           "vacía")
             return
-        if probabilidad_1_demanda is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que se demande 1 bicicleta por semana no puede ser vacía")
+        if (probabilidad_chico_autos + probabilidad_grande_autos + probabilidad_utilitario_autos) != 100:
+            self.mostrar_mensaje("Error", "Las probabilidades de tamaños de los autos que llegan deben sumar un 100%")
             return
-        if probabilidad_2_demanda is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que se demanden 2 bicicletas por semana no puede ser "
-                                          "vacía")
-            return
-        if probabilidad_3_demanda is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que se demanden 3 bicicletas por semana no puede ser "
-                                          "vacía")
-            return
-        if (probabilidad_0_demanda + probabilidad_1_demanda + probabilidad_2_demanda + probabilidad_3_demanda) != 100:
-            self.mostrar_mensaje("Error", "Las probabilidades de demanda de bicicletas deben sumar un 100%")
-            return
-        if probabilidad_1_tiempo_entrega is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de entrega sea de 1 semana no puede ser "
-                                          "vacía")
-            return
-        if probabilidad_2_tiempo_entrega is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de entrega sea de 2 semanas no puede ser "
-                                          "vacía")
-            return
-        if probabilidad_3_tiempo_entrega is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de entrega sea de 3 semanas no puede ser "
-                                          "vacía")
-            return
-        if (probabilidad_1_tiempo_entrega + probabilidad_2_tiempo_entrega + probabilidad_3_tiempo_entrega) != 100:
-            self.mostrar_mensaje("Error", "Las probabilidades de tiempo de entrega deben sumar un 100%")
-            return
-        if probabilidad_bicicleta_daniada is None:
-            self.mostrar_mensaje("Error", "La probabilidad de que llegue una bicicleta dañanda en el pedido no puede "
+        if probabilidad_1_tiempo_estacionamiento is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de estacionamiento sea de 1 hora no puede "
                                           "ser vacía")
             return
-        if costo_tenencia is None:
-            self.mostrar_mensaje("Error", "El costo de tenencia de las bicicletas no puede ser vacío")
+        if probabilidad_2_tiempo_estacionamiento is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de estacionamiento sea de 2 horas no puede "
+                                          "ser vacía")
+        if probabilidad_3_tiempo_estacionamiento is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de estacionamiento sea de 3 horas no puede "
+                                          "ser vacía")
+        if probabilidad_4_tiempo_estacionamiento is None:
+            self.mostrar_mensaje("Error", "La probabilidad de que el tiempo de estacionamiento sea de 4 horas no puede "
+                                          "ser vacía")
+        if (probabilidad_1_tiempo_estacionamiento + probabilidad_2_tiempo_estacionamiento +
+                probabilidad_3_tiempo_estacionamiento + probabilidad_4_tiempo_estacionamiento) != 100:
+            self.mostrar_mensaje("Error", "Las probabilidades de tiempo de estacionamiento deben sumar un 100%")
             return
-        if costo_pedido is None:
-            self.mostrar_mensaje("Error", "El costo de pedido de las bicicletas no puede ser vacío")
+        if cantidad_cabinas_cobro is None or cantidad_cabinas_cobro <= 0:
+            self.mostrar_mensaje("Error", "La cantidad de cabinas de cobro tiene que ser mayor a cero")
             return
-        if costo_agotamiento is None:
-            self.mostrar_mensaje("Error", "El costo de agotamiento de las bicicletas no puede ser vacío")
-            return
-        if stock_inicial is None:
-            self.mostrar_mensaje("Error", "El stock inicial de bicicletas con el cuál arrancar la simulación no puede "
-                                          "ser vacío")
-            return
-        if stock_minimo is None:
-            self.mostrar_mensaje("Error", "El stock mínimo de bicicletas que debe haber para verificar si debe "
-                                          "realizarse o no un pedido no puede ser vacío")
+        if tiempo_cobro is None or tiempo_cobro <= 0:
+            self.mostrar_mensaje("Error", "El tiempo de cobro de cobro tiene que ser mayor a cero")
             return
 
         # Realizo simulacion y obtengo semanas a mostrar
-        self.semanas_simuladas = self.controlador.simular_semanas(cantidad_semanas, semana_desde, semana_hasta,
-                                                                  probabilidad_0_demanda, probabilidad_1_demanda,
-                                                                  probabilidad_2_demanda, probabilidad_3_demanda,
-                                                                  probabilidad_1_tiempo_entrega,
-                                                                  probabilidad_2_tiempo_entrega,
-                                                                  probabilidad_3_tiempo_entrega,
-                                                                  probabilidad_bicicleta_daniada, costo_tenencia,
-                                                                  costo_pedido, costo_agotamiento, stock_inicial,
-                                                                  stock_minimo)
+        self.iteraciones_simuladas = self.controlador.simular_iteraciones(tiempo_simulacion, tiempo_desde,
+                                                                          cantidad_iteraciones, tiempo_autos,
+                                                                          probabilidad_chico_autos,
+                                                                          probabilidad_grande_autos,
+                                                                          probabilidad_utilitario_autos,
+                                                                          probabilidad_1_tiempo_estacionamiento,
+                                                                          probabilidad_2_tiempo_estacionamiento,
+                                                                          probabilidad_3_tiempo_estacionamiento,
+                                                                          probabilidad_4_tiempo_estacionamiento,
+                                                                          cantidad_cabinas_cobro, tiempo_cobro)
 
         # Cargo tabla
-        self.cargar_tabla_semanas_simuladas()
+        self.cargar_tabla_iteraciones_simuladas()
 
     """ Metodos """
 
-    def preparar_interfaz(self):
+    def preparar_tabla(self):
 
+        """
         # Preparo tabla de semanas simuladas
         self.grid_semanas_simuladas.setColumnCount(16)
         self.grid_semanas_simuladas.setHorizontalHeaderLabels(["Semana", "RND", "Demanda", "RND", "Tiempo de entrega",
@@ -209,48 +176,45 @@ class VentanaSistemaColas(QMainWindow):
                                                                "Stock actual", "Ventas perdidas", "Costo tenencia",
                                                                "Costo pedido", "Costo agotamiento", "Costo total",
                                                                "Costo total acum.", "Costo promedio"])
+        """
 
     def limpiar_interfaz(self):
 
         # Limpio txts
-        self.txt_cantidad_semanas.clear()
-        self.txt_semana_desde.clear()
-        self.txt_semana_hasta.clear()
-        self.txt_probabilidad_0_demanda.clear()
-        self.txt_probabilidad_1_demanda.clear()
-        self.txt_probabilidad_2_demanda.clear()
-        self.txt_probabilidad_3_demanda.clear()
-        self.txt_probabilidad_1_tiempo_entrega.clear()
-        self.txt_probabilidad_2_tiempo_entrega.clear()
-        self.txt_probabilidad_3_tiempo_entrega.clear()
-        self.txt_probabilidad_bicicleta_daniada.clear()
-        self.txt_costo_tenencia.clear()
-        self.txt_costo_pedido.clear()
-        self.txt_costo_agotamiento.clear()
-        self.txt_stock_inicial.clear()
-        self.txt_stock_minimo.clear()
+        self.txt_tiempo_simulacion.clear()
+        self.txt_tiempo_desde.clear()
+        self.txt_cantidad_iteraciones.clear()
+        self.txt_tiempo_autos.clear()
+        self.txt_probabilidad_chico_autos.clear()
+        self.txt_probabilidad_grande_autos.clear()
+        self.txt_probabilidad_utilitario_autos.clear()
+        self.txt_probabilidad_1_tiempo_estacionamiento.clear()
+        self.txt_probabilidad_2_tiempo_estacionamiento.clear()
+        self.txt_probabilidad_3_tiempo_estacionamiento.clear()
+        self.txt_probabilidad_4_tiempo_estacionamiento.clear()
+        self.txt_cantidad_cabinas_cobro.clear()
+        self.txt_tiempo_cobro.clear()
 
         # Cargo valores por defecto en txts
-        self.txt_probabilidad_0_demanda.setText("50")
-        self.txt_probabilidad_1_demanda.setText("15")
-        self.txt_probabilidad_2_demanda.setText("25")
-        self.txt_probabilidad_3_demanda.setText("10")
-        self.txt_probabilidad_1_tiempo_entrega.setText("30")
-        self.txt_probabilidad_2_tiempo_entrega.setText("40")
-        self.txt_probabilidad_3_tiempo_entrega.setText("30")
-        self.txt_probabilidad_bicicleta_daniada.setText("30")
-        self.txt_costo_tenencia.setText("3")
-        self.txt_costo_pedido.setText("20")
-        self.txt_costo_agotamiento.setText("5")
-        self.txt_stock_inicial.setText("7")
-        self.txt_stock_minimo.setText("2")
+        self.txt_tiempo_autos.setText("13")
+        self.txt_probabilidad_chico_autos.setText("45")
+        self.txt_probabilidad_grande_autos.setText("25")
+        self.txt_probabilidad_utilitario_autos.setText("30")
+        self.txt_probabilidad_1_tiempo_estacionamiento.setText("50")
+        self.txt_probabilidad_2_tiempo_estacionamiento.setText("30")
+        self.txt_probabilidad_3_tiempo_estacionamiento.setText("15")
+        self.txt_probabilidad_4_tiempo_estacionamiento.setText("5")
+        self.txt_cantidad_cabinas_cobro.setText("1")
+        self.txt_tiempo_cobro.setText("2")
 
     def limpiar_tabla(self):
 
         # Limpio grilla de semanas simuladas
-        self.grid_semanas_simuladas.clearSelection()
-        self.grid_semanas_simuladas.setCurrentCell(-1, -1)
-        self.grid_semanas_simuladas.setRowCount(0)
+        self.grid_iteraciones_simuladas.clearSelection()
+        self.grid_iteraciones_simuladas.setCurrentCell(-1, -1)
+        self.grid_iteraciones_simuladas.setRowCount(0)
+
+        # prepa
 
     def mostrar_mensaje(self, titulo, mensaje):
 
@@ -261,8 +225,9 @@ class VentanaSistemaColas(QMainWindow):
         box.setStandardButtons(QMessageBox.Ok)
         box.exec_()
 
-    def cargar_tabla_semanas_simuladas(self):
-
+    def cargar_tabla_iteraciones_simuladas(self):
+        pass
+        """
         self.grid_semanas_simuladas.setRowCount(len(self.semanas_simuladas))
         index = 0
         for semana_simulada in self.semanas_simuladas:
@@ -275,7 +240,7 @@ class VentanaSistemaColas(QMainWindow):
             rnd_tiempo_entrega = str(semana_simulada.get("rnd_tiempo_entrega")).replace(".", ",") \
                 if semana_simulada.get("rnd_tiempo_entrega") is not None else ""
             tiempo_entrega = str(semana_simulada.get("tiempo_entrega")) if semana_simulada.get("tiempo_entrega") \
-                is not None else ""
+                                                                           is not None else ""
             rnd_bicicleta_daniada = str(semana_simulada.get("rnd_bicicleta_daniada")).replace(".", ",") \
                 if semana_simulada.get("rnd_bicicleta_daniada") is not None else ""
             bicicleta_daniada = "" if semana_simulada.get("bicicleta_daniada") is None else \
@@ -284,7 +249,7 @@ class VentanaSistemaColas(QMainWindow):
                 if semana_simulada.get("semana_proxima_entrega") is not None else ""
             stock = str(semana_simulada.get("stock")) if semana_simulada.get("stock") is not None else ""
             ventas_perdidas = str(semana_simulada.get("ventas_perdidas")) if semana_simulada.get("ventas_perdidas") \
-                is not None else ""
+                                                                             is not None else ""
             costo_tenencia = "$ " + str(semana_simulada.get("costo_tenencia"))
             costo_pedido = "$ " + str(semana_simulada.get("costo_pedido"))
             costo_agotamiento = "$ " + str(semana_simulada.get("costo_agotamiento"))
@@ -311,9 +276,11 @@ class VentanaSistemaColas(QMainWindow):
             self.grid_semanas_simuladas.setItem(index, 15, QTableWidgetItem(costo_total_promedio))
             index += 1
 
+        """
+
     """ Eventos """
 
     # Evento show
     def showEvent(self, QShowEvent):
-        self.preparar_interfaz()
+        self.preparar_tabla()
         self.limpiar_interfaz()

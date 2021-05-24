@@ -4,22 +4,20 @@ from soporte.helper import *
 
 class ControladorSistemaColas:
 
-    probabilidad_0_demanda = None
-    probabilidad_1_demanda = None
-    probabilidad_2_demanda = None
-    probabilidad_3_demanda = None
-    probabilidad_1_tiempo_entrega = None
-    probabilidad_2_tiempo_entrega = None
-    probabilidad_3_tiempo_entrega = None
-    probabilidad_bicicleta_daniada = None
-    costo_tenencia = None
-    costo_pedido = None
-    costo_agotamiento = None
-    stock_inicial = None
-    stock_minimo = None
+    tiempo_autos = None
+    probabilidad_chico_autos = None
+    probabilidad_grande_autos = None
+    probabilidad_utilitario_autos = None
+    probabilidad_1_tiempo_estacionamiento = None
+    probabilidad_2_tiempo_estacionamiento = None
+    probabilidad_3_tiempo_estacionamiento = None
+    probabilidad_4_tiempo_estacionamiento = None
+    cantidad_cabinas_cobro = None
+    tiempo_cobro = None
 
     def simular_semana(self, vector_estado):
-
+        pass
+        """
         # Obtengo semana recorrida
         semana = vector_estado.get("semana") + 1
 
@@ -111,57 +109,110 @@ class ControladorSistemaColas:
         }
 
         return vector_estado
+        """
 
-    def simular_semanas(self, cantidad_semanas, semana_desde, semana_hasta, probabilidad_0_demanda,
-                        probabilidad_1_demanda, probabilidad_2_demanda, probabilidad_3_demanda,
-                        probabilidad_1_tiempo_entrega, probabilidad_2_tiempo_entrega, probabilidad_3_tiempo_entrega,
-                        probabilidad_bicicleta_daniada, costo_tenencia, costo_pedido, costo_agotamiento, stock_inicial,
-                        stock_minimo):
+    def simular_iteraciones(self, tiempo_simulacion, tiempo_desde, cantidad_iteraciones, tiempo_autos,
+                            probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
+                            probabilidad_1_tiempo_estacionamiento, probabilidad_2_tiempo_estacionamiento,
+                            probabilidad_3_tiempo_estacionamiento, probabilidad_4_tiempo_estacionamiento,
+                            cantidad_cabinas_cobro, tiempo_cobro):
 
         # Agrego datos como atributos del objeto para poder manejarlos a nivel clase
-        self.probabilidad_0_demanda = probabilidad_0_demanda
-        self.probabilidad_1_demanda = probabilidad_1_demanda
-        self.probabilidad_2_demanda = probabilidad_2_demanda
-        self.probabilidad_3_demanda = probabilidad_3_demanda
-        self.probabilidad_1_tiempo_entrega = probabilidad_1_tiempo_entrega
-        self.probabilidad_2_tiempo_entrega = probabilidad_2_tiempo_entrega
-        self.probabilidad_3_tiempo_entrega = probabilidad_3_tiempo_entrega
-        self.probabilidad_bicicleta_daniada = probabilidad_bicicleta_daniada
-        self.costo_tenencia = costo_tenencia
-        self.costo_pedido = costo_pedido
-        self.costo_agotamiento = costo_agotamiento
-        self.stock_inicial = stock_inicial
-        self.stock_minimo = stock_minimo
+        self.tiempo_autos = tiempo_autos
+        self.probabilidad_chico_autos = probabilidad_chico_autos
+        self.probabilidad_grande_autos = probabilidad_grande_autos
+        self.probabilidad_utilitario_autos = probabilidad_utilitario_autos
+        self.probabilidad_1_tiempo_estacionamiento = probabilidad_1_tiempo_estacionamiento
+        self.probabilidad_2_tiempo_estacionamiento = probabilidad_2_tiempo_estacionamiento
+        self.probabilidad_3_tiempo_estacionamiento = probabilidad_3_tiempo_estacionamiento
+        self.probabilidad_4_tiempo_estacionamiento = probabilidad_4_tiempo_estacionamiento
+        self.cantidad_cabinas_cobro = cantidad_cabinas_cobro
+        self.tiempo_cobro = tiempo_cobro
 
         # Genero vector de estado inicial
+        rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
         vector_estado = {
-            "semana": 0,
-            "rnd_demanda": None,
-            "demanda": None,
-            "rnd_tiempo_entrega"
-            "tiempo_entrega": None,
-            "rnd_bicicleta_daniada": None,
-            "bicicleta_daniada": None,
-            "semana_proxima_entrega": None,
-            "stock": stock_inicial,
-            "ventas_perdidas": None,
-            "costo_tenencia": 0,
-            "costo_pedido": 0,
-            "costo_agotamiento": 0,
-            "costo_total": 0,
-            "costo_total_acumulado": 0,
-            "costo_total_promedio": 0
+            "evento": "inicializacion",
+            "reloj": 0,
+            "eventos": {
+                "llegada_autos": {
+                    "rnd_tiempo_entre_llegadas": rnd_tiempo_entre_llegadas,
+                    "tiempo_proxima_llegada": Decimal(-1 * self.tiempo_autos * math.log(rnd_tiempo_entre_llegadas))
+                        .quantize(TWOPLACES),
+                    "proxima_llegada": None,
+                },
+                "fin_estacionamiento": {
+                    "rnd_fin_estacionamiento": None,
+                    "tiempo_estacionado": None,
+                    "fines_tiempo_estacionado": []
+                },
+                "fin_cobrado": {
+                    "tiempo_cobrado": None,
+                    "fines_cobrado": []
+                },
+            },
+            "servidores": {
+                "lugares_estacionamiento": [],
+                "cabinas_cobro": []
+            },
+            "contadores": {
+                "autos_rechazados": 0,
+                "monto_recaudado": 0,
+                "porcentaje_ocupacion": 0,
+                "porcentaje_ocupacion_promedio": 0,
+            },
+            "clientes": {
+                "auxiliares": {
+                    "rnd_tipo_auto": None,
+                    "tipo_auto": None
+                },
+                "autos": [
+                    {
+                        "n_auto": 1,
+                        "estado": None
+                    }
+                ]
+            }
         }
+        fines_tiempo_estacionamiento = []
+        lugares_estacionamiento = []
+        for i in range(1, 20+1):
+            fines_tiempo_estacionamiento.append({
+                "n_lugar_estacionamiento": i,
+                "fin_tiempo_estacionado": None
+            })
+            lugares_estacionamiento.append({
+                "n_lugar_estacionamiento": i,
+                "estado": "Libre"
+            })
+        vector_estado["eventos"]["fin_estacionamiento"]["fines_tiempo_estacionado"] = fines_tiempo_estacionamiento
+        vector_estado["servidores"]["lugares_estacionamiento"] = lugares_estacionamiento
+        fines_cobrado = []
+        cabinas_cobro = []
+        for i in range(1, self.cantidad_cabinas_cobro+1):
+            fines_cobrado.append({
+                "n_cabina_cobro": i,
+                "fin_cobrado": None
+            })
+            cabinas_cobro.append({
+                "n_cabina_cobro": i,
+                "estado": "Libre",
+                "cola": 0
+            })
+        vector_estado["eventos"]["fin_cobrado"]["fines_cobrado"] = fines_cobrado
+        vector_estado["servidores"]["cabinas_cobro"] = cabinas_cobro
 
-        # Realizo simulación almacenando los vectores estados de las semanas de interés
-        dias_simulados = [vector_estado]
+        # Realizo simulación almacenando los vectores estados de las iteraciones de interés
+        iteraciones_simuladas = [vector_estado]
+        """
         for i in range(1, cantidad_semanas + 1):
             vector_estado = self.simular_semana(vector_estado)
             if semana_desde <= i <= semana_hasta:
                 dias_simulados.append(vector_estado)
         if semana_hasta < cantidad_semanas:
             dias_simulados.append(vector_estado)
+        """
 
         # Devuelvo semanas simuladas de interés
-        return dias_simulados
+        return iteraciones_simuladas
 

@@ -483,7 +483,7 @@
      <number>5</number>
     </property>
     <item row="1" column="0">
-     <widget class="QTableWidget" name="grid_semanas_simuladas">
+     <widget class="QTableWidget" name="grid_iteraciones_simuladas">
       <property name="minimumSize">
        <size>
         <width>1150</width>
@@ -707,7 +707,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Tiempo entre llegadas</string>
+             <string>Tiempo medio entre llegadas</string>
             </property>
            </widget>
           </item>
@@ -1224,6 +1224,9 @@
                 <width>80</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="maxLength">
+               <number>3</number>
               </property>
              </widget>
             </item>
