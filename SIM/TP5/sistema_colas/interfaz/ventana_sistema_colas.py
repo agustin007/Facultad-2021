@@ -1,4 +1,5 @@
 from PyQt5 import uic
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
 from dominio.controlador_sistema_colas import ControladorSistemaColas
 from soporte.validador_enteros import ValidadorEnteros
@@ -166,17 +167,111 @@ class VentanaSistemaColas(QMainWindow):
 
     """ Metodos """
 
-    def preparar_tabla(self):
+    def preparar_tabla(self, cantidad_lugares_estacionamiento=20, cantidad_cabinas_cobro=1, cantidad_autos=1):
 
-        """
         # Preparo tabla de semanas simuladas
-        self.grid_semanas_simuladas.setColumnCount(16)
-        self.grid_semanas_simuladas.setHorizontalHeaderLabels(["Semana", "RND", "Demanda", "RND", "Tiempo de entrega",
-                                                               "RND", "Bicicleta dañada", "S. próxima entrega",
-                                                               "Stock actual", "Ventas perdidas", "Costo tenencia",
-                                                               "Costo pedido", "Costo agotamiento", "Costo total",
-                                                               "Costo total acum.", "Costo promedio"])
-        """
+        self.grid_iteraciones_simuladas.setColumnCount(13 + cantidad_lugares_estacionamiento * 2 +
+                                                       cantidad_cabinas_cobro * 3 + cantidad_autos * 3)
+
+        i = 0
+
+        header = QTableWidgetItem("Evento")
+        header.setBackground(QColor(204, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("Reloj")
+        header.setBackground(QColor(204, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+
+        header = QTableWidgetItem("RND")
+        header.setBackground(QColor(255, 242, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("T. prox. llegada")
+        header.setBackground(QColor(255, 242, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("Prox. llegada")
+        header.setBackground(QColor(255, 242, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+
+        header = QTableWidgetItem("RND")
+        header.setBackground(QColor(217, 234, 211))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("T. estac.")
+        header.setBackground(QColor(217, 234, 211))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        for x in range(1, cantidad_lugares_estacionamiento + 1):
+            header = QTableWidgetItem("F. estac. " + str(x))
+            header.setBackground(QColor(217, 234, 211))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+
+        header = QTableWidgetItem("T. cobrando")
+        header.setBackground(QColor(208, 224, 227))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        for x in range(1, cantidad_cabinas_cobro + 1):
+            header = QTableWidgetItem("F. cobrado " + str(x))
+            header.setBackground(QColor(208, 224, 227))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+
+        for x in range(1, cantidad_lugares_estacionamiento + 1):
+            header = QTableWidgetItem("Estado l. estac. " + str(x))
+            header.setBackground(QColor(217, 210, 233))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+
+        for x in range(1, cantidad_cabinas_cobro + 1):
+            header = QTableWidgetItem("Estado c. cobro " + str(x))
+            header.setBackground(QColor(234, 209, 220))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+            header = QTableWidgetItem("Cola c. cobro " + str(x))
+            header.setBackground(QColor(234, 209, 220))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+
+        header = QTableWidgetItem("A. rechazados")
+        header.setBackground(QColor(244, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("Porc. ocup.")
+        header.setBackground(QColor(244, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("Porc. ocup. prom.")
+        header.setBackground(QColor(244, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+
+        header = QTableWidgetItem("RND")
+        header.setBackground(QColor(249, 203, 156))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+        header = QTableWidgetItem("Tipo auto")
+        header.setBackground(QColor(249, 203, 156))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
+
+        for x in range(1, cantidad_autos + 1):
+            header = QTableWidgetItem("Estado auto " + str(x))
+            header.setBackground(QColor(234, 153, 153))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+            header = QTableWidgetItem("H. inicio esp. " + str(x))
+            header.setBackground(QColor(234, 153, 153))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+            header = QTableWidgetItem("Monto " + str(x))
+            header.setBackground(QColor(234, 153, 153))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
 
     def limpiar_interfaz(self):
 
