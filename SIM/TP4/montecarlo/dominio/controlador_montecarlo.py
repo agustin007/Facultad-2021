@@ -1,5 +1,9 @@
 import random
+from decimal import Decimal
+
 from soporte.helper import *
+
+from montecarlo.soporte.helper import SIXPLACES, TWOPLACES, truncar
 
 
 class ControladorMontecarlo:
