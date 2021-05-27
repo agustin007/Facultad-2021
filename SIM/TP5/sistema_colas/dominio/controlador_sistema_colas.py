@@ -1,24 +1,14 @@
-import math
 import random
-from decimal import Decimal
-from statistics import mean
-
-from sistema_colas.soporte.helper import *
-
-from sistema_colas.soporte.helper import truncar, TWOPLACES
+from soporte.helper import *
 
 
 class ControladorSistemaColas:
 
+    # Atributos
     tiempo_simulacion = None
     tiempo_desde = None
     cantidad_iteraciones = None
     tiempo_autos = None
-    proxima_llegada = 0
-
-    fines_estacionamientos = []
-    fines_cobro = []
-
     probabilidad_chico_autos = None
     probabilidad_grande_autos = None
     probabilidad_utilitario_autos = None
@@ -29,12 +19,62 @@ class ControladorSistemaColas:
     cantidad_cabinas_cobro = None
     tiempo_cobro = None
 
-    estado_auto = None
-    lugar_estacionamiento = None
-    siguiente_reloj = 0
+    # Constantes
+    ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE = "Libre"
+    ESTADO_LUGAR_ESTACIONAMIENTO_OCUPADO = "Ocupado"
+    ESTADO_CABINA_COBRO_LIBRE = "Libre"
+    ESTADO_CABINA__COBRO_OCUPADO = "Ocupado"
+    ESTADO_AUTO_ESTACIONADO = "Estacionado"
+    ESTADO_AUTO_ESPERANDO_PAGAR = "Esperando pagar"
+    ESTADO_AUTO_PAGANDO = "Pagando"
+
+    TIPO_AUTO_CHICO = "Chico"
+    TIPO_AUTO_GRANDE = "Grande"
+    TIPO_AUTO_UTILITARIO = "Utilitario"
+
+    # Formatos
+    """
+        Formato diccionario para lugares de estacionamiento:
+        {
+            "id": i,
+            "estado": "Libre"
+        }
+
+        Formato diccionario para cabinas de cobro:
+        {
+            "id": i,
+            "estado": "Libre",
+            "cola": 0
+        }
+
+        Formato diccionario para autos:
+        {
+            "id": 1,
+            "estado": None,
+            "id_lugar_estacionamiento": None,
+            "id_cabina_cobro",
+            "hora_inicio_espera_para_pagar" : None,
+            "monto": None
+        }
+
+        Formato de diccionario para fines de tiempo de estacionamiento
+        {
+            "id_lugar_estacionamiento": i,
+            "fin_tiempo_estacionado": None
+        }
+
+        Formato de diccionario para fines de cobrado
+        {
+            "id_cabina_cobro": i,
+            "fin_cobrado": None
+        }
+    """
 
     def simular_iteracion(self, vector_estado):
-
+        if vector_estado.get("reloj") <= 20:
+            vector_estado["reloj"] = vector_estado.get("reloj") + 1
+        return vector_estado
+        """
         #Obtengo el evento
         evento = vector_estado.get("evento")
 
@@ -73,7 +113,7 @@ class ControladorSistemaColas:
 
         if(evento == "llegada_autos"):
             tiempo_autos += vector_estado.get("tiempo_proxima_llegada")
-            """^Poner este seteo si hubo lugar en el estacionamiento"""
+            #Poner este seteo si hubo lugar en el estacionamiento
             estado_auto = "Estacionado"
 
             # Obtengo llegada auto
@@ -172,7 +212,7 @@ class ControladorSistemaColas:
                     cabinas_cobro[i]["cola"] = 1
                     ingreso_a_cabina = True
                 if(ingreso_a_cabina == True):
-                    """if(tipo_auto == ""):"""
+                    #if(tipo_auto == ""):
 
                     break
         porcentaje_ocupacion = 0
@@ -216,7 +256,7 @@ class ControladorSistemaColas:
         }
 
         return vector_estado
-
+    """
 
     def simular_iteraciones(self, tiempo_simulacion, tiempo_desde, cantidad_iteraciones, tiempo_autos,
                             probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
@@ -247,7 +287,7 @@ class ControladorSistemaColas:
             "eventos": {
                 "llegada_autos": {
                     "rnd_tiempo_entre_llegadas": rnd_tiempo_entre_llegadas,
-                    "tiempo_proxima_llegada": Decimal(-1 * self.tiempo_autos * math.log(rnd_tiempo_entre_llegadas))
+                    "tiempo_proxima_llegada": Decimal(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas))
                         .quantize(TWOPLACES),
                     "proxima_llegada": None,
                 },
@@ -258,7 +298,7 @@ class ControladorSistemaColas:
                 },
                 "fin_cobrado": {
                     "tiempo_cobrado": None,
-                    "fines_cobrado": []
+                    "fines_tiempo_cobrado": []
                 },
             },
             "servidores": {
@@ -276,53 +316,29 @@ class ControladorSistemaColas:
                     "rnd_tipo_auto": None,
                     "tipo_auto": None
                 },
-                "autos": [
-                    {
-                        "n_auto": 1,
-                        "estado": None,
-                        "lugar_estacionamiento_ocupado": None
-                    }
-                ]
+                "autos": []
             }
         }
-        fines_tiempo_estacionamiento = []
-        lugares_estacionamiento = []
-        for i in range(1, 20+1):
-            fines_tiempo_estacionamiento.append({
-                "n_lugar_estacionamiento": i,
-                "fin_tiempo_estacionado": None
-            })
-            lugares_estacionamiento.append({
-                "n_lugar_estacionamiento": i,
-                "estado": "Libre"
-            })
-        vector_estado["eventos"]["fin_estacionamiento"]["fines_tiempo_estacionado"] = fines_tiempo_estacionamiento
-        vector_estado["servidores"]["lugares_estacionamiento"] = lugares_estacionamiento
-        fines_cobrado = []
-        cabinas_cobro = []
-        for i in range(1, self.cantidad_cabinas_cobro+1):
-            fines_cobrado.append({
-                "n_cabina_cobro": i,
-                "fin_cobrado": None
-            })
-            cabinas_cobro.append({
-                "n_cabina_cobro": i,
-                "estado": "Libre",
-                "cola": 0
-            })
-        vector_estado["eventos"]["fin_cobrado"]["fines_cobrado"] = fines_cobrado
-        vector_estado["servidores"]["cabinas_cobro"] = cabinas_cobro
 
         # Realizo simulación almacenando los vectores estados de las iteraciones de interés
         iteraciones_simuladas = [vector_estado]
+        vector_estado_agregado = True
+        cantidad_iteraciones_agregadas = 0
 
-        for i in range(1, cantidad_iteraciones + 1):
-            vector_estado = self.simular_iteracion(vector_estado)
-            if(tiempo_desde <= i <= cantidad_iteraciones):
-                iteraciones_simuladas.append(vector_estado)
-            if( cantidad_iteraciones < tiempo_simulacion):
+        while 1:
+            vector_estado_proximo = self.simular_iteracion(vector_estado)
+            if vector_estado_proximo.get("reloj") > tiempo_simulacion:
+                break
+            vector_estado = vector_estado_proximo
+            vector_estado_agregado = False
+
+            if vector_estado.get("reloj") >= tiempo_desde and cantidad_iteraciones_agregadas < cantidad_iteraciones:
+                vector_estado_agregado = True
+                cantidad_iteraciones_agregadas += 1
                 iteraciones_simuladas.append(vector_estado)
 
-        # Devuelvo semanas simuladas de interés
+        if not vector_estado_agregado:
+            iteraciones_simuladas.append(vector_estado)
+
+        # Devuelvo iteraciones simuladas de interés
         return iteraciones_simuladas
-

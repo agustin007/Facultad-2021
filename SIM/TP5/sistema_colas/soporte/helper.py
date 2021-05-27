@@ -2,7 +2,7 @@ import math
 from decimal import Decimal
 
 
-# Constantes
+# Constantes para manejo de decimales
 TWOPLACES = Decimal(10) ** -2
 FOURPLACES = Decimal(10) ** -4
 SIXPLACES = Decimal(10) ** -6
