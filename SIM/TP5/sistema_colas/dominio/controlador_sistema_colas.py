@@ -5,9 +5,6 @@ from soporte.helper import *
 class ControladorSistemaColas:
 
     # Atributos
-    tiempo_simulacion = None
-    tiempo_desde = None
-    cantidad_iteraciones = None
     tiempo_autos = None
     probabilidad_chico_autos = None
     probabilidad_grande_autos = None
@@ -16,14 +13,13 @@ class ControladorSistemaColas:
     probabilidad_2_tiempo_estacionamiento = None
     probabilidad_3_tiempo_estacionamiento = None
     probabilidad_4_tiempo_estacionamiento = None
-    cantidad_cabinas_cobro = None
     tiempo_cobro = None
 
     # Constantes
     ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE = "Libre"
     ESTADO_LUGAR_ESTACIONAMIENTO_OCUPADO = "Ocupado"
     ESTADO_CABINA_COBRO_LIBRE = "Libre"
-    ESTADO_CABINA__COBRO_OCUPADO = "Ocupado"
+    ESTADO_CABINA_COBRO_OCUPADO = "Ocupado"
     ESTADO_AUTO_ESTACIONADO = "Estacionado"
     ESTADO_AUTO_ESPERANDO_PAGAR = "Esperando pagar"
     ESTADO_AUTO_PAGANDO = "Pagando"
@@ -33,41 +29,17 @@ class ControladorSistemaColas:
     TIPO_AUTO_UTILITARIO = "Utilitario"
 
     # Formatos
-    """
-        Formato diccionario para lugares de estacionamiento:
-        {
-            "id": i,
-            "estado": "Libre"
-        }
-
-        Formato diccionario para cabinas de cobro:
-        {
-            "id": i,
-            "estado": "Libre",
-            "cola": 0
-        }
-
+    """        
         Formato diccionario para autos:
         {
             "id": 1,
             "estado": None,
             "id_lugar_estacionamiento": None,
-            "id_cabina_cobro",
+            "id_cabina_cobro": None,
             "hora_inicio_espera_para_pagar" : None,
             "monto": None
-        }
+        }        
 
-        Formato de diccionario para fines de tiempo de estacionamiento
-        {
-            "id_lugar_estacionamiento": i,
-            "fin_tiempo_estacionado": None
-        }
-
-        Formato de diccionario para fines de cobrado
-        {
-            "id_cabina_cobro": i,
-            "fin_cobrado": None
-        }
     """
 
     def simular_iteracion(self, vector_estado):
@@ -266,9 +238,6 @@ class ControladorSistemaColas:
                             cantidad_cabinas_cobro, tiempo_cobro):
 
         # Agrego datos como atributos del objeto para poder manejarlos a nivel clase
-        self.tiempo_simulacion = tiempo_simulacion
-        self.tiempo_desde = tiempo_desde
-        self.cantidad_iteraciones = cantidad_iteraciones
         self.tiempo_autos = tiempo_autos
         self.probabilidad_chico_autos = probabilidad_chico_autos
         self.probabilidad_grande_autos = probabilidad_grande_autos
@@ -277,7 +246,6 @@ class ControladorSistemaColas:
         self.probabilidad_2_tiempo_estacionamiento = probabilidad_2_tiempo_estacionamiento
         self.probabilidad_3_tiempo_estacionamiento = probabilidad_3_tiempo_estacionamiento
         self.probabilidad_4_tiempo_estacionamiento = probabilidad_4_tiempo_estacionamiento
-        self.cantidad_cabinas_cobro = cantidad_cabinas_cobro
         self.tiempo_cobro = tiempo_cobro
 
         # Genero vector de estado inicial
@@ -320,6 +288,26 @@ class ControladorSistemaColas:
                 "autos": []
             }
         }
+
+        for i in range(1, 20 + 1):
+            vector_estado.get("eventos").get("fin_estacionamiento").get("fines_tiempo_estacionado").append({
+                "id_lugar_estacionamiento": i,
+                "fin_tiempo_estacionado": None
+            })
+            vector_estado["servidores"]["lugares_estacionamiento"].append({
+                "id": i,
+                "estado": self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
+            })
+        for i in range(1, cantidad_cabinas_cobro + 1):
+            vector_estado["eventos"]["fin_cobrado"]["fines_tiempo_cobrado"].append({
+                "id_cabina_cobro": i,
+                "fin_cobrado": None
+            })
+            vector_estado["servidores"]["cabinas_cobro"].append({
+                "id": i,
+                "estado": self.ESTADO_CABINA_COBRO_LIBRE,
+                "cola": 0
+            })
 
         # Realizo simulación almacenando los vectores estados de las iteraciones de interés
         iteraciones_simuladas = [vector_estado]

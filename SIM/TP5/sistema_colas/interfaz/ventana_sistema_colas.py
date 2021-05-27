@@ -173,29 +173,42 @@ class VentanaSistemaColas(QMainWindow):
 
         # Genero listas vacias en caso de parametros None
         if fines_tiempo_estacionado is None:
-            fines_tiempo_estacionado = []
+            fines_tiempo_estacionado = [{
+                "id_lugar_estacionamiento": 0,
+                "fin_tiempo_estacionado": None
+            }]
         if fines_cobrado is None:
-            fines_cobrado = []
+            fines_cobrado = [{
+                "id_cabina_cobro": 0,
+                "fin_cobrado": None
+            }]
         if lugares_estacionamiento is None:
-            lugares_estacionamiento = []
+            lugares_estacionamiento = [{
+                "id": 0,
+                "estado": self.controlador.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
+            }]
         if cabinas_cobro is None:
-            cabinas_cobro = []
+            cabinas_cobro = [{
+                "id": 0,
+                "estado": self.controlador.ESTADO_CABINA_COBRO_LIBRE,
+                "cola": 0
+            }]
         if autos is None:
-            autos = []
+            autos = [{
+                "id": 0,
+                "estado": None,
+                "id_lugar_estacionamiento": None,
+                "id_cabina_cobro": None,
+                "hora_inicio_espera_para_pagar" : None,
+                "monto": None
+            }]
 
         # Preparo tabla de semanas simuladas
-        cantidad_lugares_estacionamiento = 0
-        if len(lugares_estacionamiento) != 0:
-            cantidad_lugares_estacionamiento = len(lugares_estacionamiento)
-        cantidad_cabinas_cobro = 0
-        if len(cabinas_cobro) != 0:
-            cantidad_cabinas_cobro: len(cabinas_cobro)
-        cantidad_autos = 0
-        if len(autos) != 0:
-            cantidad_autos = 0
+        cantidad_lugares_estacionamiento = len(lugares_estacionamiento)
+        cantidad_cabinas_cobro = len(cabinas_cobro)
+        cantidad_autos = len(autos)
         self.grid_iteraciones_simuladas.setColumnCount(14 + cantidad_lugares_estacionamiento * 2 +
                                                        cantidad_cabinas_cobro * 3 + cantidad_autos * 3)
-
         i = 0
 
         header = QTableWidgetItem("Evento")
@@ -229,7 +242,7 @@ class VentanaSistemaColas(QMainWindow):
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
         i += 1
         for fin_tiempo_estacionado in fines_tiempo_estacionado:
-            header = QTableWidgetItem("F. estac. " + str(fin_tiempo_estacionado.get("id_lugar_estacionamiento")))
+            header = QTableWidgetItem("F. estac. (" + str(fin_tiempo_estacionado.get("id_lugar_estacionamiento")) + ")")
             header.setBackground(QColor(217, 234, 211))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
@@ -239,23 +252,23 @@ class VentanaSistemaColas(QMainWindow):
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
         i += 1
         for fin_cobrado in fines_cobrado:
-            header = QTableWidgetItem("F. cobrado " + str(fin_cobrado.get("id_cabina_cobro")))
+            header = QTableWidgetItem("F. cobrado (" + str(fin_cobrado.get("id_cabina_cobro")) + ")")
             header.setBackground(QColor(208, 224, 227))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
 
         for lugar_estacionamiento in lugares_estacionamiento:
-            header = QTableWidgetItem("Estado l. estac. " + str(lugar_estacionamiento.get("id")))
+            header = QTableWidgetItem("Estado l. estac. (" + str(lugar_estacionamiento.get("id")) + ")")
             header.setBackground(QColor(217, 210, 233))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
 
         for cabina_cobro in cabinas_cobro:
-            header = QTableWidgetItem("Estado c. cobro " + str(cabina_cobro.get("id")))
+            header = QTableWidgetItem("Estado c. cobro (" + str(cabina_cobro.get("id")) + ")")
             header.setBackground(QColor(234, 209, 220))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
-            header = QTableWidgetItem("Cola c. cobro " + str(cabina_cobro.get("id")))
+            header = QTableWidgetItem("Cola c. cobro (" + str(cabina_cobro.get("id")) + ")")
             header.setBackground(QColor(234, 209, 220))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
@@ -287,15 +300,15 @@ class VentanaSistemaColas(QMainWindow):
         i += 1
 
         for auto in autos:
-            header = QTableWidgetItem("Estado auto " + str(auto.get("id")))
+            header = QTableWidgetItem("Estado auto (" + str(auto.get("id")) + ")")
             header.setBackground(QColor(234, 153, 153))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
-            header = QTableWidgetItem("H. inicio esp. " + str(auto.get("id")))
+            header = QTableWidgetItem("H. inicio esp. (" + str(auto.get("id")) + ")")
             header.setBackground(QColor(234, 153, 153))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
-            header = QTableWidgetItem("Monto " + str(auto.get("id")))
+            header = QTableWidgetItem("Monto (" + str(auto.get("id")) + ")")
             header.setBackground(QColor(234, 153, 153))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
@@ -390,8 +403,9 @@ class VentanaSistemaColas(QMainWindow):
             tiempo_estacionado = iteracion_simulada.get("eventos").get("fin_estacionamiento").get("tiempo_estacionado")
             tiempo_estacionado_str = str(tiempo_estacionado) if tiempo_estacionado is not None else ""
             fines_tiempo_estacionado_str = []
-            for fin_tiempo_estacionado in iteracion_simulada.get("eventos").get("fin_estacionamiento")\
+            for fin_tiempo_estacionado_dict in iteracion_simulada.get("eventos").get("fin_estacionamiento")\
                     .get("fines_tiempo_estacionado"):
+                fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionamiento")
                 fines_tiempo_estacionado_str.append(
                     str(fin_tiempo_estacionado).replace(".", ",") if fin_tiempo_estacionado is not None else ""
                 )
@@ -399,8 +413,9 @@ class VentanaSistemaColas(QMainWindow):
             tiempo_cobrado = iteracion_simulada.get("eventos").get("fin_cobrado").get("tiempo_cobrado")
             tiempo_cobrado_str = str(tiempo_cobrado) if tiempo_cobrado is not None else ""
             fines_tiempo_cobrado_str = []
-            for fin_tiempo_cobrado in iteracion_simulada.get("eventos").get("fin_cobrado") \
+            for fin_tiempo_cobrado_dict in iteracion_simulada.get("eventos").get("fin_cobrado") \
                     .get("fines_tiempo_cobrado"):
+                fin_tiempo_cobrado = fin_tiempo_cobrado_dict.get("fin_tiempo_cobrado")
                 fines_tiempo_cobrado_str.append(
                     str(fin_tiempo_cobrado).replace(".", ",") if fin_tiempo_cobrado is not None else ""
                 )
@@ -409,7 +424,7 @@ class VentanaSistemaColas(QMainWindow):
             for lugar_estacionamiento in iteracion_simulada.get("servidores").get("lugares_estacionamiento"):
                 estado = lugar_estacionamiento.get("estado")
                 lugares_estacionamiento_str.append(
-                    (str(estado) if estado is not None else "")
+                    (str(estado) if estado is not None else "",)
                 )
 
             cabinas_cobro_str = []
