@@ -3,7 +3,7 @@ import random
 from decimal import Decimal
 from statistics import mean
 
-from soporte.helper import *
+from sistema_colas.soporte.helper import *
 
 from sistema_colas.soporte.helper import truncar, TWOPLACES
 
@@ -15,6 +15,10 @@ class ControladorSistemaColas:
     cantidad_iteraciones = None
     tiempo_autos = None
     proxima_llegada = 0
+
+    fines_estacionamientos = []
+    fines_cobro = []
+
     probabilidad_chico_autos = None
     probabilidad_grande_autos = None
     probabilidad_utilitario_autos = None
@@ -26,6 +30,8 @@ class ControladorSistemaColas:
     tiempo_cobro = None
 
     estado_auto = None
+    lugar_estacionamiento = None
+    siguiente_reloj = 0
 
     def simular_iteracion(self, vector_estado):
 
@@ -38,54 +44,87 @@ class ControladorSistemaColas:
 
         #Obtengo la hora
         tiempo_autos = vector_estado.get("reloj")
+
+        #Obtengo el menor de los tiempos de los proximos eventos posibles
+        self.proxima_llegada = vector_estado["eventos"]["llegada_autos"]["proxima_llegada"]
+        self.fines_estacionamientos = vector_estado["eventos"]["fin_estacionamiento"]["fines_tiempo_estacionado"]
+        self.fines_cobro = vector_estado["eventos"]["fin_cobrado"]["fines_cobrado"]
+
+        #Obtengo el menor de los fin estacionamiento, que son mayores al reloj
+        menor_fin_estacionamiento = 0
+        for i in range(1, self.fines_estacionamientos.len + 1):
+            menor_fin_estacionamiento = self.fines_estacionamientos[i]
+            if( tiempo_autos < menor_fin_estacionamiento < self.fines_estacionamientos[i]):
+                menor_fin_estacionamiento = self.fines_estacionamientos[i]
+
+        #Obtengo el menor de los fin cobro, que son mayores al reloj
+        menor_fin_cobro = 0
+        for i in range(1, self.fines_cobro.len + 1):
+            menor_fin_cobro = self.fines_cobro[i]
+            if( tiempo_autos < menor_fin_cobro < self.fines_cobro[i]):
+                menor_fin_cobro = self.fines_cobro[i]
+
+        if(tiempo_autos < self.proxima_llegada < menor_fin_estacionamiento):
+            self.siguiente_reloj = self.proxima_llegada
+        elif(tiempo_autos < menor_fin_estacionamiento ):
+            pass
+
+
+
         if(evento == "llegada_autos"):
             tiempo_autos += vector_estado.get("tiempo_proxima_llegada")
+            """^Poner este seteo si hubo lugar en el estacionamiento"""
             estado_auto = "Estacionado"
+
+            # Obtengo llegada auto
+            rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
+            tiempo_proxima_llegada = Decimal(
+                -1 * rnd_tiempo_entre_llegadas * math.log(rnd_tiempo_entre_llegadas)).quantize(TWOPLACES)
+            self.proxima_llegada += self.proxima_llegada + tiempo_proxima_llegada
+
         elif(evento == "fin_estacionamiento"):
+
             tiempo_autos += vector_estado.get("tiempo_estacionado")
             # Obtengo las cabinas de cobro para luego saber si el auto tiene que esperar o no
             cabinas_cobro = vector_estado["servidores"]["cabinas_cobro"]
 
             for i in range(1 , cabinas_cobro.len + 1 ):
-                if(i["cola"] != 0):
+                if(cabinas_cobro[i]["cola"] != 0):
                     estado_auto = "EsperandoPagar"
                 else:
                     # Ya que es fin de estacionamiento obtengo el tiempo de cobro y el fin de cobro
                     tiempo_cobrado = 2
                     fines_cobrado = tiempo_autos + tiempo_cobrado
 
+            #Obtengo fin estacionamiento - ver en donde va
+            rnd_fin_estacionamiento = truncar(random.random(), 2)
+            limite_fin_estacinamiento_1 = self.probabilidad_1_tiempo_estacionamiento / 100
+            limite_fin_estacinamiento_2 = limite_fin_estacinamiento_1 + (self.probabilidad_2_tiempo_estacionamiento / 100)
+            limite_fin_estacinamiento_3 = limite_fin_estacinamiento_2 + (self.probabilidad_3_tiempo_estacionamiento / 100)
+            if( 0 < rnd_fin_estacionamiento < limite_fin_estacinamiento_1):
+                tiempo_estacionado = 1
+            elif( limite_fin_estacinamiento_1 < rnd_fin_estacionamiento < limite_fin_estacinamiento_2):
+                tiempo_estacionado = 2
+            elif( limite_fin_estacinamiento_2 < rnd_fin_estacionamiento < limite_fin_estacinamiento_3):
+                tiempo_estacionado = 3
+            else:
+                tiempo_estacionado = 4
+            fines_tiempo_estacionado = tiempo_autos + tiempo_estacionado
+
         elif(evento == "fin_cobrado"):
             tiempo_autos += self.vector_estado.get("tiempo_cobrado")
             estado_auto = "Pagando"
 
-        #Obtengo llegada auto
-        rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
-        tiempo_proxima_llegada = Decimal(-1 * rnd_tiempo_entre_llegadas * math.log(rnd_tiempo_entre_llegadas)).quantize(TWOPLACES)
-        self.proxima_llegada += self.proxima_llegada + tiempo_proxima_llegada
 
-        #Obtengo fin estacionamiento
-        rnd_fin_estacionamiento = truncar(random.random(), 2)
-        limite_fin_estacinamiento_1 = self.probabilidad_1_tiempo_estacionamiento / 100
-        limite_fin_estacinamiento_2 = limite_fin_estacinamiento_1 + (self.probabilidad_2_tiempo_estacionamiento / 100)
-        limite_fin_estacinamiento_3 = limite_fin_estacinamiento_2 + (self.probabilidad_3_tiempo_estacionamiento / 100)
-        if( 0 < rnd_fin_estacionamiento < limite_fin_estacinamiento_1):
-            tiempo_estacionado = 1
-        elif( limite_fin_estacinamiento_1 < rnd_fin_estacionamiento < limite_fin_estacinamiento_2):
-            tiempo_estacionado = 2
-        elif( limite_fin_estacinamiento_2 < rnd_fin_estacionamiento < limite_fin_estacinamiento_3):
-            tiempo_estacionado = 3
-        else:
-            tiempo_estacionado = 4
-        fines_tiempo_estacionado = tiempo_autos + tiempo_estacionado
 
         #Valido que haya lugar en el estacionamiento
-        lugares_estacionamiento = vector_estado.get("lugares_estacionamiento");
+        lugares_estacionamiento = vector_estado.get("lugares_estacionamiento")
         autos_rechazados = vector_estado["contadores"]["autos_rechazados"]
         for i in range(1, lugares_estacionamiento.len):
-            if(i["estado"] == "Libre"):
-                i["estado"] = "Ocupado"
-                i["n_lugar_estacionamiento"] = i
-                """Agregar auto que esta en ese lugar ? """
+            if(lugares_estacionamiento[i]["estado"] == "Libre"):
+                lugares_estacionamiento[i]["estado"] = "Ocupado"
+                #Guardo el lugar de estacionamiento en que entrara el auto
+                self.lugar_estacionamiento = lugares_estacionamiento[i]["n_lugar_estacionamiento"]
             else:
                 autos_rechazados += 1
 
@@ -109,13 +148,16 @@ class ControladorSistemaColas:
             autos = vector_estado.get["clientes"]["autos"]
             autos.append({
                 "n_auto": tipo_auto,
-                "estado": estado_auto
+                "estado": estado_auto,
+                "lugar_estacionamiento_ocupado": self.lugar_estacionamiento
             })
         elif(evento == "fin_estacionamiento"):
             #Mantengo los datos
             auxiliar = vector_estado["clientes"]["auxiliares"]
-            auto = vector_estado.get["clientes"]["autos"].pop()
             autos = vector_estado.get["clientes"]["autos"]
+
+            #Esto deberia ir despues de cobrar
+            auto = vector_estado.get["clientes"]["autos"].pop()
             autos.append(auto)
 
             #Realizo el cobro
@@ -139,7 +181,7 @@ class ControladorSistemaColas:
         # Armo nuevo vector de estado
         vector_estado = {
             "evento": evento,
-            "reloj": tiempo_autos,
+            "reloj": self.siguiente_reloj,
             "eventos": {
                 "llegada_autos": {
                     "rnd_tiempo_entre_llegadas": rnd_tiempo_entre_llegadas,
@@ -237,7 +279,8 @@ class ControladorSistemaColas:
                 "autos": [
                     {
                         "n_auto": 1,
-                        "estado": None
+                        "estado": None,
+                        "lugar_estacionamiento_ocupado": None
                     }
                 ]
             }
