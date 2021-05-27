@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from soporte.helper import *
 
 
@@ -16,10 +17,16 @@ class ControladorSistemaColas:
     tiempo_cobro = None
 
     # Constantes
+    EVENTO_LLEGADA_AUTO = "llegada_auto"
+    EVENTO_FIN_ESTACIONAMIENTO = "fin_estacionamiento"
+    EVENTO_FIN_COBRADO = "fin_cobrado"
+
     ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE = "Libre"
     ESTADO_LUGAR_ESTACIONAMIENTO_OCUPADO = "Ocupado"
+
     ESTADO_CABINA_COBRO_LIBRE = "Libre"
     ESTADO_CABINA_COBRO_OCUPADO = "Ocupado"
+
     ESTADO_AUTO_ESTACIONADO = "Estacionado"
     ESTADO_AUTO_ESPERANDO_PAGAR = "Esperando pagar"
     ESTADO_AUTO_PAGANDO = "Pagando"
@@ -43,47 +50,47 @@ class ControladorSistemaColas:
     """
 
     def simular_iteracion(self, vector_estado):
-        vector_estado = vector_estado.copy()
-        if vector_estado.get("reloj") <= 20:
-            vector_estado["reloj"] = vector_estado.get("reloj") + 1
-        return vector_estado
+
+        # Copio vector estado anterior para realizar las acciones necesarias de esta iteración sin modificar el anterior
+        vector_estado = deepcopy(vector_estado)
+
+        # Obtengo siguiente evento a procesar
+        proximo_evento = None
+        reloj_proximo_evento = None
+        id_servidor_liberado = None
+
+        proxima_llegada = vector_estado.get("eventos").get("llegada_autos").get("proxima_llegada")
+        if proxima_llegada is not None:
+            proximo_evento = self.EVENTO_LLEGADA_AUTO
+            reloj_proximo_evento = proxima_llegada
+
+        for fin_tiempo_estacionado_dict in vector_estado.get("eventos").get("fin_estacionamiento").get(
+                "fines_tiempo_estacionado"):
+            fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionado")
+            if reloj_proximo_evento is None or \
+                    fin_tiempo_estacionado is not None and fin_tiempo_estacionado < reloj_proximo_evento:
+                id_lugar_estacionamiento = fin_tiempo_estacionado_dict.get("id_lugar_estacionamiento")
+                proximo_evento = self.EVENTO_FIN_ESTACIONAMIENTO
+                reloj_proximo_evento = fin_tiempo_estacionado
+                id_servidor_liberado = id_lugar_estacionamiento
+
+        for fin_tiempo_cobrado_dict in vector_estado.get("eventos").get("fin_cobrado").get(
+                "fines_tiempo_cobrado"):
+            fin_tiempo_cobrado = fin_tiempo_cobrado_dict.get("fin_tiempo_cobrado")
+            if reloj_proximo_evento is None or \
+                    fin_tiempo_cobrado is not None and fin_tiempo_cobrado < reloj_proximo_evento:
+                id_cabina_cobro = fin_tiempo_cobrado_dict.get("id_cabina_cobro")
+                proximo_evento = self.EVENTO_FIN_COBRADO
+                reloj_proximo_evento = fin_tiempo_cobrado
+                id_servidor_liberado = id_cabina_cobro
+
+        # Seteo nuevo evento en vector
+        vector_estado["evento"] = proximo_evento
+        vector_estado["reloj"] = reloj_proximo_evento
+
+
+
         """
-        #Obtengo el evento
-        evento = vector_estado.get("evento")
-
-        #Realizo la trnasicion del primer estado
-        if(evento == "inicializacion"):
-            evento == "llegada_autos"
-
-        #Obtengo la hora
-        tiempo_autos = vector_estado.get("reloj")
-
-        #Obtengo el menor de los tiempos de los proximos eventos posibles
-        self.proxima_llegada = vector_estado["eventos"]["llegada_autos"]["proxima_llegada"]
-        self.fines_estacionamientos = vector_estado["eventos"]["fin_estacionamiento"]["fines_tiempo_estacionado"]
-        self.fines_cobro = vector_estado["eventos"]["fin_cobrado"]["fines_cobrado"]
-
-        #Obtengo el menor de los fin estacionamiento, que son mayores al reloj
-        menor_fin_estacionamiento = 0
-        for i in range(1, self.fines_estacionamientos.len + 1):
-            menor_fin_estacionamiento = self.fines_estacionamientos[i]
-            if( tiempo_autos < menor_fin_estacionamiento < self.fines_estacionamientos[i]):
-                menor_fin_estacionamiento = self.fines_estacionamientos[i]
-
-        #Obtengo el menor de los fin cobro, que son mayores al reloj
-        menor_fin_cobro = 0
-        for i in range(1, self.fines_cobro.len + 1):
-            menor_fin_cobro = self.fines_cobro[i]
-            if( tiempo_autos < menor_fin_cobro < self.fines_cobro[i]):
-                menor_fin_cobro = self.fines_cobro[i]
-
-        if(tiempo_autos < self.proxima_llegada < menor_fin_estacionamiento):
-            self.siguiente_reloj = self.proxima_llegada
-        elif(tiempo_autos < menor_fin_estacionamiento ):
-            pass
-
-
-
         if(evento == "llegada_autos"):
             tiempo_autos += vector_estado.get("tiempo_proxima_llegada")
             #Poner este seteo si hubo lugar en el estacionamiento
