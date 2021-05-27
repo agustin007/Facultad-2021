@@ -71,6 +71,7 @@ class ControladorSistemaColas:
     """
 
     def simular_iteracion(self, vector_estado):
+        vector_estado = vector_estado.copy()
         if vector_estado.get("reloj") <= 20:
             vector_estado["reloj"] = vector_estado.get("reloj") + 1
         return vector_estado

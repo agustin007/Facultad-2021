@@ -350,20 +350,20 @@ class VentanaSistemaColas(QMainWindow):
     def cargar_tabla_iteraciones_simuladas(self):
 
         # Obtengo datos necesarios para generacion de headers
-        fines_tiempo_estacionado = self.iteraciones_simuladas.get("eventos").get("fin_estacionamiento")\
+        fines_tiempo_estacionado = self.iteraciones_simuladas[0].get("eventos").get("fin_estacionamiento")\
             .get("fines_tiempo_estacionado")
-        fines_cobrado = self.iteraciones_simuladas.get("eventos").get("fin_cobrado").get("fines_cobrado")
-        lugares_estacionamiento = self.iteraciones_simuladas.get("servidores").get("lugares_estacionamiento")
-        cabinas_cobro = self.iteraciones_simuladas.get("servidores").get("cabinas_cobro")
-        autos = self.iteraciones_simuladas.get("clientes").get("autos")
+        fines_cobrado = self.iteraciones_simuladas[0].get("eventos").get("fin_cobrado").get("fines_cobrado")
+        lugares_estacionamiento = self.iteraciones_simuladas[0].get("servidores").get("lugares_estacionamiento")
+        cabinas_cobro = self.iteraciones_simuladas[0].get("servidores").get("cabinas_cobro")
+        autos = self.iteraciones_simuladas[0].get("clientes").get("autos")
 
         # Preparo headers de tabla de acuerdo a iteraciones simuladas
         self.preparar_tabla(fines_tiempo_estacionado, fines_cobrado, lugares_estacionamiento, cabinas_cobro, autos)
 
         # Genero filas de tabla
-        self.grid_semanas_simuladas.setRowCount(len(self.semanas_simuladas))
+        self.grid_iteraciones_simuladas.setRowCount(len(self.iteraciones_simuladas))
         index_f = 0
-        for iteracion_simulada in self.semanas_simuladas:
+        for iteracion_simulada in self.iteraciones_simuladas:
             index_c = 0
 
             # Obtengo datos en formato conveniente
@@ -378,7 +378,7 @@ class VentanaSistemaColas(QMainWindow):
                 if rnd_tiempo_entre_llegadas is not None else ""
             tiempo_proxima_llegada = iteracion_simulada.get("eventos").get("llegada_autos")\
                 .get("tiempo_proxima_llegada")
-            tiempo_proxima_llegada_str = tiempo_proxima_llegada.replace(".", ",") \
+            tiempo_proxima_llegada_str = str(tiempo_proxima_llegada).replace(".", ",") \
                 if tiempo_proxima_llegada is not None else ""
             proxima_llegada = iteracion_simulada.get("proxima_llegada")
             proxima_llegada_str = str(proxima_llegada).replace(".", ",") if proxima_llegada is not None else ""
@@ -390,7 +390,7 @@ class VentanaSistemaColas(QMainWindow):
             tiempo_estacionado = iteracion_simulada.get("eventos").get("fin_estacionamiento").get("tiempo_estacionado")
             tiempo_estacionado_str = str(tiempo_estacionado) if tiempo_estacionado is not None else ""
             fines_tiempo_estacionado_str = []
-            for fin_tiempo_estacionado in self.iteraciones_simuladas.get("eventos").get("fin_estacionamiento")\
+            for fin_tiempo_estacionado in iteracion_simulada.get("eventos").get("fin_estacionamiento")\
                     .get("fines_tiempo_estacionado"):
                 fines_tiempo_estacionado_str.append(
                     str(fin_tiempo_estacionado).replace(".", ",") if fin_tiempo_estacionado is not None else ""
@@ -399,21 +399,21 @@ class VentanaSistemaColas(QMainWindow):
             tiempo_cobrado = iteracion_simulada.get("eventos").get("fin_cobrado").get("tiempo_cobrado")
             tiempo_cobrado_str = str(tiempo_cobrado) if tiempo_cobrado is not None else ""
             fines_tiempo_cobrado_str = []
-            for fin_tiempo_cobrado in self.iteraciones_simuladas.get("eventos").get("fin_estacionamiento") \
+            for fin_tiempo_cobrado in iteracion_simulada.get("eventos").get("fin_cobrado") \
                     .get("fines_tiempo_cobrado"):
                 fines_tiempo_cobrado_str.append(
                     str(fin_tiempo_cobrado).replace(".", ",") if fin_tiempo_cobrado is not None else ""
                 )
                 
             lugares_estacionamiento_str = []
-            for lugar_estacionamiento in self.iteraciones_simuladas.get("servidores").get("lugares_estacionamiento"):
+            for lugar_estacionamiento in iteracion_simulada.get("servidores").get("lugares_estacionamiento"):
                 estado = lugar_estacionamiento.get("estado")
                 lugares_estacionamiento_str.append(
                     (str(estado) if estado is not None else "")
                 )
 
             cabinas_cobro_str = []
-            for cabina_cobro in self.iteraciones_simuladas.get("servidores").get("cabinas_cobro"):
+            for cabina_cobro in iteracion_simulada.get("servidores").get("cabinas_cobro"):
                 estado = cabina_cobro.get("estado")
                 cola = cabina_cobro.get("cola")
                 cabinas_cobro_str.append(
@@ -438,7 +438,7 @@ class VentanaSistemaColas(QMainWindow):
             tipo_auto_str = str(tipo_auto) if tipo_auto is not None else ""
 
             autos_str = []
-            for auto in self.iteraciones_simuladas.get("clientes").get("autos"):
+            for auto in iteracion_simulada.get("clientes").get("autos"):
                 estado = auto.get("estado")
                 id_lugar_estacionamiento = auto.get("id_lugar_estacionamiento")
                 id_cabina_cobro = auto.get("id_cabina_cobro")
@@ -458,62 +458,62 @@ class VentanaSistemaColas(QMainWindow):
                 )
 
             # Agrego fila a tabla
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(evento_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(evento_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(reloj_str))
-            index_f += 1
-
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_tiempo_entre_llegadas_str))
-            index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_proxima_llegada_str))
-            index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(proxima_llegada_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(reloj_str))
             index_f += 1
 
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_fin_estacionamiento_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_tiempo_entre_llegadas_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_estacionado_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_proxima_llegada_str))
+            index_f += 1
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(proxima_llegada_str))
+            index_f += 1
+
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_fin_estacionamiento_str))
+            index_f += 1
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_estacionado_str))
             index_f += 1
             for fin_tiempo_estacionado_str in fines_tiempo_estacionado_str:
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(fin_tiempo_estacionado_str))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(fin_tiempo_estacionado_str))
                 index_f += 1
 
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_cobrado_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(tiempo_cobrado_str))
             index_f += 1
             for fin_tiempo_cobrado_str in fines_tiempo_cobrado_str:
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(fin_tiempo_cobrado_str))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(fin_tiempo_cobrado_str))
                 index_f += 1
 
             for lugar_estacionamiento_str in lugares_estacionamiento_str:
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(lugar_estacionamiento_str[0]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(lugar_estacionamiento_str[0]))
                 index_f += 1
 
             for cabina_cobro_str in cabinas_cobro_str:
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(cabina_cobro_str[0]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(cabina_cobro_str[0]))
                 index_f += 1
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(cabina_cobro_str[1]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(cabina_cobro_str[1]))
                 index_f += 1
 
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(autos_rechazados_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(autos_rechazados_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(monto_recaudado_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(monto_recaudado_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_promedio_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_promedio_str))
             index_f += 1
 
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_tipo_auto_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_tipo_auto_str))
             index_f += 1
-            self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(tipo_auto_str))
+            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(tipo_auto_str))
             index_f += 1
 
             for auto_str in autos_str:
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[0]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[0]))
                 index_f += 1
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[1]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[1]))
                 index_f += 1
-                self.grid_semanas_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[2]))
+                self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(auto_str[2]))
                 index_f += 1
 
             index_c += 1
