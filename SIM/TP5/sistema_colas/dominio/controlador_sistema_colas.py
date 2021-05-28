@@ -6,6 +6,7 @@ from soporte.helper import *
 class ControladorSistemaColas:
 
     # Atributos
+    ultimo_id_auto = 0
     tiempo_autos = None
     probabilidad_chico_autos = None
     probabilidad_grande_autos = None
@@ -55,39 +56,129 @@ class ControladorSistemaColas:
         vector_estado = deepcopy(vector_estado)
 
         # Obtengo siguiente evento a procesar
-        proximo_evento = None
-        reloj_proximo_evento = None
+        evento = None
+        reloj_evento = None
         id_servidor_liberado = None
 
         proxima_llegada = vector_estado.get("eventos").get("llegada_autos").get("proxima_llegada")
         if proxima_llegada is not None:
-            proximo_evento = self.EVENTO_LLEGADA_AUTO
-            reloj_proximo_evento = proxima_llegada
+            evento = self.EVENTO_LLEGADA_AUTO
+            reloj_evento = proxima_llegada
 
         for fin_tiempo_estacionado_dict in vector_estado.get("eventos").get("fin_estacionamiento").get(
                 "fines_tiempo_estacionado"):
             fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionado")
-            if reloj_proximo_evento is None or \
-                    fin_tiempo_estacionado is not None and fin_tiempo_estacionado < reloj_proximo_evento:
+            if reloj_evento is None or \
+                    fin_tiempo_estacionado is not None and fin_tiempo_estacionado < reloj_evento:
                 id_lugar_estacionamiento = fin_tiempo_estacionado_dict.get("id_lugar_estacionamiento")
-                proximo_evento = self.EVENTO_FIN_ESTACIONAMIENTO
-                reloj_proximo_evento = fin_tiempo_estacionado
+                evento = self.EVENTO_FIN_ESTACIONAMIENTO
+                reloj_evento = fin_tiempo_estacionado
                 id_servidor_liberado = id_lugar_estacionamiento
 
         for fin_tiempo_cobrado_dict in vector_estado.get("eventos").get("fin_cobrado").get(
                 "fines_tiempo_cobrado"):
             fin_tiempo_cobrado = fin_tiempo_cobrado_dict.get("fin_tiempo_cobrado")
-            if reloj_proximo_evento is None or \
-                    fin_tiempo_cobrado is not None and fin_tiempo_cobrado < reloj_proximo_evento:
+            if reloj_evento is None or \
+                    fin_tiempo_cobrado is not None and fin_tiempo_cobrado < reloj_evento:
                 id_cabina_cobro = fin_tiempo_cobrado_dict.get("id_cabina_cobro")
-                proximo_evento = self.EVENTO_FIN_COBRADO
-                reloj_proximo_evento = fin_tiempo_cobrado
+                evento = self.EVENTO_FIN_COBRADO
+                reloj_evento = fin_tiempo_cobrado
                 id_servidor_liberado = id_cabina_cobro
 
         # Seteo nuevo evento en vector
-        vector_estado["evento"] = proximo_evento
-        vector_estado["reloj"] = reloj_proximo_evento
+        vector_estado["evento"] = evento
+        vector_estado["reloj"] = reloj_evento
 
+        # Realizo acciones dependiendo del evento
+
+        # Evento llegada_autos
+        if evento == self.EVENTO_LLEGADA_AUTO:
+
+            # Verifico si existe al menos algún lugar del estacionamiento libre para pasarlo a ocupado
+            id_lugar_estacionamiento_encontrado = None
+            for lugar_estacionamiento_dict in vector_estado.get("sevidores").get("lugares_estacionamiento"):
+                estado_lugar_estacionamiento = lugar_estacionamiento_dict.get("estado")
+                if estado_lugar_estacionamiento == self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE:
+                    id_lugar_estacionamiento_encontrado = lugar_estacionamiento_dict.get("id")
+                    lugar_estacionamiento_dict["estado"] = self.ESTADO_LUGAR_ESTACIONAMIENTO_OCUPADO
+                    break
+
+            # Si se encontró lugar de estacionamiento
+            if id_lugar_estacionamiento_encontrado is not None:
+
+                # Genero próxima llegada
+                rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
+                tiempo_proxima_llegada = round(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas), 2)
+                proxima_llegada = reloj_evento + tiempo_proxima_llegada
+
+                # Seteo datos de próxima llegada en vector estado
+                vector_estado["eventos"]["llegada_autos"]["rnd_tiempo_entre_llegadas"] = rnd_tiempo_entre_llegadas
+                vector_estado["eventos"]["llegada_autos"]["tiempo_proxima_llegada"] = tiempo_proxima_llegada
+                vector_estado["eventos"]["llegada_autos"]["proxima_llegada"] = proxima_llegada
+
+                # Genero fin estacionamiento para el auto recién llegado
+                rnd_fin_estacionamiento = truncar(random.random(), 2)
+                limite_tiempo_estacionamiento_1 = self.probabilidad_1_tiempo_estacionamiento / 100
+                limite_tiempo_estacionamiento_2 = limite_tiempo_estacionamiento_1 \
+                                                  + self.probabilidad_2_tiempo_estacionamiento / 100
+                limite_tiempo_estacionamiento_3 = limite_tiempo_estacionamiento_2 \
+                                                  + self.probabilidad_3_tiempo_estacionamiento / 100
+                if 0 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_1:
+                    tiempo_estacionado = 1
+                elif limite_tiempo_estacionamiento_1 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_2:
+                    tiempo_estacionado = 2
+                elif limite_tiempo_estacionamiento_2 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_3:
+                    tiempo_estacionado = 3
+                else:
+                    tiempo_estacionado = 4
+                fin_tiempo_estacionado = reloj_evento + tiempo_estacionado
+
+                # Seteo datos de fin tiempo estacionado
+                for fin_tiempo_estacionado_dict in vector_estado.get("eventos").get("fin_estacionamiento").get(
+                        "fines_tiempo_estacionado"):
+                    id_lugar_estacionamiento = fin_tiempo_estacionado_dict.get("id_lugar_estacionamiento")
+                    if id_lugar_estacionamiento == id_lugar_estacionamiento_encontrado:
+                        fin_tiempo_estacionado_dict["fin_tiempo_estacionado"] = fin_tiempo_estacionado
+
+                # Genero auxiliares para generación de auto
+                rnd_tipo_auto = truncar(random.random(), 2)
+                limite_autos_chico = self.probabilidad_chico_autos / 100
+                limite_autos_grande = limite_autos_chico + self.probabilidad_grande_autos / 100
+                if 0 <= rnd_tipo_auto < limite_autos_chico:
+                    tipo_auto = self.TIPO_AUTO_CHICO
+                elif limite_autos_chico <= rnd_tipo_auto < limite_autos_grande:
+                    tipo_auto = self.TIPO_AUTO_GRANDE
+                else:
+                    tipo_auto = self.TIPO_AUTO_UTILITARIO
+
+                # Seteo datos de auxiliares para geneación de auto
+                vector_estado["clientes"]["auxiliares"]["rnd_tipo_auto"] = rnd_tipo_auto
+                vector_estado["clientes"]["auxiliares"]["tipo_auto"] = tipo_auto
+
+                # Genero auto con sus atributos correspondientes
+                id_auto = self.ultimo_id_auto + 1
+                estado_auto = self.ESTADO_AUTO_ESTACIONADO
+                id_lugar_estacionamiento_auto = id_lugar_estacionamiento_encontrado
+                id_cabina_cobro_auto = None
+                hora_inicio_espera_para_pagar_auto = None
+                if tipo_auto == self.TIPO_AUTO_CHICO:
+                    monto_auto = 50 * tiempo_estacionado
+                elif tipo_auto == self.TIPO_AUTO_GRANDE:
+                    monto_auto = 80 * tiempo_estacionado
+                else:
+                    monto_auto = 100 * tiempo_estacionado
+                vector_estado.get("clientes").get("autos").append({
+                    "id": id_auto,
+                    "estado": estado_auto,
+                    "id_lugar_estacionamiento": id_lugar_estacionamiento_auto,
+                    "id_cabina_cobro": id_cabina_cobro_auto,
+                    "hora_inicio_espera_para_pagar": hora_inicio_espera_para_pagar_auto,
+                    "monto": monto_auto
+                })
+
+        # Evento fin_estacionamiento
+        elif evento == "fin_estacionamiento":
+            pass
 
 
         """
@@ -257,15 +348,16 @@ class ControladorSistemaColas:
 
         # Genero vector de estado inicial
         rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
+        tiempo_proxima_llegada = round(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas), 2)
+        proxima_llegada = tiempo_proxima_llegada
         vector_estado = {
             "evento": "inicializacion",
             "reloj": 0,
             "eventos": {
                 "llegada_autos": {
                     "rnd_tiempo_entre_llegadas": rnd_tiempo_entre_llegadas,
-                    "tiempo_proxima_llegada": Decimal(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas))
-                        .quantize(TWOPLACES),
-                    "proxima_llegada": None,
+                    "tiempo_proxima_llegada": tiempo_proxima_llegada,
+                    "proxima_llegada": proxima_llegada,
                 },
                 "fin_estacionamiento": {
                     "rnd_fin_estacionamiento": None,
