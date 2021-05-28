@@ -5,14 +5,6 @@ from soporte.helper import *
 
 class ControladorSistemaColas:
 
-    # Para ver el vector estado lindo usar
-    """
-    import json
-    print("################")
-    print(json.dumps(vector_estado, indent=4))
-    print("################")
-    """
-
     # Atributos
     tiempo_autos = None
     probabilidad_chico_autos = None
@@ -420,7 +412,7 @@ class ControladorSistemaColas:
                             probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
                             probabilidad_1_tiempo_estacionamiento, probabilidad_2_tiempo_estacionamiento,
                             probabilidad_3_tiempo_estacionamiento, probabilidad_4_tiempo_estacionamiento,
-                            cantidad_cabinas_cobro, tiempo_cobro):
+                            cantidad_lugares_estacionamiento, cantidad_cabinas_cobro, tiempo_cobro):
 
         # Reestablezo control de ids de autos
         self.ultimo_id_auto = 0
@@ -478,7 +470,7 @@ class ControladorSistemaColas:
             }
         }
 
-        for i in range(1, 20 + 1):
+        for i in range(1, cantidad_lugares_estacionamiento + 1):
             vector_estado.get("eventos").get("fin_estacionamiento").get("fines_tiempo_estacionado").append({
                 "id_lugar_estacionamiento": i,
                 "fin_tiempo_estacionado": None

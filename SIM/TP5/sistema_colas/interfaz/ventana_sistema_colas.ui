@@ -488,7 +488,7 @@
        <number>5</number>
       </property>
       <item>
-       <spacer name="separator_horizontal_13">
+       <spacer name="separator_horizontal_14">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -1294,7 +1294,7 @@
         <item>
          <layout class="QVBoxLayout" name="lyt_vertical_2_4">
           <item>
-           <widget class="QLabel" name="lbl_cabinas_cobro">
+           <widget class="QLabel" name="lbl_servidores">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1302,7 +1302,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Cabinas de cobro</string>
+             <string>Servidores</string>
             </property>
            </widget>
           </item>
@@ -1325,6 +1325,49 @@
           <item>
            <layout class="QHBoxLayout" name="lyt_horizontal_3_11">
             <item>
+             <widget class="QLabel" name="lbl_cantidad_lugares_estacionamiento">
+              <property name="text">
+               <string>Cantidad de lugares</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="separator_horizontal_11">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txt_cantidad_lugares_estacionamiento">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="maxLength">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="lyt_horizontal_3_12">
+            <item>
              <widget class="QLabel" name="lbl_cantidad_cabinas_cobro">
               <property name="text">
                <string>Cantidad de cabinas</string>
@@ -1332,7 +1375,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="separator_horizontal_11">
+             <spacer name="separator_horizontal_12">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1366,7 +1409,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="lyt_horizontal_3_12">
+           <layout class="QHBoxLayout" name="lyt_horizontal_3_13">
             <item>
              <widget class="QLabel" name="lbl_tiempo_cobro">
               <property name="text">
@@ -1375,7 +1418,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="separator_horizontal_12">
+             <spacer name="separator_horizontal_13">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

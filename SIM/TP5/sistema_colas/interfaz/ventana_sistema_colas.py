@@ -37,6 +37,7 @@ class VentanaSistemaColas(QMainWindow):
         self.txt_probabilidad_2_tiempo_estacionamiento.setValidator(validador_3_enteros)
         self.txt_probabilidad_3_tiempo_estacionamiento.setValidator(validador_3_enteros)
         self.txt_probabilidad_4_tiempo_estacionamiento.setValidator(validador_3_enteros)
+        self.txt_cantidad_lugares_estacionamiento.setValidator(validador_4_enteros)
         self.txt_cantidad_cabinas_cobro.setValidator(validador_4_enteros)
         self.txt_tiempo_cobro.setValidator(validador_4_enteros)
 
@@ -50,8 +51,9 @@ class VentanaSistemaColas(QMainWindow):
 
         # Restauro valores por defecto de interfaz y limpio tabla
         self.iteraciones_simuladas = []
-        self.preparar_tabla()
         self.limpiar_interfaz()
+        self.limpiar_tabla()
+        self.preparar_tabla()
 
     def accion_simular(self):
 
@@ -67,6 +69,7 @@ class VentanaSistemaColas(QMainWindow):
         probabilidad_2_tiempo_estacionamiento = None
         probabilidad_3_tiempo_estacionamiento = None
         probabilidad_4_tiempo_estacionamiento = None
+        cantidad_lugares_estacionamiento = None
         cantidad_cabinas_cobro = None
         tiempo_cobro = None
         if self.txt_tiempo_simulacion.text() != "":
@@ -91,6 +94,8 @@ class VentanaSistemaColas(QMainWindow):
             probabilidad_3_tiempo_estacionamiento = int(self.txt_probabilidad_3_tiempo_estacionamiento.text())
         if self.txt_probabilidad_4_tiempo_estacionamiento.text() != "":
             probabilidad_4_tiempo_estacionamiento = int(self.txt_probabilidad_4_tiempo_estacionamiento.text())
+        if self.txt_cantidad_lugares_estacionamiento.text() != "":
+            cantidad_lugares_estacionamiento = int(self.txt_cantidad_lugares_estacionamiento.text())
         if self.txt_cantidad_cabinas_cobro.text() != "":
             cantidad_cabinas_cobro = int(self.txt_cantidad_cabinas_cobro.text())
         if self.txt_tiempo_cobro.text() != "":
@@ -144,6 +149,9 @@ class VentanaSistemaColas(QMainWindow):
                 probabilidad_3_tiempo_estacionamiento + probabilidad_4_tiempo_estacionamiento) != 100:
             self.mostrar_mensaje("Error", "Las probabilidades de tiempo de estacionamiento deben sumar un 100%")
             return
+        if cantidad_lugares_estacionamiento is None or cantidad_lugares_estacionamiento <= 0:
+            self.mostrar_mensaje("Error", "La cantidad de lugares de estacionamiento tiene que ser mayor a cero")
+            return
         if cantidad_cabinas_cobro is None or cantidad_cabinas_cobro <= 0:
             self.mostrar_mensaje("Error", "La cantidad de cabinas de cobro tiene que ser mayor a cero")
             return
@@ -161,6 +169,7 @@ class VentanaSistemaColas(QMainWindow):
                                                                           probabilidad_2_tiempo_estacionamiento,
                                                                           probabilidad_3_tiempo_estacionamiento,
                                                                           probabilidad_4_tiempo_estacionamiento,
+                                                                          cantidad_lugares_estacionamiento,
                                                                           cantidad_cabinas_cobro, tiempo_cobro)
 
         # Cargo tabla
@@ -251,7 +260,6 @@ class VentanaSistemaColas(QMainWindow):
         header.setBackground(QColor(208, 224, 227))
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
         i += 1
-        print(len(fines_cobrado))
 
         for fin_cobrado in fines_cobrado:
             header = QTableWidgetItem("F. cobrado (" + str(fin_cobrado.get("id_cabina_cobro")) + ")")
@@ -337,6 +345,7 @@ class VentanaSistemaColas(QMainWindow):
         self.txt_probabilidad_2_tiempo_estacionamiento.setText("30")
         self.txt_probabilidad_3_tiempo_estacionamiento.setText("15")
         self.txt_probabilidad_4_tiempo_estacionamiento.setText("5")
+        self.txt_cantidad_lugares_estacionamiento.setText("20")
         self.txt_cantidad_cabinas_cobro.setText("1")
         self.txt_tiempo_cobro.setText("2")
 
@@ -346,8 +355,6 @@ class VentanaSistemaColas(QMainWindow):
         self.grid_iteraciones_simuladas.clearSelection()
         self.grid_iteraciones_simuladas.setCurrentCell(-1, -1)
         self.grid_iteraciones_simuladas.setRowCount(0)
-
-        # prepa
 
     def mostrar_mensaje(self, titulo, mensaje):
 
