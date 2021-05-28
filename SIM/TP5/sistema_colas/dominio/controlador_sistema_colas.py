@@ -226,8 +226,8 @@ class ControladorSistemaColas:
             if id_cabina_cobro_encontrada is not None:
 
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
-                tiempo_cobrado = 2
-                fin_tiempo_cobrado = reloj_evento + tiempo_cobrado
+                tiempo_cobrado = self.tiempo_cobro
+                fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado
                 vector_estado["eventos"]["fin_cobrado"]["tiempo_cobrado"] = tiempo_cobrado
@@ -337,8 +337,8 @@ class ControladorSistemaColas:
                             hora_inicio_espera_auto_con_menos_hora_inicio_espera = hora_inicio_espera
 
                 # Genero fin cobrado para el auto que sigue para pagar
-                tiempo_cobrado = 2
-                fin_tiempo_cobrado = reloj_evento + tiempo_cobrado
+                tiempo_cobrado = self.tiempo_cobro
+                fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado para el auto que sigue para pagar
                 vector_estado["eventos"]["fin_cobrado"]["tiempo_cobrado"] = tiempo_cobrado
@@ -492,22 +492,27 @@ class ControladorSistemaColas:
 
         # Realizo simulación almacenando los vectores estados de las iteraciones de interés
         iteraciones_simuladas = [vector_estado]
-        vector_estado_agregado = True
+        ultimo_vector_estado_agregado = True
         cantidad_iteraciones_agregadas = 0
 
+        # Agrego iteraciones dentro de lo parametrizado
         while 1:
             vector_estado_proximo = self.simular_iteracion(vector_estado)
             if vector_estado_proximo.get("reloj") > tiempo_simulacion:
                 break
             vector_estado = vector_estado_proximo
-            vector_estado_agregado = False
+            ultimo_vector_estado_agregado = False
 
             if vector_estado.get("reloj") >= tiempo_desde and cantidad_iteraciones_agregadas < cantidad_iteraciones:
-                vector_estado_agregado = True
+                ultimo_vector_estado_agregado = True
                 cantidad_iteraciones_agregadas += 1
                 iteraciones_simuladas.append(vector_estado)
 
-        if not vector_estado_agregado:
+        # Compleo objetos temporales para mostrar correctamente la simulación
+        self.completar_objetos_temporales(iteraciones_simuladas)
+
+        # Agrego ultimo vector de estado si aún no se agregó
+        if not ultimo_vector_estado_agregado:
             for auto_dict in vector_estado.get("clientes").get("autos"):
                 auto_dict["estado"] = None
                 auto_dict["id_lugar_estacionamiento"] = None
@@ -515,9 +520,6 @@ class ControladorSistemaColas:
                 auto_dict["hora_inicio_espera_para_pagar"] = None
                 auto_dict["monto"] = None
             iteraciones_simuladas.append(vector_estado)
-
-        # Compleo objetos temporales para mostrar correctamente la simulación
-        self.completar_objetos_temporales(iteraciones_simuladas)
 
         # Devuelvo iteraciones simuladas de interés
         return iteraciones_simuladas
