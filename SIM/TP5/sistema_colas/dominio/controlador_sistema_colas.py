@@ -1,4 +1,3 @@
-import copy
 import random
 from copy import deepcopy
 from soporte.helper import *
@@ -144,7 +143,7 @@ class ControladorSistemaColas:
                     tiempo_estacionado = 180
                 else:
                     tiempo_estacionado = 240
-                fin_tiempo_estacionado = reloj_evento + tiempo_estacionado
+                fin_tiempo_estacionado = round(reloj_evento + tiempo_estacionado, 2)
 
                 # Seteo datos de fin tiempo estacionado
                 vector_estado["eventos"]["fin_estacionamiento"]["rnd_fin_estacionamiento"] = rnd_fin_estacionamiento
@@ -382,42 +381,40 @@ class ControladorSistemaColas:
 
         return vector_estado
 
-    def completar_primera_iteracion_con_objetos_temporales_ineecesarios(self, iteraciones_simuladas):
+    def completar_objetos_temporales(self, iteraciones_simuladas):
 
-        # Agrego a primera iteracion autos de ultima iteracion
-        iteraciones_simuladas[0]["clientes"]["autos"] = copy.deepcopy(iteraciones_simuladas[-1]["clientes"]["autos"])
-
-        # Limpio datos de autos de primera iteracion
-        for auto_dict in iteraciones_simuladas[0].get("clientes").get("autos"):
-            auto_dict["estado"] = None
-            auto_dict["id_lugar_estacionamiento"] = None
-            auto_dict["id_cabina_cobro"] = None
-            auto_dict["hora_inicio_espera_para_pagar"] = None
-            auto_dict["monto"] = None
-
-    def eliminar_objetos_temporales_innecesarios(self, iteraciones_simuladas):
-
-        # Agrego todos los ids de autos generados que tengan datos durante las iteraciones simuladas
-        ids_a_conservar = []
+        # Obtengo todos los ids de autos generados durante las iteraciones simuladas
+        ids_autos = []
         for iteracion_simulada in iteraciones_simuladas:
             for auto_dict in iteracion_simulada.get("clientes").get("autos"):
-                if auto_dict.get("estado") is not None:
-                    ids_a_conservar.append(auto_dict.get("id"))
+                ids_autos.append(auto_dict.get("id"))
 
-        # Elimino duplicados
-        ids_a_conservar = sorted(list(set(ids_a_conservar)))
+        # Elimino ids de autos duplicados
+        ids_autos = list(set(ids_autos))
 
-        # Elimino los objetos temporales cuyos ids no se encuentren entre los ids a conservar
+        # Agrego objetos temporales faltantes en cada iteración y ordeno lista
         for iteracion_simulada in iteraciones_simuladas:
-            indices_a_eliminar = []
-            indice_recorrido = 0
-            for auto_dict in iteracion_simulada.get("clientes").get("autos"):
-                if auto_dict.get("id") not in ids_a_conservar:
-                    indices_a_eliminar.append(indice_recorrido)
-                indice_recorrido += 1
-            indices_a_eliminar = sorted(indices_a_eliminar, reverse=True)
-            for indice_a_eliminar in indices_a_eliminar:
-                del iteracion_simulada["clientes"]["autos"][indice_a_eliminar]
+            ids_faltantes = []
+            for id_auto in ids_autos:
+                id_encontrado = False
+                for auto_dict in iteracion_simulada.get("clientes").get("autos"):
+                    id_auto_recorrido = auto_dict.get("id")
+                    if id_auto == id_auto_recorrido:
+                        id_encontrado = True
+                        break
+                if not id_encontrado:
+                    ids_faltantes.append(id_auto)
+            for id_faltante in ids_faltantes:
+                iteracion_simulada.get("clientes").get("autos").append({
+                    "id": id_faltante,
+                    "estado": None,
+                    "id_lugar_estacionamiento": None,
+                    "id_cabina_cobro": None,
+                    "hora_inicio_espera_para_pagar": None,
+                    "monto": None
+                })
+            iteracion_simulada["clientes"]["autos"] = sorted(iteracion_simulada.get("clientes").get("autos"),
+                                                             key=lambda x: x["id"])
 
     def simular_iteraciones(self, tiempo_simulacion, tiempo_desde, cantidad_iteraciones, tiempo_autos,
                             probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
@@ -527,9 +524,8 @@ class ControladorSistemaColas:
                 auto_dict["monto"] = None
             iteraciones_simuladas.append(vector_estado)
 
-        # Elimino objetos temporales que no deben mostrarse en la simulacion
-        self.completar_primera_iteracion_con_objetos_temporales_ineecesarios(iteraciones_simuladas)
-        self.eliminar_objetos_temporales_innecesarios(iteraciones_simuladas)
+        # Compleo objetos temporales para mostrar correctamente la simulación
+        self.completar_objetos_temporales(iteraciones_simuladas)
 
         # Devuelvo iteraciones simuladas de interés
         return iteraciones_simuladas
