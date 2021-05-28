@@ -251,6 +251,8 @@ class VentanaSistemaColas(QMainWindow):
         header.setBackground(QColor(208, 224, 227))
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
         i += 1
+        print(len(fines_cobrado))
+
         for fin_cobrado in fines_cobrado:
             header = QTableWidgetItem("F. cobrado (" + str(fin_cobrado.get("id_cabina_cobro")) + ")")
             header.setBackground(QColor(208, 224, 227))
@@ -359,12 +361,12 @@ class VentanaSistemaColas(QMainWindow):
     def cargar_tabla_iteraciones_simuladas(self):
 
         # Obtengo datos necesarios para generacion de headers
-        fines_tiempo_estacionado = self.iteraciones_simuladas[-1].get("eventos").get("fin_estacionamiento")\
+        fines_tiempo_estacionado = self.iteraciones_simuladas[0].get("eventos").get("fin_estacionamiento")\
             .get("fines_tiempo_estacionado")
-        fines_cobrado = self.iteraciones_simuladas[-1].get("eventos").get("fin_cobrado").get("fines_cobrado")
-        lugares_estacionamiento = self.iteraciones_simuladas[-1].get("servidores").get("lugares_estacionamiento")
-        cabinas_cobro = self.iteraciones_simuladas[-1].get("servidores").get("cabinas_cobro")
-        autos = self.iteraciones_simuladas[-1].get("clientes").get("autos")
+        fines_cobrado = self.iteraciones_simuladas[0].get("eventos").get("fin_cobrado").get("fines_tiempo_cobrado")
+        lugares_estacionamiento = self.iteraciones_simuladas[0].get("servidores").get("lugares_estacionamiento")
+        cabinas_cobro = self.iteraciones_simuladas[0].get("servidores").get("cabinas_cobro")
+        autos = self.iteraciones_simuladas[0].get("clientes").get("autos")
 
         # Preparo headers de tabla de acuerdo a iteraciones simuladas
         self.preparar_tabla(fines_tiempo_estacionado, fines_cobrado, lugares_estacionamiento, cabinas_cobro, autos)
@@ -459,7 +461,7 @@ class VentanaSistemaColas(QMainWindow):
                     estado_str += " (%s)" % str(id_cabina_cobro)
                 autos_str.append(
                     (estado_str,
-                     str(hora_inicio_espera_para_pagar).replace(".", ",") if hora_inicio_espera_para_pagar is not None 
+                     str(hora_inicio_espera_para_pagar).replace(".", ",") if hora_inicio_espera_para_pagar is not None
                      else "",
                      "$ " + str(monto) if monto is not None else ""
                      )
