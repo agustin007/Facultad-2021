@@ -100,8 +100,8 @@ class VentanaSistemaColas(QMainWindow):
         if tiempo_simulacion is None or tiempo_simulacion <= 0:
             self.mostrar_mensaje("Error", "El tiempo a simular tiene que ser mayor a cero")
             return
-        if tiempo_desde is None or tiempo_desde <= 0:
-            self.mostrar_mensaje("Error", "El tiempo desde el cuál mostrar la simulación tiene que ser mayor a cero")
+        if tiempo_desde is None:
+            self.mostrar_mensaje("Error", "El tiempo desde el cuál mostrar la simulación no puede ser vacío")
             return
         if cantidad_iteraciones is None or cantidad_iteraciones <= 0:
             self.mostrar_mensaje("Error", "La cantidad de iteraciones a mostrar de la simulación tiene que ser mayor a "
@@ -207,7 +207,7 @@ class VentanaSistemaColas(QMainWindow):
         cantidad_lugares_estacionamiento = len(lugares_estacionamiento)
         cantidad_cabinas_cobro = len(cabinas_cobro)
         cantidad_autos = len(autos)
-        self.grid_iteraciones_simuladas.setColumnCount(14 + cantidad_lugares_estacionamiento * 2 +
+        self.grid_iteraciones_simuladas.setColumnCount(13 + cantidad_lugares_estacionamiento * 2 +
                                                        cantidad_cabinas_cobro * 3 + cantidad_autos * 3)
         i = 0
 
@@ -285,10 +285,6 @@ class VentanaSistemaColas(QMainWindow):
         header.setBackground(QColor(244, 204, 204))
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
         i += 1
-        header = QTableWidgetItem("Porc. ocup. prom.")
-        header.setBackground(QColor(244, 204, 204))
-        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
-        i += 1
 
         header = QTableWidgetItem("RND")
         header.setBackground(QColor(249, 203, 156))
@@ -363,12 +359,12 @@ class VentanaSistemaColas(QMainWindow):
     def cargar_tabla_iteraciones_simuladas(self):
 
         # Obtengo datos necesarios para generacion de headers
-        fines_tiempo_estacionado = self.iteraciones_simuladas[0].get("eventos").get("fin_estacionamiento")\
+        fines_tiempo_estacionado = self.iteraciones_simuladas[-1].get("eventos").get("fin_estacionamiento")\
             .get("fines_tiempo_estacionado")
-        fines_cobrado = self.iteraciones_simuladas[0].get("eventos").get("fin_cobrado").get("fines_cobrado")
-        lugares_estacionamiento = self.iteraciones_simuladas[0].get("servidores").get("lugares_estacionamiento")
-        cabinas_cobro = self.iteraciones_simuladas[0].get("servidores").get("cabinas_cobro")
-        autos = self.iteraciones_simuladas[0].get("clientes").get("autos")
+        fines_cobrado = self.iteraciones_simuladas[-1].get("eventos").get("fin_cobrado").get("fines_cobrado")
+        lugares_estacionamiento = self.iteraciones_simuladas[-1].get("servidores").get("lugares_estacionamiento")
+        cabinas_cobro = self.iteraciones_simuladas[-1].get("servidores").get("cabinas_cobro")
+        autos = self.iteraciones_simuladas[-1].get("clientes").get("autos")
 
         # Preparo headers de tabla de acuerdo a iteraciones simuladas
         self.preparar_tabla(fines_tiempo_estacionado, fines_cobrado, lugares_estacionamiento, cabinas_cobro, autos)
@@ -393,7 +389,7 @@ class VentanaSistemaColas(QMainWindow):
                 .get("tiempo_proxima_llegada")
             tiempo_proxima_llegada_str = str(tiempo_proxima_llegada).replace(".", ",") \
                 if tiempo_proxima_llegada is not None else ""
-            proxima_llegada = iteracion_simulada.get("proxima_llegada")
+            proxima_llegada = iteracion_simulada.get("eventos").get("llegada_autos").get("proxima_llegada")
             proxima_llegada_str = str(proxima_llegada).replace(".", ",") if proxima_llegada is not None else ""
 
             rnd_fin_estacionamiento = iteracion_simulada.get("eventos").get("fin_estacionamiento")\
@@ -405,7 +401,7 @@ class VentanaSistemaColas(QMainWindow):
             fines_tiempo_estacionado_str = []
             for fin_tiempo_estacionado_dict in iteracion_simulada.get("eventos").get("fin_estacionamiento")\
                     .get("fines_tiempo_estacionado"):
-                fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionamiento")
+                fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionado")
                 fines_tiempo_estacionado_str.append(
                     str(fin_tiempo_estacionado).replace(".", ",") if fin_tiempo_estacionado is not None else ""
                 )
@@ -441,11 +437,8 @@ class VentanaSistemaColas(QMainWindow):
             monto_recaudado = iteracion_simulada.get("contadores").get("monto_recaudado")
             monto_recaudado_str = "$ " + str(monto_recaudado) if monto_recaudado is not None else ""
             porcentaje_ocupacion = iteracion_simulada.get("contadores").get("porcentaje_ocupacion")
-            porcentaje_ocupacion_str = str(porcentaje_ocupacion).replace(".", ",") \
-                if porcentaje_ocupacion is not None else "" + " %"
-            porcentaje_ocupacion_promedio = iteracion_simulada.get("contadores").get("porcentaje_ocupacion_promedio")
-            porcentaje_ocupacion_promedio_str = str(porcentaje_ocupacion_promedio).replace(".", ",") \
-                if porcentaje_ocupacion_promedio is not None else "" + " %"
+            porcentaje_ocupacion_str = (str(porcentaje_ocupacion).replace(".", ",")
+                                        if porcentaje_ocupacion is not None else "") + " %"
 
             rnd_tipo_auto = iteracion_simulada.get("clientes").get("auxiliares").get("rnd_tipo_auto")
             rnd_tipo_auto_str = str(rnd_tipo_auto).replace(".", ",") if rnd_tipo_auto is not None else ""
@@ -514,8 +507,6 @@ class VentanaSistemaColas(QMainWindow):
             self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(monto_recaudado_str))
             index_f += 1
             self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_str))
-            index_f += 1
-            self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(porcentaje_ocupacion_promedio_str))
             index_f += 1
 
             self.grid_iteraciones_simuladas.setItem(index_c, index_f, QTableWidgetItem(rnd_tipo_auto_str))

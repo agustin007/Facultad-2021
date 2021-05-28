@@ -1,9 +1,18 @@
+import copy
 import random
 from copy import deepcopy
 from soporte.helper import *
 
 
 class ControladorSistemaColas:
+
+    # Para ver el vector estado lindo usar
+    """
+    import json
+    print("################")
+    print(json.dumps(vector_estado, indent=4))
+    print("################")
+    """
 
     # Atributos
     tiempo_autos = None
@@ -37,7 +46,7 @@ class ControladorSistemaColas:
     TIPO_AUTO_GRANDE = "Grande"
     TIPO_AUTO_UTILITARIO = "Utilitario"
 
-    def simular_iteracion(self, vector_estado, destruir_objetos_temporales=True):
+    def simular_iteracion(self, vector_estado):
 
         # Copio vector estado anterior para realizar las acciones necesarias de esta iteración sin modificar el anterior
         vector_estado = deepcopy(vector_estado)
@@ -101,7 +110,7 @@ class ControladorSistemaColas:
             # Genero próxima llegada
             rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
             tiempo_proxima_llegada = round(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas), 2)
-            proxima_llegada = reloj_evento + tiempo_proxima_llegada
+            proxima_llegada = round(reloj_evento + tiempo_proxima_llegada, 2)
 
             # Seteo datos de próxima llegada en vector estado
             vector_estado["eventos"]["llegada_autos"]["rnd_tiempo_entre_llegadas"] = rnd_tiempo_entre_llegadas
@@ -110,7 +119,7 @@ class ControladorSistemaColas:
 
             # Verifico si existe al menos algún lugar del estacionamiento libre, para pasarlo a ocupado
             id_lugar_estacionamiento_encontrado = None
-            for lugar_estacionamiento_dict in vector_estado.get("sevidores").get("lugares_estacionamiento"):
+            for lugar_estacionamiento_dict in vector_estado.get("servidores").get("lugares_estacionamiento"):
                 estado_lugar_estacionamiento = lugar_estacionamiento_dict.get("estado")
                 if estado_lugar_estacionamiento == self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE:
                     id_lugar_estacionamiento_encontrado = lugar_estacionamiento_dict.get("id")
@@ -128,13 +137,13 @@ class ControladorSistemaColas:
                 limite_tiempo_estacionamiento_3 = limite_tiempo_estacionamiento_2 \
                                                   + self.probabilidad_3_tiempo_estacionamiento / 100
                 if 0 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_1:
-                    tiempo_estacionado = 1
+                    tiempo_estacionado = 60
                 elif limite_tiempo_estacionamiento_1 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_2:
-                    tiempo_estacionado = 2
+                    tiempo_estacionado = 120
                 elif limite_tiempo_estacionamiento_2 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_3:
-                    tiempo_estacionado = 3
+                    tiempo_estacionado = 180
                 else:
-                    tiempo_estacionado = 4
+                    tiempo_estacionado = 240
                 fin_tiempo_estacionado = reloj_evento + tiempo_estacionado
 
                 # Seteo datos de fin tiempo estacionado
@@ -169,11 +178,11 @@ class ControladorSistemaColas:
                 id_cabina_cobro_auto = None
                 hora_inicio_espera_para_pagar_auto = None
                 if tipo_auto == self.TIPO_AUTO_CHICO:
-                    monto_auto = 50 * tiempo_estacionado
+                    monto_auto = int(50 * tiempo_estacionado / 60)
                 elif tipo_auto == self.TIPO_AUTO_GRANDE:
-                    monto_auto = 80 * tiempo_estacionado
+                    monto_auto = int(80 * tiempo_estacionado / 60)
                 else:
-                    monto_auto = 100 * tiempo_estacionado
+                    monto_auto = int(100 * tiempo_estacionado / 60)
                 vector_estado.get("clientes").get("autos").append({
                     "id": id_auto,
                     "estado": estado_auto,
@@ -182,11 +191,10 @@ class ControladorSistemaColas:
                     "hora_inicio_espera_para_pagar": hora_inicio_espera_para_pagar_auto,
                     "monto": monto_auto
                 })
-
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] += 1
-                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                             * 100 / 20, 2)
+                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                           * 100 / 20)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
             # Si no se encontró lugar de estacionamiento
@@ -211,7 +219,7 @@ class ControladorSistemaColas:
             id_cabina_cobro_encontrada = None
             id_cabina_con_menos_cola = None
             cola_cabina_con_menos_cola = None
-            for cabina_cobro_dict in vector_estado.get("sevidores").get("cabinas_cobro"):
+            for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
                 estado_cabina_cobro = cabina_cobro_dict.get("estado")
                 if estado_cabina_cobro == self.ESTADO_CABINA_COBRO_LIBRE:
                     id_cabina_cobro_encontrada = cabina_cobro_dict.get("id")
@@ -240,7 +248,7 @@ class ControladorSistemaColas:
                         break
 
                 # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
-                for lugar_estacionamiento_dict in vector_estado.get("sevidores").get("lugares_estacionamiento"):
+                for lugar_estacionamiento_dict in vector_estado.get("servidores").get("lugares_estacionamiento"):
                     id_lugar_estacionamiento = lugar_estacionamiento_dict.get("id")
                     if id_lugar_estacionamiento == id_servidor_a_liberar:
                         lugar_estacionamiento_dict["estado"] = self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
@@ -256,15 +264,15 @@ class ControladorSistemaColas:
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
-                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                             * 100 / 20, 2)
+                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                           * 100 / 20)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
             # Si no se encontró cabina de cobro
             else:
 
                 # Seteo datos de cabina de cobro, ya que se agrega un auto a la cola
-                for cabina_cobro_dict in vector_estado.get("sevidores").get("cabinas_cobro"):
+                for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
                     id_cabina_cobro = cabina_cobro_dict.get("id")
                     if id_cabina_cobro == id_cabina_con_menos_cola:
                         cabina_cobro_dict["cola"] = cola_cabina_con_menos_cola + 1
@@ -290,7 +298,7 @@ class ControladorSistemaColas:
 
             # Seteo datos de cabina de cobro, ya que cambia de estado o disminuye la cola
             id_cabina_cobro_con_cola_encontrada = None
-            for cabina_cobro_dict in vector_estado.get("sevidores").get("cabinas_cobro"):
+            for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
                 id_cabina_cobro = cabina_cobro_dict.get("id")
                 if id_cabina_cobro == id_servidor_a_liberar:
                     cola_cabina_cobro = cabina_cobro_dict.get("cola")
@@ -315,8 +323,6 @@ class ControladorSistemaColas:
             vector_estado["clientes"]["autos"][indice_auto]["id_cabina_cobro"] = None
             vector_estado["clientes"]["autos"][indice_auto]["hora_inicio_espera_para_pagar"] = None
             vector_estado["clientes"]["autos"][indice_auto]["monto"] = None
-            if destruir_objetos_temporales:
-                del vector_estado.get("clientes").get("autos")[indice_auto]
 
             # Seteo datos de contadores
             vector_estado["contadores"]["monto_recaudado"] += monto_auto
@@ -353,7 +359,7 @@ class ControladorSistemaColas:
                         break
 
                 # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
-                for lugar_estacionamiento_dict in vector_estado.get("sevidores").get(
+                for lugar_estacionamiento_dict in vector_estado.get("servidores").get(
                         "lugares_estacionamiento"):
                     id_lugar_estacionamiento = lugar_estacionamiento_dict.get("id")
                     if id_lugar_estacionamiento == id_lugar_estacionamiento_auto_con_menos_hora_inicio_espera:
@@ -370,18 +376,57 @@ class ControladorSistemaColas:
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
-                porcentaje_ocupacion = round(
-                    vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                    * 100 / 20, 2)
+                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                           * 100 / 20)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
         return vector_estado
+
+    def completar_primera_iteracion_con_objetos_temporales_ineecesarios(self, iteraciones_simuladas):
+
+        # Agrego a primera iteracion autos de ultima iteracion
+        iteraciones_simuladas[0]["clientes"]["autos"] = copy.deepcopy(iteraciones_simuladas[-1]["clientes"]["autos"])
+
+        # Limpio datos de autos de primera iteracion
+        for auto_dict in iteraciones_simuladas[0].get("clientes").get("autos"):
+            auto_dict["estado"] = None
+            auto_dict["id_lugar_estacionamiento"] = None
+            auto_dict["id_cabina_cobro"] = None
+            auto_dict["hora_inicio_espera_para_pagar"] = None
+            auto_dict["monto"] = None
+
+    def eliminar_objetos_temporales_innecesarios(self, iteraciones_simuladas):
+
+        # Agrego todos los ids de autos generados que tengan datos durante las iteraciones simuladas
+        ids_a_conservar = []
+        for iteracion_simulada in iteraciones_simuladas:
+            for auto_dict in iteracion_simulada.get("clientes").get("autos"):
+                if auto_dict.get("estado") is not None:
+                    ids_a_conservar.append(auto_dict.get("id"))
+
+        # Elimino duplicados
+        ids_a_conservar = sorted(list(set(ids_a_conservar)))
+
+        # Elimino los objetos temporales cuyos ids no se encuentren entre los ids a conservar
+        for iteracion_simulada in iteraciones_simuladas:
+            indices_a_eliminar = []
+            indice_recorrido = 0
+            for auto_dict in iteracion_simulada.get("clientes").get("autos"):
+                if auto_dict.get("id") not in ids_a_conservar:
+                    indices_a_eliminar.append(indice_recorrido)
+                indice_recorrido += 1
+            indices_a_eliminar = sorted(indices_a_eliminar, reverse=True)
+            for indice_a_eliminar in indices_a_eliminar:
+                del iteracion_simulada["clientes"]["autos"][indice_a_eliminar]
 
     def simular_iteraciones(self, tiempo_simulacion, tiempo_desde, cantidad_iteraciones, tiempo_autos,
                             probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
                             probabilidad_1_tiempo_estacionamiento, probabilidad_2_tiempo_estacionamiento,
                             probabilidad_3_tiempo_estacionamiento, probabilidad_4_tiempo_estacionamiento,
                             cantidad_cabinas_cobro, tiempo_cobro):
+
+        # Reestablezo control de ids de autos
+        self.ultimo_id_auto = 0
 
         # Agrego datos como atributos del objeto para poder manejarlos a nivel clase
         self.tiempo_autos = tiempo_autos
@@ -474,7 +519,17 @@ class ControladorSistemaColas:
                 iteraciones_simuladas.append(vector_estado)
 
         if not vector_estado_agregado:
+            for auto_dict in vector_estado.get("clientes").get("autos"):
+                auto_dict["estado"] = None
+                auto_dict["id_lugar_estacionamiento"] = None
+                auto_dict["id_cabina_cobro"] = None
+                auto_dict["hora_inicio_espera_para_pagar"] = None
+                auto_dict["monto"] = None
             iteraciones_simuladas.append(vector_estado)
+
+        # Elimino objetos temporales que no deben mostrarse en la simulacion
+        self.completar_primera_iteracion_con_objetos_temporales_ineecesarios(iteraciones_simuladas)
+        self.eliminar_objetos_temporales_innecesarios(iteraciones_simuladas)
 
         # Devuelvo iteraciones simuladas de interés
         return iteraciones_simuladas
