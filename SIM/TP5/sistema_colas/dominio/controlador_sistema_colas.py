@@ -14,6 +14,8 @@ class ControladorSistemaColas:
     probabilidad_2_tiempo_estacionamiento = None
     probabilidad_3_tiempo_estacionamiento = None
     probabilidad_4_tiempo_estacionamiento = None
+    cantidad_lugares_estacionamiento = None
+    cantidad_cabinas_cobro = None
     tiempo_cobro = None
 
     ultimo_id_auto = 0
@@ -184,8 +186,8 @@ class ControladorSistemaColas:
                 })
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] += 1
-                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                           * 100 / 20)
+                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                             * 100 / self.cantidad_lugares_estacionamiento, 2)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
             # Si no se encontró lugar de estacionamiento
@@ -255,8 +257,8 @@ class ControladorSistemaColas:
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
-                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                           * 100 / 20)
+                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                             * 100 / self.cantidad_lugares_estacionamiento, 2)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
             # Si no se encontró cabina de cobro
@@ -367,8 +369,8 @@ class ControladorSistemaColas:
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
-                porcentaje_ocupacion = int(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                           * 100 / 20)
+                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                                             * 100 / self.cantidad_lugares_estacionamiento, 2)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
 
         return vector_estado
@@ -426,6 +428,8 @@ class ControladorSistemaColas:
         self.probabilidad_2_tiempo_estacionamiento = probabilidad_2_tiempo_estacionamiento
         self.probabilidad_3_tiempo_estacionamiento = probabilidad_3_tiempo_estacionamiento
         self.probabilidad_4_tiempo_estacionamiento = probabilidad_4_tiempo_estacionamiento
+        self.cantidad_lugares_estacionamiento = cantidad_lugares_estacionamiento
+        self.cantidad_cabinas_cobro = cantidad_cabinas_cobro
         self.tiempo_cobro = tiempo_cobro
 
         # Genero vector de estado inicial
