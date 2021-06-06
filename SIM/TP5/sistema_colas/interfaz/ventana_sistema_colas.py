@@ -1,7 +1,7 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
-from dominio.controlador_sistema_colas import ControladorSistemaColas
+from dominio.controlador_sistema_colas import *
 from soporte.validador_enteros import ValidadorEnteros
 from soporte.ruta import Ruta
 
@@ -173,7 +173,7 @@ class VentanaSistemaColas(QMainWindow):
                                                                           cantidad_cabinas_cobro, tiempo_cobro)
 
         # Cargo tabla
-        self.cargar_tabla_iteraciones_simuladas()
+        # self.cargar_tabla_iteraciones_simuladas()
 
     """ Metodos """
 
@@ -194,12 +194,12 @@ class VentanaSistemaColas(QMainWindow):
         if lugares_estacionamiento is None:
             lugares_estacionamiento = [{
                 "id": 0,
-                "estado": self.controlador.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
+                "estado": ESTADO_SERVIDOR_LIBRE
             }]
         if cabinas_cobro is None:
             cabinas_cobro = [{
                 "id": 0,
-                "estado": self.controlador.ESTADO_CABINA_COBRO_LIBRE,
+                "estado": ESTADO_SERVIDOR_LIBRE,
                 "cola": 0
             }]
         if autos is None:
