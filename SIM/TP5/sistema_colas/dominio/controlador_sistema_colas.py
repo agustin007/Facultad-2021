@@ -8,7 +8,7 @@ from soporte.helper import *
 
 
 class ControladorSistemaColas:
-    
+
     # Atributos
     tiempo_autos = None
     probabilidad_chico_autos = None
@@ -42,6 +42,10 @@ class ControladorSistemaColas:
         vector_estado["eventos"]["fin_cobrado"]["tiempo_cobrado"] = None
         vector_estado["clientes"]["auxiliares"]["rnd_tipo_auto"] = None
         vector_estado["clientes"]["auxiliares"]["tipo_auto"] = None
+
+        # Establezco criterios de ordenamiento para agilizar el algoritmo
+        Servidor.ordenar_por = ORDEN_SERVIDORES_POR_ESTADO
+        Evento.ordenar_por = ORDEN_EVENTOS_POR_TIEMPO_FIN_EVENTO
 
         # Obtengo siguiente evento a procesar
         evento = None
@@ -101,7 +105,6 @@ class ControladorSistemaColas:
             if primer_lugar_estacionamiento_vacio.estado == ESTADO_SERVIDOR_LIBRE:
                 lugar_estacionamiento_encontrado = vector_estado.get("servidores").get("lugares_estacionamiento").pop(0)
                 lugar_estacionamiento_encontrado.estado = ESTADO_SERVIDOR_OCUPADO
-                Servidor.ordenar_por = ORDEN_SERVIDORES_POR_ESTADO
                 bisect.insort(vector_estado.get("servidores").get("lugares_estacionamiento"),
                               lugar_estacionamiento_encontrado)
 
@@ -116,18 +119,18 @@ class ControladorSistemaColas:
                 limite_tiempo_estacionamiento_3 = limite_tiempo_estacionamiento_2 \
                                                   + self.probabilidad_3_tiempo_estacionamiento / 100
                 if 0 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_1:
-                    tiempo_estacionado = 60
+                    tiempo_estacionamiento = 60
                 elif limite_tiempo_estacionamiento_1 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_2:
-                    tiempo_estacionado = 120
+                    tiempo_estacionamiento = 120
                 elif limite_tiempo_estacionamiento_2 <= rnd_fin_estacionamiento < limite_tiempo_estacionamiento_3:
-                    tiempo_estacionado = 180
+                    tiempo_estacionamiento = 180
                 else:
-                    tiempo_estacionado = 240
-                fin_tiempo_estacionado = round(reloj_evento + tiempo_estacionado, 2)
+                    tiempo_estacionamiento = 240
+                fin_tiempo_estacionado = round(reloj_evento + tiempo_estacionamiento, 2)
 
                 # Seteo datos de fin tiempo estacionado
                 vector_estado["eventos"]["fin_estacionamiento"]["rnd_fin_estacionamiento"] = rnd_fin_estacionamiento
-                vector_estado["eventos"]["fin_estacionamiento"]["tiempo_estacionado"] = tiempo_estacionado
+                vector_estado["eventos"]["fin_estacionamiento"]["tiempo_estacionamiento"] = tiempo_estacionamiento
                 index = None
                 for i in range(0, len(vector_estado.get("eventos").get("fin_estacionamiento").get(
                         "fines_estacionamiento"))):
@@ -135,12 +138,11 @@ class ControladorSistemaColas:
                             [i].servidor.id == lugar_estacionamiento_encontrado.id:
                         index = i
                         break
-                fin_tiempo_estacionamiento_encontrado = vector_estado.get("eventos").get("fin_estacionamiento").get(
+                fin_estacionamiento = vector_estado.get("eventos").get("fin_estacionamiento").get(
                     "fines_estacionamiento").pop(index)
-                fin_tiempo_estacionamiento_encontrado.tiempo_fin_evento = fin_tiempo_estacionado
-                Evento.ordenar_por = ORDEN_EVENTOS_POR_TIEMPO_FIN_EVENTO
+                fin_estacionamiento.tiempo_fin_evento = fin_tiempo_estacionado
                 bisect.insort(vector_estado.get("eventos").get("fin_estacionamiento").get("fines_estacionamiento"),
-                              fin_tiempo_estacionamiento_encontrado)
+                              fin_estacionamiento)
 
                 # Genero auxiliares para generación de auto
                 rnd_tipo_auto = truncar(random.random(), 2)
@@ -164,11 +166,11 @@ class ControladorSistemaColas:
                 cabina_cobro_auto = None
                 hora_inicio_espera_para_pagar_auto = None
                 if tipo_auto == TIPO_AUTO_CHICO:
-                    monto_auto = int(50 * tiempo_estacionado / 60)
+                    monto_auto = int(50 * tiempo_estacionamiento / 60)
                 elif tipo_auto == TIPO_AUTO_GRANDE:
-                    monto_auto = int(80 * tiempo_estacionado / 60)
+                    monto_auto = int(80 * tiempo_estacionamiento / 60)
                 else:
-                    monto_auto = int(100 * tiempo_estacionado / 60)
+                    monto_auto = int(100 * tiempo_estacionamiento / 60)
 
                 vector_estado.get("clientes").get("autos").append(
                     Auto(id_auto, estado_auto, lugar_estacionamiento_auto, cabina_cobro_auto,
@@ -186,37 +188,48 @@ class ControladorSistemaColas:
                 # Seteo datos de contadores
                 vector_estado["contadores"]["autos_rechazados"] += 1
 
-        """
         # Evento fin_estacionamiento
         elif evento == self.EVENTO_FIN_ESTACIONAMIENTO:
 
             # Borro dato de fin de estacionamiento
-            for fin_tiempo_estacionado_dict in vector_estado.get("eventos").get("fin_estacionamiento").get(
-                    "fines_tiempo_estacionado"):
-                fin_tiempo_estacionado = fin_tiempo_estacionado_dict.get("fin_tiempo_estacionado")
-                if reloj_evento == fin_tiempo_estacionado:
-                    fin_tiempo_estacionado_dict["fin_tiempo_estacionado"] = None
-                    break
+            fin_estacionamiento = vector_estado.get("eventos").get("fin_estacionamiento") \
+                .get("fines_estacionamiento").pop(0)
+            fin_estacionamiento.tiempo_fin_evento = None
+            bisect.insort(vector_estado.get("eventos").get("fin_estacionamiento").get("fines_estacionamiento"),
+                          fin_estacionamiento)
 
-            # Verifico si existe al menos algúna cabina de cobro libre, para pasarla a ocupada o agregar cola a la que
-            # menos tenga
-            id_cabina_cobro_encontrada = None
-            id_cabina_con_menos_cola = None
-            cola_cabina_con_menos_cola = None
-            for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
-                estado_cabina_cobro = cabina_cobro_dict.get("estado")
-                if estado_cabina_cobro == self.ESTADO_CABINA_COBRO_LIBRE:
-                    id_cabina_cobro_encontrada = cabina_cobro_dict.get("id")
-                    cabina_cobro_dict["estado"] = self.ESTADO_CABINA_COBRO_OCUPADO
-                    break
-                else:
-                    cola_cabina_cobro = cabina_cobro_dict.get("cola")
-                    if id_cabina_con_menos_cola is None or cola_cabina_cobro < cola_cabina_con_menos_cola:
-                        id_cabina_con_menos_cola = cabina_cobro_dict.get("id")
-                        cola_cabina_con_menos_cola = cola_cabina_cobro
+            # Verifico si existe al menos algúna cabina de cobro libre, para pasarla a ocupada o agregar uno a la cola
+            # que menos tenga
+            cabina_cobro_encontrada = None
+            cabina_cobro_con_menos_cola_encontrada = None
+            primer_cabina_cobro_vacia = vector_estado.get("servidores").get("cabinas_cobro")[0]
+            if primer_cabina_cobro_vacia.estado == ESTADO_SERVIDOR_LIBRE:
+                cabina_cobro_encontrada = vector_estado.get("servidores").get("cabinas_cobro").pop(0)
+                cabina_cobro_encontrada.estado = ESTADO_SERVIDOR_OCUPADO
+                bisect.insort(vector_estado.get("servidores").get("cabinas_cobro"),
+                              cabina_cobro_encontrada)
+            else:
+                aux_menor_cola = None
+                for cabina_cobro in vector_estado.get("servidores").get("cabinas_cobro"):
+                    if cabina_cobro_con_menos_cola_encontrada is None or cabina_cobro.cola < aux_menor_cola:
+                        cabina_cobro_con_menos_cola_encontrada = cabina_cobro
+                        aux_menor_cola = cabina_cobro_con_menos_cola_encontrada.cola
+            if not cabina_cobro_encontrada:
+                cabina_cobro_con_menos_cola_encontrada.cola += 1
 
             # Si se encontró cabina de cobro
-            if id_cabina_cobro_encontrada is not None:
+            if cabina_cobro_encontrada is not None:
+
+                # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
+                index = None
+                for i in range(0, len(vector_estado.get("servidores").get("lugares_estacionamiento"))):
+                    if vector_estado.get("servidores").get("lugares_estacionamiento")[i].id == servidor_a_liberar.id:
+                        index = i
+                        break
+                lugar_estacionamiento = vector_estado.get("servidores").get("lugares_estacionamiento").pop(index)
+                lugar_estacionamiento.estado = ESTADO_SERVIDOR_LIBRE
+                bisect.insort(vector_estado.get("servidores").get("lugares_estacionamiento"),
+                              lugar_estacionamiento)
 
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
                 tiempo_cobrado = self.tiempo_cobro
@@ -224,27 +237,30 @@ class ControladorSistemaColas:
 
                 # Seteo datos de fin cobrado
                 vector_estado["eventos"]["fin_cobrado"]["tiempo_cobrado"] = tiempo_cobrado
-                for fin_tiempo_cobrado_dict in vector_estado.get("eventos").get("fin_cobrado").get(
-                        "fines_tiempo_cobrado"):
-                    id_cabina_cobro = fin_tiempo_cobrado_dict.get("id_cabina_cobro")
-                    if id_cabina_cobro == id_cabina_cobro_encontrada:
-                        fin_tiempo_cobrado_dict["fin_tiempo_cobrado"] = fin_tiempo_cobrado
+                index = None
+                for i in range(0, len(vector_estado.get("eventos").get("fin_cobrado").get(
+                        "fines_cobrado"))):
+                    if vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado")\
+                            [i].servidor.id == cabina_cobro_encontrada.id:
+                        index = i
                         break
-
-                # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
-                for lugar_estacionamiento_dict in vector_estado.get("servidores").get("lugares_estacionamiento"):
-                    id_lugar_estacionamiento = lugar_estacionamiento_dict.get("id")
-                    if id_lugar_estacionamiento == id_servidor_a_liberar:
-                        lugar_estacionamiento_dict["estado"] = self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
-                        break
+                fin_cobrado = vector_estado.get("eventos").get("fin_cobrado").get(
+                    "fines_cobrado").pop(index)
+                fin_cobrado.tiempo_fin_evento = fin_tiempo_cobrado
+                bisect.insort(vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado"),
+                              fin_cobrado)
 
                 # Seteo datos del auto, ya que cambia el estado
-                for auto_dict in vector_estado.get("clientes").get("autos"):
-                    id_lugar_estacionamiento = auto_dict.get("id_lugar_estacionamiento")
-                    if id_lugar_estacionamiento == id_servidor_a_liberar:
-                        auto_dict["estado"] = self.ESTADO_AUTO_PAGANDO
-                        auto_dict["id_cabina_cobro"] = id_cabina_cobro_encontrada
-                        break
+                index = None
+                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
+                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
+                                servidor_a_liberar.id:
+                            index = i
+                            break
+                vector_estado.get("clientes").get("autos")[index].lugar_estacionamiento = None
+                vector_estado.get("clientes").get("autos")[index].cabina_cobro = cabina_cobro_encontrada
+                vector_estado.get("clientes").get("autos")[index].estado = ESTADO_AUTO_PAGANDO
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
@@ -255,120 +271,124 @@ class ControladorSistemaColas:
             # Si no se encontró cabina de cobro
             else:
 
-                # Seteo datos de cabina de cobro, ya que se agrega un auto a la cola
-                for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
-                    id_cabina_cobro = cabina_cobro_dict.get("id")
-                    if id_cabina_cobro == id_cabina_con_menos_cola:
-                        cabina_cobro_dict["cola"] = cola_cabina_con_menos_cola + 1
-                        break
-
                 # Seteo datos del auto, ya que cambia el estado
-                for auto_dict in vector_estado.get("clientes").get("autos"):
-                    id_lugar_estacionamiento = auto_dict.get("id_lugar_estacionamiento")
-                    if id_lugar_estacionamiento == id_servidor_a_liberar:
-                        auto_dict["hora_inicio_espera_para_pagar"] = reloj_evento
-                        auto_dict["estado"] = self.ESTADO_AUTO_ESPERANDO_PAGAR
-                        break
+                index = None
+                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
+                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
+                                servidor_a_liberar.id:
+                            index = i
+                            break
+                vector_estado.get("clientes").get("autos")[index].estado = ESTADO_AUTO_ESPERANDO_PAGAR
+                vector_estado.get("clientes").get("autos")[index].hora_inicio_espera_para_pagar = reloj_evento
 
         elif evento == self.EVENTO_FIN_COBRADO:
 
-            # Borro dato de fin de estacionamiento
-            for fin_tiempo_cobrado_dict in vector_estado.get("eventos").get("fin_cobrado").get(
-                    "fines_tiempo_cobrado"):
-                fin_tiempo_cobrado = fin_tiempo_cobrado_dict.get("fin_tiempo_cobrado")
-                if reloj_evento == fin_tiempo_cobrado:
-                    fin_tiempo_cobrado_dict["fin_tiempo_cobrado"] = None
-                    break
+            # Borro dato de fin de cobrado
+            fin_cobrado = vector_estado.get("eventos").get("fin_cobrado") \
+                .get("fines_cobrado").pop(0)
+            fin_cobrado.tiempo_fin_evento = None
+            bisect.insort(vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado"),
+                          fin_cobrado)
 
-            # Seteo datos de cabina de cobro, ya que cambia de estado o disminuye la cola
-            id_cabina_cobro_con_cola_encontrada = None
-            for cabina_cobro_dict in vector_estado.get("servidores").get("cabinas_cobro"):
-                id_cabina_cobro = cabina_cobro_dict.get("id")
-                if id_cabina_cobro == id_servidor_a_liberar:
-                    cola_cabina_cobro = cabina_cobro_dict.get("cola")
-                    if cola_cabina_cobro == 0:
-                        cabina_cobro_dict["estado"] = self.ESTADO_CABINA_COBRO_LIBRE
-                    else:
-                        cabina_cobro_dict["cola"] -= 1
-                        id_cabina_cobro_con_cola_encontrada = id_cabina_cobro
+            # Seteo datos de cabina de cobro, ya que se desocupa la cabina o disminuye la cola
+            index = None
+            for i in range(0, len(vector_estado.get("servidores").get("cabinas_cobro"))):
+                if vector_estado.get("servidores").get("cabinas_cobro")[i].id == servidor_a_liberar.id:
+                    index = i
                     break
+            cabina_cobro_con_cola_encontrada = None
+            if vector_estado.get("servidores").get("cabinas_cobro")[index].cola == 0:
+                cabina_cobro = vector_estado.get("servidores").get("cabinas_cobro").pop(index)
+                cabina_cobro.estado = ESTADO_SERVIDOR_LIBRE
+                bisect.insort(vector_estado.get("servidores").get("cabinas_cobro"),
+                              cabina_cobro)
+            else:
+                vector_estado.get("servidores").get("cabinas_cobro")[index].cola -= 1
+                cabina_cobro_con_cola_encontrada = vector_estado.get("servidores").get("cabinas_cobro")[index]
 
             # Seteo datos del auto, ya que debe destruirse
-            monto_auto = None
-            indice_auto = 0
-            for auto_dict in vector_estado.get("clientes").get("autos"):
-                id_cabina_cobro = auto_dict.get("id_cabina_cobro")
-                if id_cabina_cobro == id_servidor_a_liberar:
-                    monto_auto = auto_dict.get("monto")
-                    break
-                indice_auto += 1
-            vector_estado["clientes"]["autos"][indice_auto]["estado"] = None
-            vector_estado["clientes"]["autos"][indice_auto]["id_lugar_estacionamiento"] = None
-            vector_estado["clientes"]["autos"][indice_auto]["id_cabina_cobro"] = None
-            vector_estado["clientes"]["autos"][indice_auto]["hora_inicio_espera_para_pagar"] = None
-            vector_estado["clientes"]["autos"][indice_auto]["monto"] = None
+            index = None
+            for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                if vector_estado.get("clientes").get("autos")[i].cabina_cobro is not None:
+                    if vector_estado.get("clientes").get("autos")[i].cabina_cobro.id == servidor_a_liberar.id:
+                        index = i
+                        break
+            monto_auto = vector_estado.get("clientes").get("autos")[index].monto
+            del vector_estado.get("clientes").get("autos")[index]
 
             # Seteo datos de contadores
             vector_estado["contadores"]["monto_recaudado"] += monto_auto
 
-            # Si se encontró cola en la cabia de cobro
-            if id_cabina_cobro_con_cola_encontrada is not None:
+            # Si se encontró cola en la cabina de cobro
+            if cabina_cobro_con_cola_encontrada is not None:
 
-                # Busco el auto que sigue para pagar y su lugar de estacionamiento
-                id_auto_con_menos_hora_inicio_espera = None
-                hora_inicio_espera_auto_con_menos_hora_inicio_espera = None
-                id_lugar_estacionamiento_auto_con_menos_hora_inicio_espera = None
-                for auto_dict in vector_estado.get("clientes").get("autos"):
-                    estado_auto = auto_dict.get("estado")
-                    if estado_auto == self.ESTADO_AUTO_ESPERANDO_PAGAR:
-                        hora_inicio_espera = auto_dict.get("hora_inicio_espera_para_pagar")
-                        if id_auto_con_menos_hora_inicio_espera is None or \
-                                hora_inicio_espera < hora_inicio_espera_auto_con_menos_hora_inicio_espera:
-                            id_auto_con_menos_hora_inicio_espera = auto_dict.get("id")
-                            id_lugar_estacionamiento_auto_con_menos_hora_inicio_espera = \
-                                auto_dict.get("id_lugar_estacionamiento")
-                            hora_inicio_espera_auto_con_menos_hora_inicio_espera = hora_inicio_espera
+                # Busco el lugar de estacionamiento del auto que sigue para pagar
+                lugar_estacionamiento_auto = None
+                aux_menor_hora_inicio_espera_para_pagar = None
+                for auto in vector_estado.get("clientes").get("autos"):
+                    if auto.estado == ESTADO_AUTO_ESPERANDO_PAGAR:
+                        if aux_menor_hora_inicio_espera_para_pagar is None or \
+                                auto.hora_inicio_espera_para_pagar < aux_menor_hora_inicio_espera_para_pagar:
+                            lugar_estacionamiento_auto = auto.lugar_estacionamiento
+                            aux_menor_hora_inicio_espera_para_pagar = auto.hora_inicio_espera_para_pagar
 
-                # Genero fin cobrado para el auto que sigue para pagar
+                # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
+                index = None
+                for i in range(0, len(vector_estado.get("servidores").get("lugares_estacionamiento"))):
+                    if vector_estado.get("servidores").get("lugares_estacionamiento")\
+                            [i].id == lugar_estacionamiento_auto.id:
+                        index = i
+                        break
+                lugar_estacionamiento = vector_estado.get("servidores").get("lugares_estacionamiento").pop(
+                    index)
+                lugar_estacionamiento.estado = ESTADO_SERVIDOR_LIBRE
+                bisect.insort(vector_estado.get("servidores").get("lugares_estacionamiento"),
+                              lugar_estacionamiento)
+
+                # Genero fin cobrado para el auto que recién termina su estacionamiento
                 tiempo_cobrado = self.tiempo_cobro
                 fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
-                # Seteo datos de fin cobrado para el auto que sigue para pagar
+                # Seteo datos de fin cobrado
                 vector_estado["eventos"]["fin_cobrado"]["tiempo_cobrado"] = tiempo_cobrado
-                for fin_tiempo_cobrado_dict in vector_estado.get("eventos").get("fin_cobrado").get(
-                        "fines_tiempo_cobrado"):
-                    id_cabina_cobro = fin_tiempo_cobrado_dict.get("id_cabina_cobro")
-                    if id_cabina_cobro == id_cabina_cobro_con_cola_encontrada:
-                        fin_tiempo_cobrado_dict["fin_tiempo_cobrado"] = fin_tiempo_cobrado
+                index = None
+                for i in range(0, len(vector_estado.get("eventos").get("fin_cobrado").get(
+                        "fines_cobrado"))):
+                    if vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado")\
+                            [i].servidor.id == cabina_cobro_con_cola_encontrada.id:
+                        index = i
                         break
-
-                # Seteo datos de lugar de estacionamiento, ya que se desocupa el lugar
-                for lugar_estacionamiento_dict in vector_estado.get("servidores").get(
-                        "lugares_estacionamiento"):
-                    id_lugar_estacionamiento = lugar_estacionamiento_dict.get("id")
-                    if id_lugar_estacionamiento == id_lugar_estacionamiento_auto_con_menos_hora_inicio_espera:
-                        lugar_estacionamiento_dict["estado"] = self.ESTADO_LUGAR_ESTACIONAMIENTO_LIBRE
-                        break
+                fin_cobrado = vector_estado.get("eventos").get("fin_cobrado").get(
+                    "fines_cobrado").pop(index)
+                fin_cobrado.tiempo_fin_evento = fin_tiempo_cobrado
+                bisect.insort(vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado"),
+                              fin_cobrado)
 
                 # Seteo datos del auto, ya que cambia el estado
-                for auto_dict in vector_estado.get("clientes").get("autos"):
-                    id_lugar_estacionamiento = auto_dict.get("id_lugar_estacionamiento")
-                    if id_lugar_estacionamiento == id_lugar_estacionamiento_auto_con_menos_hora_inicio_espera:
-                        auto_dict["estado"] = self.ESTADO_AUTO_PAGANDO
-                        auto_dict["id_cabina_cobro"] = id_cabina_cobro_con_cola_encontrada
-                        break
+                index = None
+                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
+                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
+                                lugar_estacionamiento_auto.id:
+                            index = i
+                            break
+                vector_estado.get("clientes").get("autos")[index].lugar_estacionamiento = None
+                vector_estado.get("clientes").get("autos")[index].cabina_cobro = cabina_cobro_con_cola_encontrada
+                vector_estado.get("clientes").get("autos")[index].estado = ESTADO_AUTO_PAGANDO
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
-                porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
-                                             * 100 / self.cantidad_lugares_estacionamiento, 2)
+                porcentaje_ocupacion = round(
+                    vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
+                    * 100 / self.cantidad_lugares_estacionamiento, 2)
                 vector_estado["contadores"]["porcentaje_ocupacion"] = porcentaje_ocupacion
-        """
+
         return vector_estado
 
     def completar_objetos_temporales(self, iteraciones_simuladas):
 
-        # Establezo modo de ordenamiento a utilizar
+        # Establezco criterios de ordenamiento para agilizar el algoritmo
         Servidor.ordenar_por = ORDEN_SERVIDORES_POR_ID
         Evento.ordenar_por = ORDEN_EVENTOS_POR_SERVIDOR
 
@@ -509,10 +529,6 @@ class ControladorSistemaColas:
                 cantidad_iteraciones_agregadas += 1
                 iteraciones_simuladas.append(vector_estado)
 
-        for i in range(0, len(iteraciones_simuladas)):
-            print("######### ITERACION " + str(i) + " #########")
-            mostrar_diccionario_formateado(iteraciones_simuladas[i])
-
         # Compleo objetos temporales para mostrar correctamente la simulación
         self.completar_objetos_temporales(iteraciones_simuladas)
 
@@ -525,6 +541,13 @@ class ControladorSistemaColas:
                 auto.hora_inicio_espera_para_pagar = None
                 auto.monto = None
             iteraciones_simuladas.append(vector_estado)
+
+        # Muestro iteraciones simuladas por consola
+        print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
+        for i in range(0, len(iteraciones_simuladas)):
+            print("########## ITERACION " + str(i + 1) + " ##########")
+            mostrar_diccionario_formateado(iteraciones_simuladas[i])
+            print("\n")
 
         # Devuelvo iteraciones simuladas de interés
         # return iteraciones_simuladas
