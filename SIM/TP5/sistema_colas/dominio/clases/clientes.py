@@ -89,11 +89,26 @@ class Auto(Cliente):
         else:
             return False
 
+    def __str__(self):
+        return "Auto(id={id}, estado={estado}, lugar_estacionamiento={lugar_estacionamiento}, " \
+               "cabina_cobro={cabina_cobro}, hora_inicio_espera_para_pagar={hora_inicio_espera_para_pagar}, " \
+               "monto={monto})".format(
+                    id=str(self.id),
+                    estado=self.estado,
+                    lugar_estacionamiento=self.lugar_estacionamiento or "None",
+                    cabina_cobro=self.cabina_cobro or "None",
+                    hora_inicio_espera_para_pagar=str(self.hora_inicio_espera_para_pagar),
+                    monto=str(self.monto),
+                )
+
     def __repr__(self):
-        return "Auto(id=" + str(self.id) + ", estado=" + self.estado + \
-               ", lugar_estacionamiento=" + (self.lugar_estacionamiento.__str__()
-                    if self.lugar_estacionamiento is not None else "None") + \
-               ", cabina_cobro=" + (self.cabina_cobro.__str__()
-                    if self.cabina_cobro is not None else "None") + \
-               ", hora_inicio_espera_para_pagar=" + str(self.hora_inicio_espera_para_pagar) + ", monto=" + \
-               str(self.monto) + ")"
+        return "Auto(id={id}, estado={estado}, lugar_estacionamiento={lugar_estacionamiento}, " \
+               "cabina_cobro={cabina_cobro}, hora_inicio_espera_para_pagar={hora_inicio_espera_para_pagar}, " \
+               "monto={monto})".format(
+                    id=str(self.id),
+                    estado=self.estado,
+                    lugar_estacionamiento=self.lugar_estacionamiento or "None",
+                    cabina_cobro=self.cabina_cobro or "None",
+                    hora_inicio_espera_para_pagar=str(self.hora_inicio_espera_para_pagar),
+                    monto=str(self.monto),
+                )

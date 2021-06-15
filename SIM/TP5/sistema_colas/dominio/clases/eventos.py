@@ -106,13 +106,29 @@ class Evento:
 
 class FinEstacionamiento(Evento):
 
+    def __str__(self):
+        return "FinEstacionamiento(tiempo_fin_evento={tiempo_fin_evento}, servidor={servidor})".format(
+            tiempo_fin_evento=str(self.tiempo_fin_evento),
+            servidor=self.servidor or "None"
+        )
+
     def __repr__(self):
-        return "FinEstacionamiento(tiempo_fin_evento=" + str(self.tiempo_fin_evento) + ", servidor=" + \
-               self.servidor.__str__() + ")"
+        return "FinEstacionamiento(tiempo_fin_evento={tiempo_fin_evento}, servidor={servidor})".format(
+            tiempo_fin_evento=str(self.tiempo_fin_evento),
+            servidor=self.servidor or "None"
+        )
 
 
 class FinCobrado(Evento):
 
+    def __str__(self):
+        return "FinCobrado(tiempo_fin_evento={tiempo_fin_evento}, servidor={servidor})".format(
+            tiempo_fin_evento=str(self.tiempo_fin_evento),
+            servidor=self.servidor or "None"
+        )
+
     def __repr__(self):
-        return "FinCobrado(tiempo_fin_evento=" + str(self.tiempo_fin_evento) + ", servidor=" + \
-               self.servidor.__str__() + ")"
+        return "FinCobrado(tiempo_fin_evento={tiempo_fin_evento}, servidor={servidor})".format(
+            tiempo_fin_evento=str(self.tiempo_fin_evento),
+            servidor=self.servidor or "None"
+        )

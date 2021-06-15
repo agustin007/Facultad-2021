@@ -23,12 +23,13 @@ class VentanaSistemaColas(QMainWindow):
         self.controlador = ControladorSistemaColas()
 
         # Agrego validadores a los campos
+        validador_7_enteros = ValidadorEnteros(7)
         validador_6_enteros = ValidadorEnteros(6)
         validador_4_enteros = ValidadorEnteros(4)
         validador_3_enteros = ValidadorEnteros(3)
-        self.txt_tiempo_simulacion.setValidator(validador_6_enteros)
-        self.txt_tiempo_desde.setValidator(validador_6_enteros)
-        self.txt_cantidad_iteraciones.setValidator(validador_6_enteros)
+        self.txt_tiempo_simulacion.setValidator(validador_7_enteros)
+        self.txt_tiempo_desde.setValidator(validador_7_enteros)
+        self.txt_cantidad_iteraciones.setValidator(validador_7_enteros)
         self.txt_tiempo_autos.setValidator(validador_3_enteros)
         self.txt_probabilidad_chico_autos.setValidator(validador_3_enteros)
         self.txt_probabilidad_grande_autos.setValidator(validador_3_enteros)

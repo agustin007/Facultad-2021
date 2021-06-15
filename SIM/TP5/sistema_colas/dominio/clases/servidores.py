@@ -111,11 +111,31 @@ class Servidor:
 
 class LugarEstacionamiento(Servidor):
 
+    def __str__(self):
+        return "LugarEstacionamiento(id={id}, estado={estado})".format(
+            id=str(self.id),
+            estado=self.estado
+        )
+
     def __repr__(self):
-        return "LugarEstacionamiento(id=" + str(self.id) + ", estado=" + self.estado + ")"
+        return "LugarEstacionamiento(id={id}, estado={estado})".format(
+            id=str(self.id),
+            estado=self.estado
+        )
 
 
 class CabinaCobro(Servidor):
 
+    def __str__(self):
+        return "CabinaCobro(id={id}, estado={estado}, cola={cola})".format(
+            id=str(self.id),
+            estado=self.estado,
+            cola=str(self.cola)
+        )
+
     def __repr__(self):
-        return "CabinaCobro(id=" + str(self.id) + ", estado=" + self.estado + ", cola=" + str(self.cola) + ")"
+        return "CabinaCobro(id={id}, estado={estado}, cola={cola})".format(
+            id=str(self.id),
+            estado=self.estado,
+            cola=str(self.cola)
+        )

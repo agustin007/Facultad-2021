@@ -9,7 +9,7 @@ from soporte.helper import *
 
 class ControladorSistemaColas:
 
-    # Atributos
+    # Atributos con parámetros de la simulación
     tiempo_autos = None
     probabilidad_chico_autos = None
     probabilidad_grande_autos = None
@@ -22,7 +22,10 @@ class ControladorSistemaColas:
     cantidad_cabinas_cobro = None
     tiempo_cobro = None
 
+    # Atributos para manejo de simulación
     ultimo_id_auto = 0
+    auto_generado = False
+    ids_autos_iteraciones_generados = None
 
     # Constantes
     EVENTO_LLEGADA_AUTO = "llegada_auto"
@@ -30,6 +33,9 @@ class ControladorSistemaColas:
     EVENTO_FIN_COBRADO = "fin_cobrado"
 
     def simular_iteracion(self, vector_estado):
+
+        # Reestablezco atributo auto generado en False para llevar la gestión de los generados durantes las iteraciones
+        self.auto_generado = False
 
         # Copio vector estado anterior para realizar las acciones necesarias de esta iteración sin modificar el anterior
         vector_estado = copy.deepcopy(vector_estado)
@@ -172,10 +178,12 @@ class ControladorSistemaColas:
                 else:
                     monto_auto = int(100 * tiempo_estacionamiento / 60)
 
+                self.auto_generado = True
                 vector_estado.get("clientes").get("autos").append(
                     Auto(id_auto, estado_auto, lugar_estacionamiento_auto, cabina_cobro_auto,
                          hora_inicio_espera_para_pagar_auto, monto_auto)
                 )
+
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] += 1
                 porcentaje_ocupacion = round(vector_estado.get("contadores").get("lugares_estacionamiento_ocupados")
@@ -386,62 +394,11 @@ class ControladorSistemaColas:
 
         return vector_estado
 
-    def completar_objetos_temporales(self, iteraciones_simuladas):
-
-        # Establezco criterios de ordenamiento para agilizar el algoritmo
-        Servidor.ordenar_por = ORDEN_SERVIDORES_POR_ID
-        Evento.ordenar_por = ORDEN_EVENTOS_POR_SERVIDOR
-
-        # Obtengo todos los ids de autos generados durante las iteraciones simuladas ordenados
-        ids_autos = []
-        for iteracion_simulada in iteraciones_simuladas:
-            for auto in iteracion_simulada.get("clientes").get("autos"):
-                ids_autos.append(auto.id)
-
-        # Elimino ids de autos duplicados
-        ids_autos = sorted(list(set(ids_autos)))
-
-        # Ordeno eventos y servidores y agrego objetos temporales faltantes en cada iteración
-        for iteracion_simulada in iteraciones_simuladas:
-
-            # Ordeno eventos
-            iteracion_simulada["eventos"]["fin_estacionamiento"]["fines_estacionamiento"] = \
-                sorted(iteracion_simulada.get("eventos").get("fin_estacionamiento")
-                       .get("fines_estacionamiento"))
-            iteracion_simulada["eventos"]["fin_cobrado"]["fines_cobrado"] = \
-                sorted(iteracion_simulada.get("eventos").get("fin_cobrado")
-                       .get("fines_cobrado"))
-
-            # Ordeno servidores
-            iteracion_simulada["servidores"]["lugares_estacionamiento"] = \
-                sorted(iteracion_simulada.get("servidores").get("lugares_estacionamiento"))
-            iteracion_simulada["servidores"]["cabinas_cobro"] = \
-                sorted(iteracion_simulada.get("servidores").get("cabinas_cobro"))
-
-            autos_ordenados = []
-            autos_incompletos = iteracion_simulada.get("clientes").get("autos")
-            index_ids_autos = 0
-            index_ids_autos_incompletos = 0
-            while index_ids_autos < len(ids_autos) and index_ids_autos_incompletos < len(autos_incompletos):
-                if ids_autos[index_ids_autos] < autos_incompletos[index_ids_autos_incompletos]:
-                    autos_ordenados.append(
-                        Auto(ids_autos[index_ids_autos], None, None, None, None, None)
-                    )
-                    index_ids_autos += 1
-                else:
-                    autos_ordenados.append(
-                        autos_incompletos[index_ids_autos_incompletos]
-                    )
-                    index_ids_autos_incompletos += 1
-
     def simular_iteraciones(self, tiempo_simulacion, tiempo_desde, cantidad_iteraciones, tiempo_autos,
                             probabilidad_chico_autos, probabilidad_grande_autos, probabilidad_utilitario_autos,
                             probabilidad_1_tiempo_estacionamiento, probabilidad_2_tiempo_estacionamiento,
                             probabilidad_3_tiempo_estacionamiento, probabilidad_4_tiempo_estacionamiento,
                             cantidad_lugares_estacionamiento, cantidad_cabinas_cobro, tiempo_cobro):
-
-        # Reestablezo control de ids de autos
-        self.ultimo_id_auto = 0
 
         # Agrego datos como atributos del objeto para poder manejarlos a nivel clase
         self.tiempo_autos = tiempo_autos
@@ -455,6 +412,11 @@ class ControladorSistemaColas:
         self.cantidad_lugares_estacionamiento = cantidad_lugares_estacionamiento
         self.cantidad_cabinas_cobro = cantidad_cabinas_cobro
         self.tiempo_cobro = tiempo_cobro
+
+        # Reestablezo atributos para manejo de la simulación
+        self.ultimo_id_auto = 0
+        self.auto_generado = False
+        self.ids_autos_iteraciones_generados = None
 
         # Genero vector de estado inicial
         rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
@@ -494,7 +456,8 @@ class ControladorSistemaColas:
                     "rnd_tipo_auto": None,
                     "tipo_auto": None
                 },
-                "autos": []
+                "autos": [],
+                "ids_autos_iteraciones_generados": []
             }
         }
 
@@ -528,9 +491,13 @@ class ControladorSistemaColas:
                 ultimo_vector_estado_agregado = True
                 cantidad_iteraciones_agregadas += 1
                 iteraciones_simuladas.append(vector_estado)
-
-        # Compleo objetos temporales para mostrar correctamente la simulación
-        self.completar_objetos_temporales(iteraciones_simuladas)
+                if self.ids_autos_iteraciones_generados is None:
+                    self.ids_autos_iteraciones_generados = []
+                    for auto in vector_estado.get("clientes").get("autos"):
+                        self.ids_autos_iteraciones_generados.append(auto.id)
+                else:
+                    if self.auto_generado:
+                        self.ids_autos_iteraciones_generados.append(self.ultimo_id_auto)
 
         # Agrego ultimo vector de estado si aún no se agregó
         if not ultimo_vector_estado_agregado:
@@ -542,12 +509,16 @@ class ControladorSistemaColas:
                 auto.monto = None
             iteraciones_simuladas.append(vector_estado)
 
+        # Agrego a primera fila de la simulación los ids de autos generados durante las iteraciones
+        iteraciones_simuladas[0]["clientes"]["ids_autos_iteraciones_generados"] = self.ids_autos_iteraciones_generados
+        mostrar_diccionario_formateado(iteraciones_simuladas[0])
+
         # Muestro iteraciones simuladas por consola
-        print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
-        for i in range(0, len(iteraciones_simuladas)):
-            print("########## ITERACION " + str(i + 1) + " ##########")
-            mostrar_diccionario_formateado(iteraciones_simuladas[i])
-            print("\n")
+        # print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
+        # for i in range(0, len(iteraciones_simuladas)):
+        #     print("########## ITERACION " + str(i + 1) + " ##########")
+        #     mostrar_diccionario_formateado(iteraciones_simuladas[i])
+        #     print("\n")
 
         # Devuelvo iteraciones simuladas de interés
-        # return iteraciones_simuladas
+        return iteraciones_simuladas
