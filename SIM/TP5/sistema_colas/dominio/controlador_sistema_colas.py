@@ -25,6 +25,8 @@ class ControladorSistemaColas:
     # Atributos para manejo de simulación
     ultimo_id_auto = 0
     auto_generado = False
+    ids_lugares_estacionamiento_generados = None
+    ids_cabina_cobro_generadas = None
     ids_autos_iteraciones_generados = None
 
     # Constantes
@@ -34,7 +36,7 @@ class ControladorSistemaColas:
 
     def simular_iteracion(self, vector_estado):
 
-        # Reestablezco atributo auto generado en False para llevar la gestión de los generados durantes las iteraciones
+        # Reestablezo atributos para manejo de la simulación
         self.auto_generado = False
 
         # Copio vector estado anterior para realizar las acciones necesarias de esta iteración sin modificar el anterior
@@ -417,6 +419,8 @@ class ControladorSistemaColas:
         self.ultimo_id_auto = 0
         self.auto_generado = False
         self.ids_autos_iteraciones_generados = None
+        self.ids_lugares_estacionamiento_generados = None
+        self.ids_cabina_cobro_generadas = None
 
         # Genero vector de estado inicial
         rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
@@ -467,12 +471,18 @@ class ControladorSistemaColas:
             vector_estado.get("servidores").get("lugares_estacionamiento").append(lugar_estacionamiento)
             vector_estado.get("eventos").get("fin_estacionamiento").get("fines_estacionamiento") \
                 .append(fin_estacionamiento)
+            if self.ids_lugares_estacionamiento_generados is None:
+                self.ids_lugares_estacionamiento_generados = []
+            self.ids_lugares_estacionamiento_generados.append(i)
 
         for i in range(1, cantidad_cabinas_cobro + 1):
             cabina_cobro = CabinaCobro(i, ESTADO_SERVIDOR_LIBRE)
             fin_cobrado = FinCobrado(None, cabina_cobro)
             vector_estado.get("servidores").get("cabinas_cobro").append(cabina_cobro)
             vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado").append(fin_cobrado)
+            if self.ids_cabina_cobro_generadas is None:
+                self.ids_cabina_cobro_generadas = []
+            self.ids_cabina_cobro_generadas.append(i)
 
         # Realizo simulación almacenando los vectores estados de las iteraciones de interés
         iteraciones_simuladas = [vector_estado]
@@ -509,9 +519,12 @@ class ControladorSistemaColas:
                 auto.monto = None
             iteraciones_simuladas.append(vector_estado)
 
-        # Agrego a primera fila de la simulación los ids de autos generados durante las iteraciones
-        iteraciones_simuladas[0]["clientes"]["ids_autos_iteraciones_generados"] = self.ids_autos_iteraciones_generados
-        mostrar_diccionario_formateado(iteraciones_simuladas[0])
+        # Agrego a primera fila de la simulación datos sobre ids de objetos generados
+        iteraciones_simuladas[0]["informacion_simulacion"] = {
+            "ids_lugares_estacionamiento": self.ids_lugares_estacionamiento_generados,
+            "ids_cabinas_cobro": self.ids_cabina_cobro_generadas,
+            "ids_autos": self.ids_autos_iteraciones_generados
+        }
 
         # Muestro iteraciones simuladas por consola
         # print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
