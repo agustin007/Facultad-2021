@@ -7,7 +7,7 @@ from interfaz.ventana_sistema_colas import VentanaSistemaColas
 if __name__ == "__main__":
 
     app = QApplication(sys.argv)
-    window = VentanaSistemaColas()
+    window = VentanaSistemaColas(app)
     window.show()
     app.exec_()
 

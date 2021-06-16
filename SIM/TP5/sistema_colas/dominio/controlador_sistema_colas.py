@@ -9,6 +9,9 @@ from soporte.helper import *
 
 class ControladorSistemaColas:
 
+    # Atibutos para interacción con la ventana
+    ventana = None
+
     # Atributos con parámetros de la simulación
     tiempo_autos = None
     probabilidad_chico_autos = None
@@ -33,6 +36,9 @@ class ControladorSistemaColas:
     EVENTO_LLEGADA_AUTO = "llegada_auto"
     EVENTO_FIN_ESTACIONAMIENTO = "fin_estacionamiento"
     EVENTO_FIN_COBRADO = "fin_cobrado"
+
+    def __init__(self, ventana=None):
+        self.ventana = ventana
 
     def simular_iteracion(self, vector_estado):
 
@@ -422,6 +428,13 @@ class ControladorSistemaColas:
         self.ids_lugares_estacionamiento_generados = None
         self.ids_cabina_cobro_generadas = None
 
+        # Calculo cada cuantas simulaciones mostrar el porcentaje de simulación
+        if tiempo_simulacion <= 100:
+            paso_muestra_datos = 1
+        else:
+            paso_muestra_datos = round(tiempo_simulacion / 50)
+        proxima_muestra_datos = paso_muestra_datos
+
         # Genero vector de estado inicial
         rnd_tiempo_entre_llegadas = truncar(random.random(), 2)
         tiempo_proxima_llegada = round(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas), 2)
@@ -489,18 +502,25 @@ class ControladorSistemaColas:
         ultimo_vector_estado_agregado = True
         cantidad_iteraciones_agregadas = 0
 
-        # Agrego iteraciones dentro de lo parametrizado
+        # Flujo principal de simulación
         while 1:
+
+            # Controlo que el reloj aún no supere el tiempo a simular
             vector_estado_proximo = self.simular_iteracion(vector_estado)
             if vector_estado_proximo.get("reloj") > tiempo_simulacion:
                 break
             vector_estado = vector_estado_proximo
-            ultimo_vector_estado_agregado = False
 
+            # Agrego iteración a simulaciones simuladas si el reloj y la cantidad de iteraciones están dentro de los
+            # parámetros solicitados, controlando si se agregó el último vector para no agregarlo mas tarde
+            ultimo_vector_estado_agregado = False
             if vector_estado.get("reloj") >= tiempo_desde and cantidad_iteraciones_agregadas < cantidad_iteraciones:
                 ultimo_vector_estado_agregado = True
                 cantidad_iteraciones_agregadas += 1
                 iteraciones_simuladas.append(vector_estado)
+
+                # Si se generó un auto en la última simulación, actualizo listado de ids generados durante las
+                # iteraciones para simplificar la muestra de resultados en la interfaz
                 if self.ids_autos_iteraciones_generados is None:
                     self.ids_autos_iteraciones_generados = []
                     for auto in vector_estado.get("clientes").get("autos"):
@@ -508,6 +528,13 @@ class ControladorSistemaColas:
                 else:
                     if self.auto_generado:
                         self.ids_autos_iteraciones_generados.append(self.ultimo_id_auto)
+
+            # Muestro porcentaje de simulación cuando corresponda
+            if vector_estado.get("reloj") >= proxima_muestra_datos:
+                porcentaje = round(vector_estado.get("reloj") * 100 / tiempo_simulacion)
+                self.ventana.mostrar_porcentaje_simulacion(porcentaje)
+                while proxima_muestra_datos <= vector_estado.get("reloj"):
+                    proxima_muestra_datos += paso_muestra_datos
 
         # Agrego ultimo vector de estado si aún no se agregó
         if not ultimo_vector_estado_agregado:
@@ -525,6 +552,9 @@ class ControladorSistemaColas:
             "ids_cabinas_cobro": self.ids_cabina_cobro_generadas,
             "ids_autos": self.ids_autos_iteraciones_generados
         }
+
+        # Muestro porcentaje de simulación final
+        self.ventana.mostrar_porcentaje_simulacion(100)
 
         # Muestro iteraciones simuladas por consola
         # print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
