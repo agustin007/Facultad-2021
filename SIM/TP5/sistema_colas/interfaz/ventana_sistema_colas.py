@@ -12,7 +12,11 @@ class VentanaSistemaColas(QMainWindow):
 
     app = None
     controlador = None
-    iteraciones_simuladas = {}
+    iteraciones_simuladas = None
+
+    pagina_actual = None
+    cantidad_paginas = None
+    tamanio_pagina = 100
 
     """ Constructor """
 
@@ -46,20 +50,97 @@ class VentanaSistemaColas(QMainWindow):
         self.txt_tiempo_cobro.setValidator(validador_4_enteros)
 
         # Conecto los botones con los eventos
+        self.btn_pagina_anterior_1.clicked.connect(self.accion_volver_1_pagina)
+        self.btn_pagina_anterior_10.clicked.connect(self.accion_volver_10_paginas)
+        self.btn_pagina_siguiente_1.clicked.connect(self.accion_siguiente_1_pagina)
+        self.btn_pagina_siguiente_10.clicked.connect(self.accion_siguiente_10_paginas)
         self.btn_limpiar.clicked.connect(self.accion_limpiar)
         self.btn_simular.clicked.connect(self.accion_simular)
 
     """ Acciones """
 
+    def accion_volver_1_pagina(self):
+
+        # verifico que se haya realizado una simulación
+        if self.iteraciones_simuladas is not None:
+
+            # Calculo nueva página controlando límites
+            nueva_pagina = self.pagina_actual
+            if (nueva_pagina - 1) < 1:
+                nueva_pagina = 1
+            else:
+                nueva_pagina -= 1
+
+            # Vuelvo a carga la tabla si corresponde
+            if nueva_pagina != self.pagina_actual:
+                self.pagina_actual = nueva_pagina
+                self.cargar_tabla_iteraciones_simuladas()
+                self.lbl_informacion_paginas.setText(str(self.pagina_actual) + "/" + str(self.cantidad_paginas))
+
+    def accion_volver_10_paginas(self):
+
+        # verifico que se haya realizado una simulación
+        if self.iteraciones_simuladas is not None:
+
+            # Calculo nueva página controlando límites
+            nueva_pagina = self.pagina_actual
+            if (nueva_pagina - 10) < 1:
+                nueva_pagina = 1
+            else:
+                nueva_pagina -= 10
+
+            # Vuelvo a carga la tabla si corresponde
+            if nueva_pagina != self.pagina_actual:
+                self.pagina_actual = nueva_pagina
+                self.cargar_tabla_iteraciones_simuladas()
+                self.lbl_informacion_paginas.setText(str(self.pagina_actual) + "/" + str(self.cantidad_paginas))
+
+    def accion_siguiente_1_pagina(self):
+
+        # verifico que se haya realizado una simulación
+        if self.iteraciones_simuladas is not None:
+
+            # Calculo nueva página controlando límites
+            nueva_pagina = self.pagina_actual
+            if (nueva_pagina + 1) > self.cantidad_paginas:
+                nueva_pagina = self.cantidad_paginas
+            else:
+                nueva_pagina += 1
+
+            # Vuelvo a carga la tabla si corresponde
+            if nueva_pagina != self.pagina_actual:
+                self.pagina_actual = nueva_pagina
+                self.cargar_tabla_iteraciones_simuladas()
+                self.lbl_informacion_paginas.setText(str(self.pagina_actual) + "/" + str(self.cantidad_paginas))
+
+    def accion_siguiente_10_paginas(self):
+
+        # verifico que se haya realizado una simulación
+        if self.iteraciones_simuladas is not None:
+
+            # Calculo nueva página controlando límites
+            nueva_pagina = self.pagina_actual
+            if (nueva_pagina + 10) > self.cantidad_paginas:
+                nueva_pagina = self.cantidad_paginas
+            else:
+                nueva_pagina += 10
+
+            # Vuelvo a carga la tabla si corresponde
+            if nueva_pagina != self.pagina_actual:
+                self.pagina_actual = nueva_pagina
+                self.cargar_tabla_iteraciones_simuladas()
+                self.lbl_informacion_paginas.setText(str(self.pagina_actual) + "/" + str(self.cantidad_paginas))
+
     def accion_limpiar(self):
 
         # Restauro valores por defecto de interfaz y limpio tabla
-        self.iteraciones_simuladas = []
+        self.limpiar_datos()
         self.limpiar_interfaz()
         self.limpiar_tabla()
         self.preparar_tabla()
         self.mostrar_porcentaje_simulacion()
         self.mostrar_porcentaje_datos()
+        self.mostrar_cantidad_iteraciones_para_mostrar()
 
     def accion_simular(self):
 
@@ -169,6 +250,7 @@ class VentanaSistemaColas(QMainWindow):
         self.limpiar_tabla()
         self.mostrar_porcentaje_simulacion()
         self.mostrar_porcentaje_datos()
+        self.mostrar_cantidad_iteraciones_para_mostrar()
 
         # Realizo simulacion y obtengo semanas a mostrar
         self.iteraciones_simuladas = self.controlador.simular_iteraciones(tiempo_simulacion, tiempo_desde,
@@ -183,10 +265,41 @@ class VentanaSistemaColas(QMainWindow):
                                                                           cantidad_lugares_estacionamiento,
                                                                           cantidad_cabinas_cobro, tiempo_cobro)
 
+        # Obtengo datos necesarios para generacion de headers
+        ids_lugares_estacionamiento = self.iteraciones_simuladas[0].get("informacion_simulacion") \
+            .get("ids_lugares_estacionamiento")
+        ids_cabinas_cobro = self.iteraciones_simuladas[0].get("informacion_simulacion").get("ids_cabinas_cobro")
+        ids_autos = self.iteraciones_simuladas[0].get("informacion_simulacion").get("ids_autos")
+
+        # Preparo headers de tabla de acuerdo a iteraciones simuladas
+        self.preparar_tabla(ids_lugares_estacionamiento, ids_cabinas_cobro, ids_autos)
+
+        # Muestro dato de cantidad iteraciones efectivas realizadas
+        self.mostrar_cantidad_iteraciones_para_mostrar(len(self.iteraciones_simuladas))
+
+        # Calculo y seteo datos de paginación y iteraciones efectivas realizadas
+        self.pagina_actual = 1
+        self.cantidad_paginas = math.ceil(len(self.iteraciones_simuladas) / self.tamanio_pagina)
+        self.lbl_informacion_paginas.setText(str(self.pagina_actual) + "/" + str(self.cantidad_paginas))
+
         # Cargo tabla
         self.cargar_tabla_iteraciones_simuladas()
 
     """ Metodos """
+
+    def obtener_pagina_iteraciones_simuladas(self):
+
+        # Obtengo página a partir de datos de paginación
+        if len(self.iteraciones_simuladas) < self.tamanio_pagina:
+            pagina = self.iteraciones_simuladas[0:len(self.iteraciones_simuladas)]
+        else:
+            index_inf = (self.pagina_actual - 1) * self.tamanio_pagina
+            index_sup = index_inf + self.tamanio_pagina
+            if index_sup > len(self.iteraciones_simuladas):
+                index_sup = len(self.iteraciones_simuladas)
+            pagina = self.iteraciones_simuladas[index_inf:index_sup]
+
+        return pagina
 
     def preparar_tabla(self, ids_lugares_estacionamiento=None, ids_cabinas_cobro=None, ids_autos=None):
 
@@ -305,6 +418,13 @@ class VentanaSistemaColas(QMainWindow):
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
 
+    def limpiar_datos(self):
+
+        # Limpio datos
+        self.iteraciones_simuladas = None
+        self.pagina_actual = None
+        self.cantidad_paginas = None
+
     def limpiar_interfaz(self):
 
         # Limpio txts
@@ -322,6 +442,10 @@ class VentanaSistemaColas(QMainWindow):
         self.txt_cantidad_cabinas_cobro.clear()
         self.txt_tiempo_cobro.clear()
 
+        # Limpio labels relacionados con paginación e iteraciones a mostrar
+        self.lbl_informacion_paginas.setText("0/0")
+        self.lbl_informacion_cantidad_iteraciones_para_mostrar.setText("0")
+
         # Cargo valores por defecto en txts
         self.txt_tiempo_autos.setText("13")
         self.txt_probabilidad_chico_autos.setText("45")
@@ -335,6 +459,13 @@ class VentanaSistemaColas(QMainWindow):
         self.txt_cantidad_cabinas_cobro.setText("1")
         self.txt_tiempo_cobro.setText("2")
 
+    def limpiar_tabla(self):
+
+        # Limpio grilla de semanas simuladas
+        self.grid_iteraciones_simuladas.clearSelection()
+        self.grid_iteraciones_simuladas.setCurrentCell(-1, -1)
+        self.grid_iteraciones_simuladas.setRowCount(0)
+
     def mostrar_porcentaje_simulacion(self, porcenjate=0):
         porcenjate_str = str(porcenjate).replace(".", ",")
         self.lbl_informacion_porcentaje_simulacion.setText(porcenjate_str)
@@ -345,12 +476,10 @@ class VentanaSistemaColas(QMainWindow):
         self.lbl_informacion_porcentaje_datos.setText(porcenjate_str)
         self.app.processEvents()
 
-    def limpiar_tabla(self):
-
-        # Limpio grilla de semanas simuladas
-        self.grid_iteraciones_simuladas.clearSelection()
-        self.grid_iteraciones_simuladas.setCurrentCell(-1, -1)
-        self.grid_iteraciones_simuladas.setRowCount(0)
+    def mostrar_cantidad_iteraciones_para_mostrar(self, cantidad_iteraciones=0):
+        cantidad_iteraciones_str = str(cantidad_iteraciones)
+        self.lbl_informacion_cantidad_iteraciones_para_mostrar.setText(cantidad_iteraciones_str)
+        self.app.processEvents()
 
     def mostrar_mensaje(self, titulo, mensaje):
 
@@ -364,125 +493,125 @@ class VentanaSistemaColas(QMainWindow):
     def cargar_tabla_iteraciones_simuladas(self):
 
         # Obtengo datos necesarios para generacion de headers
-        ids_lugares_estacionamiento = self.iteraciones_simuladas[0].get("informacion_simulacion")\
+        ids_lugares_estacionamiento = self.iteraciones_simuladas[0].get("informacion_simulacion") \
             .get("ids_lugares_estacionamiento")
         ids_cabinas_cobro = self.iteraciones_simuladas[0].get("informacion_simulacion").get("ids_cabinas_cobro")
         ids_autos = self.iteraciones_simuladas[0].get("informacion_simulacion").get("ids_autos")
 
-        # Preparo headers de tabla de acuerdo a iteraciones simuladas
-        self.preparar_tabla(ids_lugares_estacionamiento, ids_cabinas_cobro, ids_autos)
+        # Obtengo pagina de iteraciones simuladas a mostrar
+        iteraciones_a_mostrar = self.obtener_pagina_iteraciones_simuladas()
 
         # Calculo cada cuantas finlas mostrar el porcentaje de datos cargados
-        if len(self.iteraciones_simuladas) <= 100:
+        if len(iteraciones_a_mostrar) <= 100:
             paso_muestra_datos = 1
         else:
-            paso_muestra_datos = round(len(self.iteraciones_simuladas) / 50)
+            paso_muestra_datos = round(len(iteraciones_a_mostrar) / 50)
         proxima_muestra_datos = paso_muestra_datos
 
         # Genero filas de tabla
-        self.grid_iteraciones_simuladas.setRowCount(len(self.iteraciones_simuladas))
+        self.grid_iteraciones_simuladas.setRowCount(len(iteraciones_a_mostrar))
         index_f = 0
-        for iteracion_simulada in self.iteraciones_simuladas:
+        for iteracion_a_mostrar in iteraciones_a_mostrar:
             index_c = 0
 
             # Obtengo datos en formato conveniente y agrego a fila
-            evento_str = iteracion_simulada.get("evento")
+            evento_str = iteracion_a_mostrar.get("evento")
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(evento_str))
             index_c += 1
 
-            reloj = iteracion_simulada.get("reloj")
+            reloj = iteracion_a_mostrar.get("reloj")
             reloj_str = str(reloj).replace(".", ",") if reloj is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(reloj_str))
             index_c += 1
 
-            rnd_tiempo_entre_llegadas = iteracion_simulada.get("eventos").get("llegada_autos")\
+            rnd_tiempo_entre_llegadas = iteracion_a_mostrar.get("eventos").get("llegada_autos")\
                 .get("rnd_tiempo_entre_llegadas")
             rnd_tiempo_entre_llegadas_str = str(rnd_tiempo_entre_llegadas).replace(".", ",") \
                 if rnd_tiempo_entre_llegadas is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(rnd_tiempo_entre_llegadas_str))
             index_c += 1
 
-            tiempo_proxima_llegada = iteracion_simulada.get("eventos").get("llegada_autos")\
+            tiempo_proxima_llegada = iteracion_a_mostrar.get("eventos").get("llegada_autos")\
                 .get("tiempo_proxima_llegada")
             tiempo_proxima_llegada_str = str(tiempo_proxima_llegada).replace(".", ",") \
                 if tiempo_proxima_llegada is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tiempo_proxima_llegada_str))
             index_c += 1
 
-            proxima_llegada = iteracion_simulada.get("eventos").get("llegada_autos").get("proxima_llegada")
+            proxima_llegada = iteracion_a_mostrar.get("eventos").get("llegada_autos").get("proxima_llegada")
             proxima_llegada_str = str(proxima_llegada).replace(".", ",") if proxima_llegada is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(proxima_llegada_str))
             index_c += 1
 
-            rnd_fin_estacionamiento = iteracion_simulada.get("eventos").get("fin_estacionamiento")\
+            rnd_fin_estacionamiento = iteracion_a_mostrar.get("eventos").get("fin_estacionamiento")\
                 .get("rnd_fin_estacionamiento")
             rnd_fin_estacionamiento_str = str(rnd_fin_estacionamiento).replace(".", ",") \
                 if rnd_fin_estacionamiento is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(rnd_fin_estacionamiento_str))
             index_c += 1
 
-            tiempo_estacionamiento = iteracion_simulada.get("eventos").get("fin_estacionamiento") \
+            tiempo_estacionamiento = iteracion_a_mostrar.get("eventos").get("fin_estacionamiento") \
                 .get("tiempo_estacionamiento")
             tiempo_estacionamiento_str = str(tiempo_estacionamiento) if tiempo_estacionamiento is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tiempo_estacionamiento_str))
             index_c += 1
 
             for i in range(0, len(ids_lugares_estacionamiento)):
-                fin_estacionamiento = iteracion_simulada.get("eventos").get("fin_estacionamiento")\
+                fin_estacionamiento = iteracion_a_mostrar.get("eventos").get("fin_estacionamiento")\
                     .get("fines_estacionamiento")[i].tiempo_fin_evento
                 fin_estacionamiento_str = str(fin_estacionamiento).replace(".", ",") \
                     if fin_estacionamiento is not None else ""
                 self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(fin_estacionamiento_str))
                 index_c += 1
 
-            tiempo_cobrado = iteracion_simulada.get("eventos").get("fin_cobrado").get("tiempo_cobrado")
+            tiempo_cobrado = iteracion_a_mostrar.get("eventos").get("fin_cobrado").get("tiempo_cobrado")
             tiempo_cobrado_str = str(tiempo_cobrado) if tiempo_cobrado is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tiempo_cobrado_str))
             index_c += 1
 
             for i in range(0, len(ids_cabinas_cobro)):
-                fin_cobrado = iteracion_simulada.get("eventos").get("fin_cobrado")\
+                fin_cobrado = iteracion_a_mostrar.get("eventos").get("fin_cobrado")\
                     .get("fines_cobrado")[i].tiempo_fin_evento
                 fin_cobrado_str = str(fin_cobrado).replace(".", ",") if fin_cobrado is not None else ""
                 self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(fin_cobrado_str))
                 index_c += 1
 
             for i in range(0, len(ids_lugares_estacionamiento)):
-                estado_str = iteracion_simulada.get("servidores").get("lugares_estacionamiento")[i].estado
+                estado_str = iteracion_a_mostrar.get("servidores").get("lugares_estacionamiento")[i].estado
                 self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(estado_str))
                 index_c += 1
 
             for i in range(0, len(ids_cabinas_cobro)):
-                estado_str = iteracion_simulada.get("servidores").get("cabinas_cobro")[i].estado
+                estado_str = iteracion_a_mostrar.get("servidores").get("cabinas_cobro")[i].estado
                 self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(estado_str))
                 index_c += 1
-                cola = iteracion_simulada.get("servidores").get("cabinas_cobro")[i].cola
+                cola = iteracion_a_mostrar.get("servidores").get("cabinas_cobro")[i].cola
                 cola_str = str(cola)
                 self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(cola_str))
                 index_c += 1
 
-            autos_rechazados = iteracion_simulada.get("contadores").get("autos_rechazados")
+            autos_rechazados = iteracion_a_mostrar.get("contadores").get("autos_rechazados")
             autos_rechazados_str = str(autos_rechazados)
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(autos_rechazados_str))
             index_c += 1
 
-            monto_recaudado = iteracion_simulada.get("contadores").get("monto_recaudado")
+            monto_recaudado = iteracion_a_mostrar.get("contadores").get("monto_recaudado")
             monto_recaudado_str = "$ " + str(monto_recaudado)
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(monto_recaudado_str))
             index_c += 1
 
-            porcentaje_ocupacion = iteracion_simulada.get("contadores").get("porcentaje_ocupacion")
+            porcentaje_ocupacion = iteracion_a_mostrar.get("contadores").get("porcentaje_ocupacion")
             porcentaje_ocupacion_str = (str(porcentaje_ocupacion).replace(".", ",")
                                         if porcentaje_ocupacion is not None else "") + " %"
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(porcentaje_ocupacion_str))
             index_c += 1
 
-            rnd_tipo_auto = iteracion_simulada.get("clientes").get("auxiliares").get("rnd_tipo_auto")
+            rnd_tipo_auto = iteracion_a_mostrar.get("clientes").get("auxiliares").get("rnd_tipo_auto")
             rnd_tipo_auto_str = str(rnd_tipo_auto).replace(".", ",") if rnd_tipo_auto is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(rnd_tipo_auto_str))
             index_c += 1
 
-            tipo_auto = iteracion_simulada.get("clientes").get("auxiliares").get("tipo_auto")
+            tipo_auto = iteracion_a_mostrar.get("clientes").get("auxiliares").get("tipo_auto")
             tipo_auto_str = str(tipo_auto) if tipo_auto is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tipo_auto_str))
             index_c += 1
@@ -493,14 +622,14 @@ class VentanaSistemaColas(QMainWindow):
                 while index_ids_autos_totales < len(ids_autos):
                     auto_encontrado = False
                     try:
-                        if ids_autos[index_ids_autos_totales] == iteracion_simulada.get("clientes")\
+                        if ids_autos[index_ids_autos_totales] == iteracion_a_mostrar.get("clientes")\
                                 .get("autos")[index_ids_autos_iteracion].id:
                             auto_encontrado = True
                     except IndexError:
                         pass
 
                     if auto_encontrado:
-                        auto = iteracion_simulada.get("clientes").get("autos")[index_ids_autos_iteracion]
+                        auto = iteracion_a_mostrar.get("clientes").get("autos")[index_ids_autos_iteracion]
                         estado_str = auto.estado
                         if auto.lugar_estacionamiento is not None:
                             estado_str += " (" + str(auto.lugar_estacionamiento.id) + ")"
@@ -540,7 +669,7 @@ class VentanaSistemaColas(QMainWindow):
 
             # Muestro porcentaje de datos cargados cuando corresponda
             if index_f >= proxima_muestra_datos:
-                porcentaje = round(index_f * 100 / len(self.iteraciones_simuladas))
+                porcentaje = round(index_f * 100 / len(iteraciones_a_mostrar))
                 self.mostrar_porcentaje_datos(porcentaje)
                 while proxima_muestra_datos <= index_f:
                     proxima_muestra_datos += paso_muestra_datos
@@ -552,7 +681,4 @@ class VentanaSistemaColas(QMainWindow):
 
     # Evento show
     def showEvent(self, QShowEvent):
-        self.preparar_tabla()
-        self.limpiar_interfaz()
-        self.mostrar_porcentaje_simulacion()
-        self.mostrar_porcentaje_datos()
+        self.accion_limpiar()
