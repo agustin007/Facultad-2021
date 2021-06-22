@@ -24,6 +24,8 @@ class ControladorSistemaCombinado:
     cantidad_lugares_estacionamiento = None
     cantidad_cabinas_cobro = None
     h = None
+    d_autos_grandes = None
+    d_demas_autos = None
     t = None
 
     # Atributos para manejo de simulación
@@ -33,6 +35,9 @@ class ControladorSistemaCombinado:
     ids_cabina_cobro_generadas = None
     ids_autos_iteraciones_generados = None
 
+    # Atributos para persistencia de calculos continuos
+    tiempos_cobrado = []
+
     # Constantes
     EVENTO_LLEGADA_AUTO = "llegada_auto"
     EVENTO_FIN_ESTACIONAMIENTO = "fin_estacionamiento"
@@ -41,7 +46,44 @@ class ControladorSistemaCombinado:
     def __init__(self, ventana=None):
         self.ventana = ventana
 
-    def generar_tiempo_cobro(self):
+    def funcion_tiempo_continuo(self, c, t, tiempo):
+        return c + 0,2 * t + tiempo ** 2
+
+    def generar_tiempo_cobro(self, auto, cabina_cobro):
+
+        # Establezco d a utilizar dependiendo tamanio de auto
+        d = None
+        if auto.tipo_auto == TIPO_AUTO_GRANDE:
+            d = self.d_autos_grandes
+        else:
+            d = self.d_demas_autos
+
+        # Establezco c a utilizar dependiendo de la cantidad de cola en la cabina de cobro
+        c = cabina_cobro.cola
+
+        # Inicializo lista para almacenamiento de iteraciones de euler
+        iteraciones = [{
+            "tiempo": None,
+            "d": None,
+            "dd_dt": None,
+            "d_sig": self.funcion_tiempo_continuo(c, self.t, 0),
+            "tiempo_sig": 0,
+        }]
+
+        # Obtengo tiempo mediante euler
+        index = 0
+        while 1:
+            break
+            # TODO: Iterar
+
+        # Genero diccionario
+        tiempo_cobrado = {
+            "id_auto": auto.id,
+            "id_cabina_cobro": auto.cabina_cobro.id,
+            "iteraciones": iteraciones,
+            "tiempo": None
+        }
+
         return 2
 
     def simular_iteracion(self, vector_estado):
@@ -193,7 +235,7 @@ class ControladorSistemaCombinado:
                 self.auto_generado = True
                 vector_estado.get("clientes").get("autos").append(
                     Auto(id_auto, estado_auto, lugar_estacionamiento_auto, cabina_cobro_auto,
-                         hora_inicio_espera_para_pagar_auto, monto_auto)
+                         hora_inicio_espera_para_pagar_auto, tipo_auto, monto_auto)
                 )
 
                 # Seteo datos de contadores
@@ -251,8 +293,21 @@ class ControladorSistemaCombinado:
                 bisect.insort(vector_estado.get("servidores").get("lugares_estacionamiento"),
                               lugar_estacionamiento)
 
+                # Seteo datos del auto, ya que cambia el estado
+                index_auto = None
+                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
+                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
+                                servidor_a_liberar.id:
+                            index_auto = i
+                            break
+                vector_estado.get("clientes").get("autos")[index_auto].lugar_estacionamiento = None
+                vector_estado.get("clientes").get("autos")[index_auto].cabina_cobro = cabina_cobro_encontrada
+                vector_estado.get("clientes").get("autos")[index_auto].estado = ESTADO_AUTO_PAGANDO
+
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
-                tiempo_cobrado = self.generar_tiempo_cobro()
+                tiempo_cobrado = self.generar_tiempo_cobro(vector_estado.get("clientes").get("autos")[index_auto],
+                                                           cabina_cobro_encontrada)
                 fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado
@@ -269,18 +324,6 @@ class ControladorSistemaCombinado:
                 fin_cobrado.tiempo_fin_evento = fin_tiempo_cobrado
                 bisect.insort(vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado"),
                               fin_cobrado)
-
-                # Seteo datos del auto, ya que cambia el estado
-                index = None
-                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
-                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
-                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
-                                servidor_a_liberar.id:
-                            index = i
-                            break
-                vector_estado.get("clientes").get("autos")[index].lugar_estacionamiento = None
-                vector_estado.get("clientes").get("autos")[index].cabina_cobro = cabina_cobro_encontrada
-                vector_estado.get("clientes").get("autos")[index].estado = ESTADO_AUTO_PAGANDO
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
@@ -366,8 +409,21 @@ class ControladorSistemaCombinado:
                 bisect.insort(vector_estado.get("servidores").get("lugares_estacionamiento"),
                               lugar_estacionamiento)
 
+                # Seteo datos del auto, ya que cambia el estado
+                index_auto = None
+                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
+                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
+                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
+                                lugar_estacionamiento_auto.id:
+                            index = i
+                            break
+                vector_estado.get("clientes").get("autos")[index_auto].lugar_estacionamiento = None
+                vector_estado.get("clientes").get("autos")[index_auto].cabina_cobro = cabina_cobro_con_cola_encontrada
+                vector_estado.get("clientes").get("autos")[index_auto].estado = ESTADO_AUTO_PAGANDO
+
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
-                tiempo_cobrado = self.generar_tiempo_cobro()
+                tiempo_cobrado = self.generar_tiempo_cobro(vector_estado.get("clientes").get("autos")[index_auto],
+                                                           cabina_cobro_con_cola_encontrada)
                 fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado
@@ -384,18 +440,6 @@ class ControladorSistemaCombinado:
                 fin_cobrado.tiempo_fin_evento = fin_tiempo_cobrado
                 bisect.insort(vector_estado.get("eventos").get("fin_cobrado").get("fines_cobrado"),
                               fin_cobrado)
-
-                # Seteo datos del auto, ya que cambia el estado
-                index = None
-                for i in range(0, len(vector_estado.get("clientes").get("autos"))):
-                    if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
-                        if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
-                                lugar_estacionamiento_auto.id:
-                            index = i
-                            break
-                vector_estado.get("clientes").get("autos")[index].lugar_estacionamiento = None
-                vector_estado.get("clientes").get("autos")[index].cabina_cobro = cabina_cobro_con_cola_encontrada
-                vector_estado.get("clientes").get("autos")[index].estado = ESTADO_AUTO_PAGANDO
 
                 # Seteo datos de contadores
                 vector_estado["contadores"]["lugares_estacionamiento_ocupados"] -= 1
@@ -424,6 +468,8 @@ class ControladorSistemaCombinado:
         self.cantidad_lugares_estacionamiento = cantidad_lugares_estacionamiento
         self.cantidad_cabinas_cobro = cantidad_cabinas_cobro
         self.h = h
+        self.d_autos_grandes = 180
+        self.d_demas_autos = 130
         self.t = t
 
         # Reestablezo atributos para manejo de la simulación

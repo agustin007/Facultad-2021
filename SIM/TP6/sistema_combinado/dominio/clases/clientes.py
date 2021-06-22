@@ -24,15 +24,17 @@ class Auto(Cliente):
     lugar_estacionamiento = None
     cabina_cobro = None
     hora_inicio_espera_para_pagar = None
+    tipo_auto = None
     monto = None
     ordenar_por = None
 
     def __init__(self, id_cliente=None, estado=None, lugar_estacionamiento=None, cabina_cobro=None,
-                 hora_inicio_espera_para_pagar=None, monto=None):
+                 hora_inicio_espera_para_pagar=None, tipo_auto=None, monto=None):
         super().__init__(id_cliente, estado)
         self.lugar_estacionamiento = lugar_estacionamiento
         self.cabina_cobro = cabina_cobro
         self.hora_inicio_espera_para_pagar = hora_inicio_espera_para_pagar
+        self.tipo_auto = tipo_auto
         self.monto = monto
 
     def __eq__(self, other):
@@ -92,23 +94,25 @@ class Auto(Cliente):
     def __str__(self):
         return "Auto(id={id}, estado={estado}, lugar_estacionamiento={lugar_estacionamiento}, " \
                "cabina_cobro={cabina_cobro}, hora_inicio_espera_para_pagar={hora_inicio_espera_para_pagar}, " \
-               "monto={monto})".format(
+               "tipo_auto={tipo_auto}, monto={monto})".format(
                     id=str(self.id),
                     estado=self.estado,
                     lugar_estacionamiento=self.lugar_estacionamiento or "None",
                     cabina_cobro=self.cabina_cobro or "None",
                     hora_inicio_espera_para_pagar=str(self.hora_inicio_espera_para_pagar),
+                    tipo_auto=self.tipo_auto,
                     monto=str(self.monto),
                 )
 
     def __repr__(self):
         return "Auto(id={id}, estado={estado}, lugar_estacionamiento={lugar_estacionamiento}, " \
                "cabina_cobro={cabina_cobro}, hora_inicio_espera_para_pagar={hora_inicio_espera_para_pagar}, " \
-               "monto={monto})".format(
+               "tipo_auto={tipo_auto}, monto={monto})".format(
                     id=str(self.id),
                     estado=self.estado,
                     lugar_estacionamiento=self.lugar_estacionamiento or "None",
                     cabina_cobro=self.cabina_cobro or "None",
                     hora_inicio_espera_para_pagar=str(self.hora_inicio_espera_para_pagar),
+                    tipo_auto=self.tipo_auto,
                     monto=str(self.monto),
                 )

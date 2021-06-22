@@ -10,6 +10,3 @@ if __name__ == "__main__":
     window = VentanaSistemaCombinado(app)
     window.show()
     app.exec_()
-
-
-
