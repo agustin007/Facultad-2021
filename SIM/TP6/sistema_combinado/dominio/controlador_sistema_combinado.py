@@ -1,3 +1,4 @@
+import xlsxwriter
 import random
 import bisect
 import copy
@@ -74,7 +75,6 @@ class ControladorSistemaCombinado:
         while 1:
             if iteraciones[index].get("tiempo") is not None and iteraciones[index].get("d") >= d_limite:
                 break
-
             tiempo = iteraciones[index].get("tiempo_sig")
             d = iteraciones[index].get("d_sig")
             dd_dt = round(self.funcion_tiempo_continuo(c, self.t, tiempo), 6)
@@ -101,6 +101,21 @@ class ControladorSistemaCombinado:
         self.tiempos_cobrado.append(tiempo_cobrado)
 
         return tiempo_cobrado.get("tiempo")
+
+    def generar_excel_tiempos_cobros(self):
+        workbook = xlsxwriter.Workbook("simulacion_continua.xlsx")
+        worksheet = workbook.add_worksheet()
+
+        fila_resultados = 0
+        columna_labels_resultados = 0
+        columna_tiempos_resultados = 1
+
+        for tiempo_cobrado in self.tiempos_cobrado:
+            worksheet.write(fila_resultados, columna_labels_resultados, "Auto " + str(tiempo_cobrado.get("id_auto")))
+            worksheet.write(fila_resultados, columna_tiempos_resultados, str(tiempo_cobrado.get("tiempo")))
+            fila_resultados += 2
+
+        workbook.close()
 
     def simular_iteracion(self, vector_estado):
 
@@ -622,6 +637,9 @@ class ControladorSistemaCombinado:
 
         # Muestro porcentaje de simulación final
         self.ventana.mostrar_porcentaje_simulacion(100)
+
+        # Genero excel con calculos de simulación
+        self.generar_excel_tiempos_cobros()
 
         # Muestro iteraciones simuladas por consola
         # print("########## RESULTADOS DE LA SIMULACIÓN ##########\n")
