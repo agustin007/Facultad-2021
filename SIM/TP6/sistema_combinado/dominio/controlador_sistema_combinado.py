@@ -47,7 +47,7 @@ class ControladorSistemaCombinado:
         self.ventana = ventana
 
     def funcion_tiempo_continuo(self, c, t, tiempo):
-        return c + 0,2 * t + tiempo ** 2
+        return c + 0.2 * t + tiempo ** 2
 
     def generar_tiempo_cobro(self, auto, cabina_cobro):
 
@@ -415,7 +415,7 @@ class ControladorSistemaCombinado:
                     if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento is not None:
                         if vector_estado.get("clientes").get("autos")[i].lugar_estacionamiento.id == \
                                 lugar_estacionamiento_auto.id:
-                            index = i
+                            index_auto = i
                             break
                 vector_estado.get("clientes").get("autos")[index_auto].lugar_estacionamiento = None
                 vector_estado.get("clientes").get("autos")[index_auto].cabina_cobro = cabina_cobro_con_cola_encontrada
