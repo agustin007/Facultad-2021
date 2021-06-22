@@ -574,7 +574,7 @@ class VentanaSistemaCombinado(QMainWindow):
                 index_c += 1
 
             tiempo_cobrado = iteracion_a_mostrar.get("eventos").get("fin_cobrado").get("tiempo_cobrado")
-            tiempo_cobrado_str = str(tiempo_cobrado) if tiempo_cobrado is not None else ""
+            tiempo_cobrado_str = str(tiempo_cobrado).replace(".", ",") if tiempo_cobrado is not None else ""
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tiempo_cobrado_str))
             index_c += 1
 

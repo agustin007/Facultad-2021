@@ -52,11 +52,10 @@ class ControladorSistemaCombinado:
     def generar_tiempo_cobro(self, auto, cabina_cobro):
 
         # Establezco d a utilizar dependiendo tamanio de auto
-        d = None
         if auto.tipo_auto == TIPO_AUTO_GRANDE:
-            d = self.d_autos_grandes
+            d_limite = self.d_autos_grandes
         else:
-            d = self.d_demas_autos
+            d_limite = self.d_demas_autos
 
         # Establezco c a utilizar dependiendo de la cantidad de cola en la cabina de cobro
         c = cabina_cobro.cola
@@ -66,25 +65,42 @@ class ControladorSistemaCombinado:
             "tiempo": None,
             "d": None,
             "dd_dt": None,
-            "d_sig": self.funcion_tiempo_continuo(c, self.t, 0),
             "tiempo_sig": 0,
+            "d_sig": self.funcion_tiempo_continuo(c, self.t, 0),
         }]
 
         # Obtengo tiempo mediante euler
         index = 0
         while 1:
-            break
-            # TODO: Iterar
+            if iteraciones[index].get("tiempo") is not None and iteraciones[index].get("d") >= d_limite:
+                break
 
-        # Genero diccionario
+            tiempo = iteraciones[index].get("tiempo_sig")
+            d = iteraciones[index].get("d_sig")
+            dd_dt = round(self.funcion_tiempo_continuo(c, self.t, tiempo), 6)
+            tiempo_sig = round(tiempo + self.h, 6)
+            d_sig = round(d + self.h * dd_dt, 6)
+            iteraciones.append({
+                "tiempo": tiempo,
+                "d": d,
+                "dd_dt": dd_dt,
+                "tiempo_sig": tiempo_sig,
+                "d_sig": d_sig
+            })
+            index += 1
+
+        # Genero diccionario de cálculo
         tiempo_cobrado = {
             "id_auto": auto.id,
             "id_cabina_cobro": auto.cabina_cobro.id,
             "iteraciones": iteraciones,
-            "tiempo": None
+            "tiempo": iteraciones[len(iteraciones) - 1].get("tiempo")
         }
 
-        return 2
+        # Agrego cálculo a lista de calculos de tiempos cobrados
+        self.tiempos_cobrado.append(tiempo_cobrado)
+
+        return tiempo_cobrado.get("tiempo")
 
     def simular_iteracion(self, vector_estado):
 
