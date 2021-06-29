@@ -471,6 +471,8 @@ class VentanaSistemaCombinado(QMainWindow):
         self.txt_probabilidad_4_tiempo_estacionamiento.setText("5")
         self.txt_cantidad_lugares_estacionamiento.setText("20")
         self.txt_cantidad_cabinas_cobro.setText("1")
+        self.txt_h.setText("0,5")
+        self.txt_t.setText("10")
 
     def limpiar_tabla(self):
 
