@@ -114,6 +114,9 @@ class ControladorSistemaCombinado:
 
     def generar_excel_tiempos_cobros(self):
 
+        # Limpio lista de tiempos cobrados
+        self.tiempos_cobrado = []
+
         # Obtengo ruta donde almacenar el archivo
         ruta_archivo = self.ventana.seleccionar_ruta_archivo()
 
