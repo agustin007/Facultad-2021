@@ -325,7 +325,7 @@ class VentanaSistemaCombinado(QMainWindow):
         cantidad_cabinas_cobro = len(ids_cabinas_cobro)
         cantidad_autos = len(ids_autos)
         self.grid_iteraciones_simuladas.setColumnCount(14 + cantidad_lugares_estacionamiento * 2 +
-                                                       cantidad_cabinas_cobro * 3 + cantidad_autos * 3)
+                                                       cantidad_cabinas_cobro * 3 + cantidad_autos * 4)
         i = 0
 
         header = QTableWidgetItem("N° de iteración")
@@ -423,6 +423,10 @@ class VentanaSistemaCombinado(QMainWindow):
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
             header = QTableWidgetItem("H. inicio esp. (" + str(id_auto) + ")")
+            header.setBackground(QColor(234, 153, 153))
+            self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+            i += 1
+            header = QTableWidgetItem("Tipo de auto (" + str(id_auto) + ")")
             header.setBackground(QColor(234, 153, 153))
             self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
             i += 1
@@ -657,12 +661,19 @@ class VentanaSistemaCombinado(QMainWindow):
                             estado_str += "(" + str(auto.cabina_cobro.id) + ")"
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(estado_str))
                         index_c += 1
+
                         hora_inicio_espera_para_pagar = auto.hora_inicio_espera_para_pagar
                         hora_inicio_espera_para_pagar_str = str(hora_inicio_espera_para_pagar).replace(".", ",") \
                             if hora_inicio_espera_para_pagar is not None else ""
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c,
                                                                 QTableWidgetItem(hora_inicio_espera_para_pagar_str))
                         index_c += 1
+
+                        tipo_auto = auto.tipo_auto
+                        tipo_auto_str = str(tipo_auto) if tipo_auto is not None else ""
+                        self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tipo_auto_str))
+                        index_c += 1
+
                         monto = auto.monto
                         monto_str = "$ " + str(monto) if monto is not None else ""
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(monto_str))
@@ -675,10 +686,16 @@ class VentanaSistemaCombinado(QMainWindow):
                         estado_str = ""
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(estado_str))
                         index_c += 1
+
                         hora_inicio_espera_para_pagar_str = ""
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c,
                                                                 QTableWidgetItem(hora_inicio_espera_para_pagar_str))
                         index_c += 1
+
+                        tipo_auto_str = ""
+                        self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(tipo_auto_str))
+                        index_c += 1
+
                         monto_str = ""
                         self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(monto_str))
                         index_c += 1
