@@ -61,6 +61,14 @@ class ControladorSistemaCombinado:
         # Establezco c a utilizar dependiendo de la cantidad de cola en la cabina de cobro
         c = cabina_cobro.cola
 
+        # Inicializo diccionario para almacenamiento de parámetros
+        parametros = {
+            "c": c,
+            "t": self.t,
+            "d0": d_limite,
+            "t0": 0
+        }
+
         # Inicializo lista para almacenamiento de iteraciones de euler
         iteraciones = [{
             "tiempo": None,
@@ -94,6 +102,7 @@ class ControladorSistemaCombinado:
             "id_auto": auto.id,
             "id_cabina_cobro": auto.cabina_cobro.id,
             "n_iteracion": n_iteracion,
+            "parametros": parametros,
             "iteraciones": iteraciones,
             "tiempo": iteraciones[len(iteraciones) - 1].get("tiempo")
         }
@@ -124,14 +133,52 @@ class ControladorSistemaCombinado:
         for tiempo_cobrado in self.tiempos_cobrado:
             worksheet.write(fila, columna_n_auto, "Auto " + str(tiempo_cobrado.get("id_auto")))
             worksheet.write(fila, columna_n_iteracion, "It. " + str(tiempo_cobrado.get("n_iteracion")))
-            worksheet.write(fila, columna_tiempo_cobrado, str(tiempo_cobrado.get("tiempo")))
+            worksheet.write(fila, columna_tiempo_cobrado, str(tiempo_cobrado.get("tiempo")).replace(".", ","))
             fila += 3
 
         # Genero tablas de cálculos
         fila = 0
         columna_parametros = 5
         columna_tiempo = columna_parametros + 1
-        columna_tiempo_cobrado = 2
+        columna_d = columna_tiempo + 1
+        columna_dd_dt = columna_d + 1
+        columna_tiempo_sig = columna_dd_dt + 1
+        columna_d_sig = columna_tiempo_sig + 1
+        for tiempo_cobrado in self.tiempos_cobrado:
+            worksheet.write(fila, columna_parametros, "Auto " + str(tiempo_cobrado.get("id_auto")))
+            worksheet.write(fila, columna_tiempo, "t")
+            worksheet.write(fila, columna_d, "D")
+            worksheet.write(fila, columna_dd_dt, "dD/dt")
+            worksheet.write(fila, columna_tiempo_sig, "t(i+1)")
+            worksheet.write(fila, columna_d_sig, "D(i+1)")
+            fila += 1
+            for iteracion in tiempo_cobrado.get("iteraciones"):
+                if fila == 1:
+                    worksheet.write(fila, columna_parametros, "C = " + str(tiempo_cobrado.get("parametros").get("c")))
+                elif fila == 2:
+                    worksheet.write(fila, columna_parametros, "T = " + str(tiempo_cobrado.get("parametros").get("t"))
+                                    .replace(".", ","))
+                elif fila == 3:
+                    worksheet.write(fila, columna_parametros, "D0 = " + str(tiempo_cobrado.get("parametros").get("d0")))
+                elif fila == 4:
+                    worksheet.write(fila, columna_parametros, "t0 = " + str(tiempo_cobrado.get("parametros").get("t0"))
+                                    .replace(".", ","))
+                worksheet.write(fila, columna_tiempo, str(iteracion.get("tiempo")).replace(".", ",")
+                                if iteracion.get("tiempo") is not None else "")
+                worksheet.write(fila, columna_d, str(iteracion.get("d")).replace(".", ",")
+                                if iteracion.get("d") is not None else "")
+                worksheet.write(fila, columna_dd_dt, str(iteracion.get("dd_dt")).replace(".", ",")
+                                if iteracion.get("dd_dt") is not None else "")
+                worksheet.write(fila, columna_tiempo_sig, str(iteracion.get("tiempo_sig")).replace(".", ","))
+                worksheet.write(fila, columna_d_sig, str(iteracion.get("d_sig")).replace(".", ","))
+                fila += 1
+            fila = 0
+            columna_parametros += 7
+            columna_tiempo = columna_parametros + 1
+            columna_d = columna_tiempo + 1
+            columna_dd_dt = columna_d + 1
+            columna_tiempo_sig = columna_dd_dt + 1
+            columna_d_sig = columna_tiempo_sig + 1
 
         # Cierro archivo
         workbook.close()
