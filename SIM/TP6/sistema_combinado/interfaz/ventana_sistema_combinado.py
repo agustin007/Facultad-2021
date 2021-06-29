@@ -732,4 +732,5 @@ class VentanaSistemaCombinado(QMainWindow):
 
     # Evento show
     def showEvent(self, QShowEvent):
-        self.accion_limpiar()
+        if self.iteraciones_simuladas is None:
+            self.accion_limpiar()
