@@ -324,10 +324,14 @@ class VentanaSistemaCombinado(QMainWindow):
         cantidad_lugares_estacionamiento = len(ids_lugares_estacionamiento)
         cantidad_cabinas_cobro = len(ids_cabinas_cobro)
         cantidad_autos = len(ids_autos)
-        self.grid_iteraciones_simuladas.setColumnCount(13 + cantidad_lugares_estacionamiento * 2 +
+        self.grid_iteraciones_simuladas.setColumnCount(14 + cantidad_lugares_estacionamiento * 2 +
                                                        cantidad_cabinas_cobro * 3 + cantidad_autos * 3)
         i = 0
 
+        header = QTableWidgetItem("N° de iteración")
+        header.setBackground(QColor(204, 204, 204))
+        self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
+        i += 1
         header = QTableWidgetItem("Evento")
         header.setBackground(QColor(204, 204, 204))
         self.grid_iteraciones_simuladas.setHorizontalHeaderItem(i, header)
@@ -524,6 +528,11 @@ class VentanaSistemaCombinado(QMainWindow):
             index_c = 0
 
             # Obtengo datos en formato conveniente y agrego a fila
+            n_iteracion = iteracion_a_mostrar.get("n_iteracion")
+            n_iteracion_str = str(n_iteracion)
+            self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(n_iteracion_str))
+            index_c += 1
+            
             evento_str = iteracion_a_mostrar.get("evento")
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(evento_str))
             index_c += 1

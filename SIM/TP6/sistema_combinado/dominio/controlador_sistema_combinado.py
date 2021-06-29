@@ -138,6 +138,9 @@ class ControladorSistemaCombinado:
         Servidor.ordenar_por = ORDEN_SERVIDORES_POR_ESTADO
         Evento.ordenar_por = ORDEN_EVENTOS_POR_TIEMPO_FIN_EVENTO
 
+        # Seteo número de iteración
+        vector_estado["n_iteracion"] = vector_estado.get("n_iteracion") + 1
+
         # Obtengo siguiente evento a procesar
         evento = None
         reloj_evento = None
@@ -522,6 +525,7 @@ class ControladorSistemaCombinado:
         tiempo_proxima_llegada = round(-1 * self.tiempo_autos * math.log(1 - rnd_tiempo_entre_llegadas), 2)
         proxima_llegada = tiempo_proxima_llegada
         vector_estado = {
+            "n_iteracion": 0,
             "evento": "inicializacion",
             "reloj": 0,
             "eventos": {
