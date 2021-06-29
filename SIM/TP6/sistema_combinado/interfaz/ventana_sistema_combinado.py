@@ -143,7 +143,7 @@ class VentanaSistemaCombinado(QMainWindow):
         self.preparar_tabla()
         self.mostrar_porcentaje_simulacion()
         self.mostrar_porcentaje_datos()
-        self.mostrar_cantidad_iteraciones_para_mostrar()
+        self.mostrar_cantidad_iteraciones_realizadas()
 
     def accion_simular(self):
 
@@ -259,7 +259,7 @@ class VentanaSistemaCombinado(QMainWindow):
         self.limpiar_tabla()
         self.mostrar_porcentaje_simulacion()
         self.mostrar_porcentaje_datos()
-        self.mostrar_cantidad_iteraciones_para_mostrar()
+        self.mostrar_cantidad_iteraciones_realizadas()
 
         # Realizo simulacion y obtengo semanas a mostrar
         self.iteraciones_simuladas = self.controlador.simular_iteraciones(tiempo_simulacion, tiempo_desde,
@@ -284,7 +284,7 @@ class VentanaSistemaCombinado(QMainWindow):
         self.preparar_tabla(ids_lugares_estacionamiento, ids_cabinas_cobro, ids_autos)
 
         # Muestro dato de cantidad iteraciones efectivas realizadas
-        self.mostrar_cantidad_iteraciones_para_mostrar(len(self.iteraciones_simuladas))
+        self.mostrar_cantidad_iteraciones_realizadas(self.iteraciones_simuladas[-1].get("n_iteracion"))
 
         # Calculo y seteo datos de paginación y iteraciones efectivas realizadas
         self.pagina_actual = 1
@@ -458,7 +458,7 @@ class VentanaSistemaCombinado(QMainWindow):
 
         # Limpio labels relacionados con paginación e iteraciones a mostrar
         self.lbl_informacion_paginas.setText("0/0")
-        self.lbl_informacion_cantidad_iteraciones_para_mostrar.setText("0")
+        self.lbl_informacion_cantidad_iteraciones_realizadas.setText("0")
 
         # Cargo valores por defecto en txts
         self.txt_tiempo_autos.setText("13")
@@ -489,9 +489,9 @@ class VentanaSistemaCombinado(QMainWindow):
         self.lbl_informacion_porcentaje_datos.setText(porcenjate_str)
         self.app.processEvents()
 
-    def mostrar_cantidad_iteraciones_para_mostrar(self, cantidad_iteraciones=0):
+    def mostrar_cantidad_iteraciones_realizadas(self, cantidad_iteraciones=0):
         cantidad_iteraciones_str = str(cantidad_iteraciones)
-        self.lbl_informacion_cantidad_iteraciones_para_mostrar.setText(cantidad_iteraciones_str)
+        self.lbl_informacion_cantidad_iteraciones_realizadas.setText(cantidad_iteraciones_str)
         self.app.processEvents()
 
     def mostrar_mensaje(self, titulo, mensaje):
@@ -532,7 +532,7 @@ class VentanaSistemaCombinado(QMainWindow):
             n_iteracion_str = str(n_iteracion)
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(n_iteracion_str))
             index_c += 1
-            
+
             evento_str = iteracion_a_mostrar.get("evento")
             self.grid_iteraciones_simuladas.setItem(index_f, index_c, QTableWidgetItem(evento_str))
             index_c += 1
