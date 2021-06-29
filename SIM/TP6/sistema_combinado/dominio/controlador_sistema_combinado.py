@@ -50,7 +50,7 @@ class ControladorSistemaCombinado:
     def funcion_tiempo_continuo(self, c, t, tiempo):
         return c + 0.2 * t + tiempo ** 2
 
-    def generar_tiempo_cobro(self, auto, cabina_cobro):
+    def generar_tiempo_cobro(self, auto, cabina_cobro, n_iteracion):
 
         # Establezco d a utilizar dependiendo tamanio de auto
         if auto.tipo_auto == TIPO_AUTO_GRANDE:
@@ -93,6 +93,7 @@ class ControladorSistemaCombinado:
         tiempo_cobrado = {
             "id_auto": auto.id,
             "id_cabina_cobro": auto.cabina_cobro.id,
+            "n_iteracion": n_iteracion,
             "iteraciones": iteraciones,
             "tiempo": iteraciones[len(iteraciones) - 1].get("tiempo")
         }
@@ -103,18 +104,36 @@ class ControladorSistemaCombinado:
         return tiempo_cobrado.get("tiempo")
 
     def generar_excel_tiempos_cobros(self):
-        workbook = xlsxwriter.Workbook("simulacion_continua.xlsx")
+
+        # Obtengo ruta donde almacenar el archivo
+        ruta_archivo = self.ventana.seleccionar_ruta_archivo()
+
+        # Verifico que la ruta haya sido seleccionada
+        if ruta_archivo is None:
+            return
+
+        # Creo archivo xlsx
+        workbook = xlsxwriter.Workbook(ruta_archivo + "/simulacion_continua.xlsx")
         worksheet = workbook.add_worksheet()
 
-        fila_resultados = 0
-        columna_labels_resultados = 0
-        columna_tiempos_resultados = 1
-
+        # Genero resultados
+        fila = 0
+        columna_n_auto = 0
+        columna_n_iteracion = 1
+        columna_tiempo_cobrado = 2
         for tiempo_cobrado in self.tiempos_cobrado:
-            worksheet.write(fila_resultados, columna_labels_resultados, "Auto " + str(tiempo_cobrado.get("id_auto")))
-            worksheet.write(fila_resultados, columna_tiempos_resultados, str(tiempo_cobrado.get("tiempo")))
-            fila_resultados += 2
+            worksheet.write(fila, columna_n_auto, "Auto " + str(tiempo_cobrado.get("id_auto")))
+            worksheet.write(fila, columna_n_iteracion, "It. " + str(tiempo_cobrado.get("n_iteracion")))
+            worksheet.write(fila, columna_tiempo_cobrado, str(tiempo_cobrado.get("tiempo")))
+            fila += 3
 
+        # Genero tablas de cálculos
+        fila = 0
+        columna_parametros = 5
+        columna_tiempo = columna_parametros + 1
+        columna_tiempo_cobrado = 2
+
+        # Cierro archivo
         workbook.close()
 
     def simular_iteracion(self, vector_estado):
@@ -341,7 +360,7 @@ class ControladorSistemaCombinado:
 
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
                 tiempo_cobrado = self.generar_tiempo_cobro(vector_estado.get("clientes").get("autos")[index_auto],
-                                                           cabina_cobro_encontrada)
+                                                           cabina_cobro_encontrada, vector_estado.get("n_iteracion"))
                 fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado
@@ -457,7 +476,8 @@ class ControladorSistemaCombinado:
 
                 # Genero fin cobrado para el auto que recién termina su estacionamiento
                 tiempo_cobrado = self.generar_tiempo_cobro(vector_estado.get("clientes").get("autos")[index_auto],
-                                                           cabina_cobro_con_cola_encontrada)
+                                                           cabina_cobro_con_cola_encontrada,
+                                                           vector_estado.get("n_iteracion"))
                 fin_tiempo_cobrado = round(reloj_evento + tiempo_cobrado, 2)
 
                 # Seteo datos de fin cobrado

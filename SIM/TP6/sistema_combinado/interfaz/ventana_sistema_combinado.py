@@ -1,6 +1,7 @@
+from os.path import expanduser
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem, QFileDialog
 from dominio.controlador_sistema_combinado import *
 from soporte.validador_enteros import ValidadorEnteros
 from soporte.validador_decimales import ValidadorDecimales
@@ -713,6 +714,19 @@ class VentanaSistemaCombinado(QMainWindow):
 
         # Muestro porcentaje de datos cargados final
         self.mostrar_porcentaje_datos(100)
+
+    # Selecciona una ruta donde almacenar el archivo con cálculos continuos
+    def seleccionar_ruta_archivo(self):
+
+        # Obtengo ruta para guardar el documento
+        ruta_archivo = QFileDialog.getExistingDirectory(directory=expanduser("~"),
+                                                        caption="Elija donde almacenar el archivo con cálculos "
+                                                                "sobre tiempos de cobros")
+
+        # Devuelvo la ruta del archivo o None dependiendo se se selecciono una ruta o no
+        if len(ruta_archivo) > 0:
+            return ruta_archivo
+        return None
 
     """ Eventos """
 
