@@ -137,6 +137,7 @@ class ControladorSistemaCombinado:
             fila += 3
 
         # Genero tablas de cálculos
+        fila_inicial = 0
         fila = 0
         columna_parametros = 5
         columna_tiempo = columna_parametros + 1
@@ -144,7 +145,11 @@ class ControladorSistemaCombinado:
         columna_dd_dt = columna_d + 1
         columna_tiempo_sig = columna_dd_dt + 1
         columna_d_sig = columna_tiempo_sig + 1
+        cantidad_calculos = 0
+        maxima_fila_iteraciones = 0
+
         for tiempo_cobrado in self.tiempos_cobrado:
+
             worksheet.write(fila, columna_parametros, "Auto " + str(tiempo_cobrado.get("id_auto")))
             worksheet.write(fila, columna_tiempo, "t")
             worksheet.write(fila, columna_d, "D")
@@ -153,14 +158,14 @@ class ControladorSistemaCombinado:
             worksheet.write(fila, columna_d_sig, "D(i+1)")
             fila += 1
             for iteracion in tiempo_cobrado.get("iteraciones"):
-                if fila == 1:
+                if fila == fila_inicial:
                     worksheet.write(fila, columna_parametros, "C = " + str(tiempo_cobrado.get("parametros").get("c")))
-                elif fila == 2:
+                elif fila == fila_inicial + 1:
                     worksheet.write(fila, columna_parametros, "T = " + str(tiempo_cobrado.get("parametros").get("t"))
                                     .replace(".", ","))
-                elif fila == 3:
+                elif fila == fila_inicial + 2:
                     worksheet.write(fila, columna_parametros, "D0 = " + str(tiempo_cobrado.get("parametros").get("d0")))
-                elif fila == 4:
+                elif fila == fila_inicial + 3:
                     worksheet.write(fila, columna_parametros, "t0 = " + str(tiempo_cobrado.get("parametros").get("t0"))
                                     .replace(".", ","))
                 worksheet.write(fila, columna_tiempo, str(iteracion.get("tiempo")).replace(".", ",")
@@ -172,13 +177,30 @@ class ControladorSistemaCombinado:
                 worksheet.write(fila, columna_tiempo_sig, str(iteracion.get("tiempo_sig")).replace(".", ","))
                 worksheet.write(fila, columna_d_sig, str(iteracion.get("d_sig")).replace(".", ","))
                 fila += 1
-            fila = 0
-            columna_parametros += 7
-            columna_tiempo = columna_parametros + 1
-            columna_d = columna_tiempo + 1
-            columna_dd_dt = columna_d + 1
-            columna_tiempo_sig = columna_dd_dt + 1
-            columna_d_sig = columna_tiempo_sig + 1
+
+            if fila > maxima_fila_iteraciones:
+                maxima_fila_iteraciones = fila
+            cantidad_calculos += 1
+
+            if cantidad_calculos < 100:
+                fila = fila_inicial
+                columna_parametros += 7
+                columna_tiempo = columna_parametros + 1
+                columna_d = columna_tiempo + 1
+                columna_dd_dt = columna_d + 1
+                columna_tiempo_sig = columna_dd_dt + 1
+                columna_d_sig = columna_tiempo_sig + 1
+            else:
+                fila_inicial = maxima_fila_iteraciones + 3
+                fila = maxima_fila_iteraciones + 3
+                columna_parametros = 5
+                columna_tiempo = columna_parametros + 1
+                columna_d = columna_tiempo + 1
+                columna_dd_dt = columna_d + 1
+                columna_tiempo_sig = columna_dd_dt + 1
+                columna_d_sig = columna_tiempo_sig + 1
+                cantidad_calculos = 0
+                maxima_fila_iteraciones = 0
 
         # Cierro archivo
         workbook.close()
