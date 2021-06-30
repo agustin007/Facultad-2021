@@ -207,9 +207,6 @@ class ControladorSistemaCombinado:
 
     def simular_iteracion(self, vector_estado):
 
-        # Limpio lista de tiempos cobrados
-        self.tiempos_cobrado = []
-
         # Reestablezo atributos para manejo de la simulación
         self.auto_generado = False
 
@@ -604,6 +601,9 @@ class ControladorSistemaCombinado:
         self.ids_autos_iteraciones_generados = None
         self.ids_lugares_estacionamiento_generados = None
         self.ids_cabina_cobro_generadas = None
+
+        # Reestablezco atributos para persistencia de calculos continuos
+        self.tiempos_cobrado = []
 
         # Calculo cada cuantas simulaciones mostrar el porcentaje de simulación
         if tiempo_simulacion <= 100:
