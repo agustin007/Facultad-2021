@@ -158,14 +158,14 @@ class ControladorSistemaCombinado:
             worksheet.write(fila, columna_d_sig, "D(i+1)")
             fila += 1
             for iteracion in tiempo_cobrado.get("iteraciones"):
-                if fila == fila_inicial:
+                if fila == fila_inicial + 1:
                     worksheet.write(fila, columna_parametros, "C = " + str(tiempo_cobrado.get("parametros").get("c")))
-                elif fila == fila_inicial + 1:
+                elif fila == fila_inicial + 2:
                     worksheet.write(fila, columna_parametros, "T = " + str(tiempo_cobrado.get("parametros").get("t"))
                                     .replace(".", ","))
-                elif fila == fila_inicial + 2:
-                    worksheet.write(fila, columna_parametros, "D0 = " + str(tiempo_cobrado.get("parametros").get("d0")))
                 elif fila == fila_inicial + 3:
+                    worksheet.write(fila, columna_parametros, "D0 = " + str(tiempo_cobrado.get("parametros").get("d0")))
+                elif fila == fila_inicial + 4:
                     worksheet.write(fila, columna_parametros, "t0 = " + str(tiempo_cobrado.get("parametros").get("t0"))
                                     .replace(".", ","))
                 worksheet.write(fila, columna_tiempo, str(iteracion.get("tiempo")).replace(".", ",")
